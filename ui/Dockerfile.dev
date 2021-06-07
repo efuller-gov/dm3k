@@ -1,0 +1,10 @@
+# build stage
+FROM node:12.14.0-alpine as build-stage
+WORKDIR /app
+COPY package*.json ./
+RUN yarn
+COPY . .
+
+EXPOSE 8080
+
+CMD ["yarn", "serve"]
