@@ -3,14 +3,14 @@ UI for the Eng Alg
 
 ## For Production
 ```
-$ cd aw_ui
+$ cd ui
 $ sudo docker compose --build -d 
 ```   
 
 ## For development
 ```
-$ cd aw_ui
-$ sudo docker-compose -f docker-compose-dev.yml up --build -d
+$ cd ui
+$ sudo docker-compose -f ../docker-compose-dev.yml up --build -d
 ``` 
 
 ### on API
