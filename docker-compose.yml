@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  aw_api:
+    build: ./api
+    container_name: api
+    restart: always
+    volumes:
+      - ./api/:/app
+    expose:
+      - 9000
+
+  aw_ui:
+    build: ./ui
+    container_name: ui
+    restart: always
+    expose:
+      - 80
+
+  aw_nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "8000:8000"
+      - "8001:80"
+
