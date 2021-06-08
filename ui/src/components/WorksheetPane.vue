@@ -28,8 +28,8 @@
             <div id="allocate-resources-column" class="left_column hide">
                 <p><b>Allocate resources to activities.</b></p>
                 <span>
-                <button id="new-allocation" type="button" class="menu-button sub-menu activity-choice">New activity <i class="arrow down"></i></button>
-                <button id="existing-allocation" type="button" class="menu-button sub-menu activity-choice">Existing activity <i class="arrow down"></i></button>
+                <button @click="newAllocation()" id="new-allocation" type="button" class="menu-button sub-menu activity-choice">New activity <i class="arrow down"></i></button>
+                <button @click="existingAllocation()" id="existing-allocation" type="button" class="menu-button sub-menu activity-choice">Existing activity <i class="arrow down"></i></button>
                 </span><br>
                 <div id="activity-submenu-container" class="hide">
                     <label for="resName2">I want to allocate my</label>
@@ -147,7 +147,7 @@
 					on any item, see actions that can be taken to define further relationships and instances.</p>
             </div>
             <div id="helper-info-div">
-				<button id="hide-worksheet-button" class='zoom-button' onclick="worksheetUtil_hideShowWorksheet()">Hide worksheet</button>
+				<button @click="worksheetUtil_hideShowWorksheet()" id="hide-worksheet-button" class='zoom-button'>Hide worksheet</button>
 				<p class="title-text"><b>Load, save, and submit diagrams.</b></p>
 				<!-- <p>Load diagram from local machine</p> -->
 				<input type="button" class="done-button" value="Load existing diagram" onclick="getFile()"><br><br><br>
@@ -200,6 +200,14 @@ export default {
                     text : item
                     }));
                 });
+        },
+        worksheetUtil_hideShowWorksheet(){
+            $('#menu').toggleClass('shrink')
+            if( $('#menu').hasClass('shrink') ){
+                $('#hide-worksheet-button').html('Expand worksheet')
+            } else{
+                $('#hide-worksheet-button').html('Hide worksheet')
+            }
         },
         resetResourcePrompt(){
             $('#resType').val("none")
@@ -300,6 +308,24 @@ export default {
             this.changeHelperText('allocate-resources')
             this.changeHelperImg('allocate-resources')
             this.resetContainsPrompt()
+        },
+        newAllocation(){
+            $('#activity-submenu-container').removeClass('hide')
+            $('#activity-def-bottom-container').removeClass('hide')
+            $('#existing-allocation').removeClass('enabled')
+            $('#new-allocation').addClass('enabled')
+            $('#actType').removeClass('hide')
+            $('#actTypeExisting').addClass('hide')
+            $('#addActivity').removeClass('hide')
+        },
+        existingAllocation(){
+            $('#activity-submenu-container').removeClass('hide')
+            $('#activity-def-bottom-container').addClass('hide')
+            $('#new-allocation').removeClass('enabled')
+            $('#existing-allocation').addClass('enabled')
+            $('#actType').addClass('hide')
+            $('#actTypeExisting').removeClass('hide')
+            $('#addActivity').removeClass('hide')
         }
     },
     data() {
@@ -396,4 +422,51 @@ export default {
         this.populateActivitiesFromWB()
     }
 }
+/*
+function updateAllDropDowns(g) {
+    // update the "Allocate resources to activities" worksheet
+    worksheetUtil_updateDropDown(g, ['resource'], $('#resName2'),[]);
+
+    // update the "Make contains relationship" worksheet
+    worksheetUtil_updateDropDown(g, ['resource', 'activity'], $('#parentName2'), []);
+    worksheetUtil_updateContainsDropDown(g, $('#childName2'), $('#parentName2'), []);
+
+    worksheetUtil_updateDropDown(g, ['activity'], $('#act-childName'), [])
+    worksheetUtil_updateDropDown(g, ['resource'], $('#res-childName'), [])
+
+    // update the "Constrain allocations" worksheet
+    worksheetUtil_updateDropDown(g, ['resource'], $('#startName1'), []);
+    worksheetUtil_updateAllocatedDropDown(g, $('#stopName1'), $('#startName1'), []);
+    worksheetUtil_updateDropDown(g, ['resource'], $('#startName2'), []);
+    worksheetUtil_updateAllocatedDropDown(g, $('#stopName2'), $('#startName2'), [$('#stopName1').children("option:selected").val()]);
+
+    worksheetUtil_populateExistingActivitiesFromGraph(g)
+
+}
+function worksheetUtil_hideShowWorksheet(){
+    $('#menu').toggleClass('shrink')
+    if( $('#menu').hasClass('shrink') ){
+        $('#hide-worksheet-button').html('Expand worksheet')
+    } else{
+        $('#hide-worksheet-button').html('Hide worksheet')
+    }
+}
+function worksheetUtil_updateDropDown(graph, typeList, jQuerySelector, excludeNamesList) {
+    jQuerySelector.empty();
+    let updatedOptions = []
+    typeList.forEach(function(typeName, index) {
+        //console.log('Looking for: '+typeName)
+        let options = graph.getAllNamesOfType(typeName);
+        //console.log('Options: ', options)
+        updatedOptions = updatedOptions.concat(options);
+    });
+    
+    excludeNamesList.forEach(function(excludeName, index) {
+        const i = updatedOptions.indexOf(excludeName);
+        if (i > -1) {
+            updatedOptions.splice(i, 1);
+        }
+    });
+    return updatedOptions.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
+}*/
 </script>
