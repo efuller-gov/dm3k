@@ -5,9 +5,9 @@
                 <div id='zoom-buttons'>
 					<button id="zoomIn" class='zoom-button'>+</button>
 					<button id="zoomOut" class='zoom-button' style="margin-right: 10px;">-</button>
-					<b class="title-text">APL Version</b>
+					<!-- <b class="title-text">Version name</b> -->
 				</div>
-                <button id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
+                <button @click="createResourceBox()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
                 <button id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
                 <button id="contains-button" type="button" class="menu-button disabled">Make contains relationship</button>
                 <button id="constrain-allocations-button" type="button" class="menu-button disabled">Constrain allocations</button>
@@ -142,7 +142,6 @@
 				<p id="pane-level-explanatory-text" class="explanatory-text">Explanatory text here, generated for each tab/ worksheet.</p>
 				<p id="instance-level-explanatory-title" class="title-text">Instance-level explanatory text</p>
 				<p id="instance-level-explanatory-text">Explanatory text here, generated for each tab/ worksheet.</p>
-                <!-- To do: FIX these links -->
 				<img id="helper-image" src="../assets/create-resource.svg">
 				<p id="i-circle-explainer" class="explanatory-text">By clicking <img src="../assets/rounded-info-icon-gray.png" alt="circle-info" style="vertical-align:text-bottom;" height="20" width="auto">
 					on any item, see actions that can be taken to define further relationships and instances.</p>
@@ -171,3 +170,123 @@
         </div>  
     </div>
 </template>
+
+<script>
+import $ from 'jquery'
+
+export default {
+    name: 'WorksheetPane',
+    methods: {
+        createResourceBox(){
+            $(".menu-button").removeClass('enabled')
+            $(".left_column").addClass('hide')
+            $("#create-resource-column").removeClass('hide')
+            $("#create-resources-button").addClass('enabled')
+            // To do: Add these functions in
+            changeHelperText('create-resources')
+			changeHelperImg('create-resources')
+			// resetActivityPrompt()
+			// resetContainsPrompt()
+        },
+    },
+    data() {
+        return{
+            images: [
+                {
+                    id: 'create_resource',
+                    file: 'create-resource.svg'
+                },
+                {
+                    id: 'allocate_resource',
+                    file: 'allocate-resource.svg'
+                }
+            ]
+        }
+    },
+    mounted(){
+        changeHelperText('create-resources')
+		changeHelperImg('create-resources')
+    }
+}
+
+function changeHelperText(worksheetName){
+    console.log("Change helper text..")
+    let helperTextArr = [
+        {
+            'worksheet': 'create-resources',
+            'pane-title-text': 'Begin building your decision scenario by creating resources.',
+            'pane-body-text': '<b>Resources</b> are entities that get allocated. In the example below, our <b>resource</b> is a <b>backpack</b>. ' +
+                            'We have a finite number of backpacks to fill, so we frame our allocation problem around them. ' +
+                            'Notice that ' +
+                            'each backpack is budgeted by something. Our <b>budget</b> is how we measure the use of a resource. For a backpack, we define our budget as space.',
+            'instance-title-text': 'Instance title placeholder',
+            'instance-body-text': 'body-text placeholder',
+        },
+        {
+            'worksheet': 'allocate-resources',
+            'pane-title-text': 'Continue by creating activites to allocate to resources.',
+            'pane-body-text': '<b>Activities</b> are entities that get allocated to <b>resources</b>. When you define an activity, try '+
+            'to find a category type that best describes it from the dropdown menu. In our backpack problem, we need to allocate to different backpacks.'+
+            'Since we defined backpack as a resource, we will define a new <b>activity</b> to allocate called <b>textbook</b>. It can be best described as an <b>item</b>.',
+            'instance-title-text': '',
+            'instance-body-text': '',
+        },
+        {
+            'worksheet': 'contains',
+            'pane-title-text': 'Create hierarchy within your decision scenario.',
+            'pane-body-text': 'A <b>contains</b> relationship creates hierarchy among <b>activities</b> or <b>resources</b> that can be used in allocation logic among instances of activites or resources. '+
+            'Note that <b>contains</b> relationships can only be established between activity-activity or resource-resource.',
+            'instance-title-text': '',
+            'instance-body-text': '',
+        },
+        {
+            'worksheet': 'constrain-allocations',
+            'pane-title-text': 'Create logic for allocating instance-level activities and resources.',
+            'pane-body-text': 'In some decision scenarios, it will be necessary to impose logic upon allocation relationships. In this example, we impose ' +
+            'a condition that only allows a zipped pocket to be allocated to a pencil if a backpack that contains the pocket has been allocated to a textbook. ' +
+            'In everyday language, it does not do much good to have a pencil if you do not have a textbook to read problem sets from.',
+            'instance-title-text': '',
+            'instance-body-text': '',
+        }
+    ]
+    let helperText = helperTextArr.filter(x=>x.worksheet==worksheetName)[0]
+    $('#pane-level-explanatory-title').text(helperText['pane-title-text']);
+    $('#pane-level-explanatory-text').html(helperText['pane-body-text']);
+    $('#instance-level-explanatory-title').hide();
+    $('#instance-level-explanatory-text').hide();
+}
+function changeHelperImg(worksheetName){
+    let helperImgArr = [
+			{
+				'worksheet': 'create-resources',
+				'img-path': '../assets/create-resource.svg',
+				'text-size': '12px',
+				'scale-width': '95%'
+			},
+			{
+				'worksheet': 'allocate-resources',
+				'img-path': '../assets/allocate-resources.svg',
+				'text-size': '12px',
+				'scale-width': '95%'
+			},
+			{
+				'worksheet': 'contains',
+				'img-path': '../assets/contains-relationship.svg',
+				'text-size': '12px',
+				'scale-width': '75%'
+			},
+			{
+				'worksheet': 'constrain-allocations',
+				'img-path': '../assets/allocation-constraint.svg',
+				'text-size': '11px',
+				'scale-width': '92%'
+			}
+		]
+    let helperImg = helperImgArr.filter(x=>x.worksheet==worksheetName)[0]
+    console.log("Changing helper image path to: ", helperImg['img-path'])
+    $('#helper-image').attr("src", helperImg['img-path']);
+    $('#helper-image').attr("src", "../assets/create-resource.svg");
+    $('#helper-image').width(helperImg['scale-width']);
+    $('#pane-level-explanatory-text').css('font-size', helperImg['text-size']);
+}
+</script>
