@@ -7,7 +7,7 @@
 					<button id="zoomOut" class='zoom-button'>-</button>
 					<!-- <b class="title-text">Version name</b> -->
 				</div>
-                <button @click="createResourceBox()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
+                <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
                 <button id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
                 <button id="contains-button" type="button" class="menu-button disabled">Make contains relationship</button>
                 <button id="constrain-allocations-button" type="button" class="menu-button disabled">Constrain allocations</button>
@@ -23,7 +23,7 @@
                 <input type="text" id="resName"><br><br>
                 <label id ="resource-budget-label" for="budgetName">The resource is budgeted by</label>
                 <input type="text" id="budgetName"><br><br>
-                <input type="button" class="done-button" value="Done" id="addResource">
+                <input @click="addResource()" type="button" class="done-button" value="Done" id="addResource">
             </div>
             <div id="allocate-resources-column" class="left_column hide">
                 <p><b>Allocate resources to activities.</b></p>
@@ -201,24 +201,68 @@ export default {
                     }));
                 });
         },
-        createResourceBox(){
-            $(".menu-button").removeClass('enabled')
-            $(".left_column").addClass('hide')
-            $("#create-resource-column").removeClass('hide')
-            $("#create-resources-button").addClass('enabled')
-            // To do: Add these functions in
-            this.changeHelperText('create-resources')
-			changeHelperImg('create-resources')
-			// resetActivityPrompt()
-			// resetContainsPrompt()
-        },
         changeHelperText(worksheetName){
-            let helperText = this.helperTextArr.filter(x=>x.worksheet==worksheetName)[0]
+            let helperText = this.helper_text.filter(x=>x.worksheet==worksheetName)[0]
             $('#pane-level-explanatory-title').text(helperText['pane-title-text']);
             $('#pane-level-explanatory-text').html(helperText['pane-body-text']);
             $('#instance-level-explanatory-title').hide();
             $('#instance-level-explanatory-text').hide();
-        }
+        },
+        changeHelperImg(worksheetName){
+            let helperImg = this.helper_images_info.filter(x=>x.worksheet==worksheetName)[0]
+            console.log("Changing helper image path to: ", helperImg['img-path'])
+            // To do: this jquery way to change img src will not work
+            $('#helper-image').attr("src", helperImg['img-path']);
+            $('#helper-image').width(helperImg['scale-width']);
+            $('#pane-level-explanatory-text').css('font-size', helperImg['text-size']);
+        },
+        createResourceTab(){
+            $(".menu-button").removeClass('enabled')
+            $(".left_column").addClass('hide')
+            $("#create-resource-column").removeClass('hide')
+            $("#create-resources-button").addClass('enabled')
+            this.changeHelperText('create-resources')
+            this.changeHelperImg('create-resources')
+            // To do: Add these functions in            
+			// resetActivityPrompt()
+			// resetContainsPrompt()
+        },
+        addResource(){
+            $('#allocate-resources-button').removeClass('disabled')
+            $('#contains-button').removeClass('disabled')
+            let newResType = $("#resType").val();
+            if ( (newResType=='none') | (newResName=='')){
+                alert('Please provide a label to create a new resource.')
+                return
+            }
+            let newBudgetName = $("#budgetName").val();
+            let budgetNameList = newBudgetName.split(",");
+            let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
+            let newResName = $("#resName").val();
+            console.log("newBudgetNameList ", newBudgetNameList)
+            // Send completed resource input to graph
+            // To do: figure out how to communicate with graph component
+            /*
+            let model = dm3kgraph.graph.getModel()
+            if (model.getCell(newResName) != undefined){
+                alert('Cannot create duplicate node. Please choose a new instance name.')
+
+            } else{
+                let ans = dm3kgraph.addCompleteResource(newResType, newResName, newBudgetNameList);
+
+                if (ans.success) {
+                    console.log('AddResourceComplete success!')
+                    updateAllDropDowns(dm3kgraph);
+                    let layout = new mxGraphLayout(dm3kgraph.graph);
+                    executeLayout(dm3kgraph.graph, layout);
+                    resetResourcePrompt();
+                }
+                else {
+                    alert(ans.details);
+                }
+            }
+            */
+        },
     },
     data() {
         return{
@@ -268,7 +312,7 @@ export default {
                 "project",
                 "job",
                 "target"],
-            helperTextArr : [
+            helper_text : [
                 {
                     'worksheet': 'create-resources',
                     'pane-title-text': 'Begin building your decision scenario by creating resources.',
@@ -313,13 +357,5 @@ export default {
         this.populateResourcesFromWB()
         this.populateActivitiesFromWB()
     }
-}
-function changeHelperImg(worksheetName){
-    let helperImg = this.helper_images_info.filter(x=>x.worksheet==worksheetName)[0]
-    console.log("Changing helper image path to: ", helperImg['img-path'])
-    // To do: this jquery way to change img src will not work
-    $('#helper-image').attr("src", helperImg['img-path']);
-    $('#helper-image').width(helperImg['scale-width']);
-    $('#pane-level-explanatory-text').css('font-size', helperImg['text-size']);
 }
 </script>
