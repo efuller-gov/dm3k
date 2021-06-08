@@ -1,7 +1,6 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/dm3k_logo.svg">
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <img src="./assets/dm3k_logo.svg">
     <WorksheetPane />
   </div>
 </template>
@@ -19,12 +18,8 @@ export default {
 
 <style>
   #app {
-    /* font-family: Avenir, Helvetica, Arial, sans-serif; */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* text-align: center;
-    color: #2c3e50;
-    margin-top: 60px; */
     margin: 0px;
     background-image: url("./assets/grid-dashed.png");
     background-size:  100%;
@@ -33,7 +28,6 @@ export default {
     color: #707070;
     margin-bottom: 0px;
   }
-
   :root {
     --top-padding-for-worksheets: 15px;
   }
@@ -96,7 +90,6 @@ export default {
   }
   .form-control-inline {
     display: inline;
-    width: 40px;
     text-align: center;
   }
   .plus-minus-button {
@@ -143,9 +136,6 @@ export default {
   .left_column {
     float: left;
     width: 23%;
-    /* min-width: 10%; */
-    /* max-width: 25%;
-    min-width: 25%; */
     max-width: 22%;
     min-width: 22%;
     width: auto;
@@ -196,7 +186,6 @@ export default {
     margin-right: 10%;
     font-weight: bold;
     color: #707070;
-
     font-size: 0.8vw;
   }
   .done-button:hover{
@@ -266,8 +255,6 @@ export default {
   #helper-image{
     margin-top: 4%;
     margin-left: 2%;
-    /* width: 95%; */
-    /* height: auto; */
     vertical-align: text-bottom;
     height: 4vw;
   }
@@ -341,12 +328,10 @@ export default {
   }
   #soln-visualization{
     float: left;
-    /* width: 85%; */
     width: 95%;
     margin-right: 0px;
   }
   #soln-title {
-    /* font-size: 18px; */
     font-size: 0.98vw;
     font-weight: bold;
     margin-top: 2vw;
@@ -372,7 +357,6 @@ export default {
   }
   #soln-explainer-btn:hover{
     background-color: lightgray;
-    /* color: white; */
   }
   #soln-explainer-graphic{
     display: none;
@@ -384,8 +368,6 @@ export default {
   }
   .modal-content {
     position: relative; 
-    /*background-color: white;
-    padding: 20px; */
     margin: auto; 
     width: 80%;  
     -webkit-animation-name: animatetop;
@@ -411,8 +393,6 @@ export default {
     width: 25%;
   }
   #soln-table-top-aligned-content{
-    /* font-size: 14px; */
-    /* margin-top: 4%; */
     font-size: 0.8vw;
     float: left;
     width: auto;
@@ -505,7 +485,6 @@ export default {
     vertical-align: middle;
     /* font-size: 14px; */
     font-size: 0.9vw;
-    
     padding: 10px;
     padding-left: 20px;
     margin-top: 2%;
@@ -558,13 +537,7 @@ export default {
     font-size: 11px;
   }
   .sub-menu.enabled{
-    /*background-color: rgba(112,112,112,0.2);*/
-    /*background-color: rgba(255,255,255,1);*/
-    /*border-width: thick;*/
     border-color: #707070;
-    /*border-top-style: none;*/
-    /*border-bottom-style: none;*/
-    /*border-left-style: none;*/
     border-style: solid;
     border-width: 2px;
   }
@@ -581,8 +554,6 @@ export default {
   }
   #worksheet_menu_column{
     float: left;
-    /*width: 23%;*/
-    /*min-width: 10%;*/
     max-width: 15%;
     width: auto;
     height: 100%;
@@ -605,13 +576,6 @@ export default {
   }
   .hide{
     display: none;
-  }
-  /* ************************** */
-  .grid {
-    /* border: lightgreen;
-    border-style: solid;
-    border-width: 2px; */
-    height: auto;
   }
   div.tooltip {
     position: absolute;
