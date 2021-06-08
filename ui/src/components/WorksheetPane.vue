@@ -9,7 +9,7 @@
 				</div>
                 <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
                 <button @click="allocateResourcesTab()" id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
-                <button id="contains-button" type="button" class="menu-button disabled">Make contains relationship</button>
+                <button @click="containsTab()" id="contains-button" type="button" class="menu-button disabled">Make contains relationship</button>
                 <button id="constrain-allocations-button" type="button" class="menu-button disabled">Constrain allocations</button>
             </div>
             <div id="create-resource-column" class="left_column responsive-column-text">
@@ -59,9 +59,9 @@
             <div id="contains-column" class="left_column hide">
                 <p><b>Set up a contains relationship.</b></p>
                 <span>
-                <button id="existing-contains" type="button" class="menu-button sub-menu activity-choice"> Existing Containers<i class="arrow down"></i></button>
-                <button id="new-activity-contains" type="button" class="menu-button sub-menu activity-choice">New Activity Container <i class="arrow down"></i></button>
-                <button id="new-resource-contains" type="button" class="menu-button sub-menu activity-choice">New Resource Container <i class="arrow down"></i></button>
+                <button @click="existingContains()" id="existing-contains" type="button" class="menu-button sub-menu activity-choice"> Existing Containers<i class="arrow down"></i></button>
+                <button @click="newActContainer()" id="new-activity-contains" type="button" class="menu-button sub-menu activity-choice">New Activity Container <i class="arrow down"></i></button>
+                <button @click="newResContainer()" id="new-resource-contains" type="button" class="menu-button sub-menu activity-choice">New Resource Container <i class="arrow down"></i></button>
                 </span><br><br>
                 <div id="contains-existing-submenu" class="hide">
                     <label for="parentName2">I want </label>
@@ -143,6 +143,8 @@
 				<p id="instance-level-explanatory-title" class="title-text">Instance-level explanatory text</p>
 				<p id="instance-level-explanatory-text">Explanatory text here, generated for each tab/ worksheet.</p>
 				<img id="helper-image" src="../assets/create-resource.svg">
+				<!-- <img id="helper-image" :src="src[currentSrc]"> -->
+                <!-- <img id="helper-image" :src="resolve_img_url(picture_src)" /> -->
 				<p id="i-circle-explainer" class="explanatory-text">By clicking <img src="../assets/rounded-info-icon-gray.png" alt="circle-info" style="vertical-align:text-bottom;" height="20" width="auto">
 					on any item, see actions that can be taken to define further relationships and instances.</p>
             </div>
@@ -177,6 +179,10 @@ import $ from 'jquery'
 export default {
     name: 'WorksheetPane',
     methods: {
+        resolve_img_url: function (path) {
+            let images = require.context('../assets/', false, /\.png$|\.svg$/)
+            return images("./"+path)
+        },
         populateResourcesFromWB() {
             $.each(this.RESOURCE_WORD_BANK, function (i, item) {
                 $('#resType').append($('<option>', {
@@ -326,10 +332,36 @@ export default {
             $('#actType').addClass('hide')
             $('#actTypeExisting').removeClass('hide')
             $('#addActivity').removeClass('hide')
+        },
+        containsTab(){
+            $(".menu-button").removeClass('enabled')
+            $(".left_column").addClass('hide')
+            $("#contains-column").removeClass('hide')
+            $("#contains-button").addClass('enabled')
+            this.changeHelperText('contains')
+            this.changeHelperImg('contains')
+            this.resetActivityPrompt()
+        },
+        existingContains(){
+            $('#contains-existing-submenu').removeClass('hide')
+			$('#contains-new-act-submenu').addClass('hide')
+			$('#contains-new-res-submenu').addClass('hide')
+        },
+        newResContainer(){
+            $('#contains-existing-submenu').addClass('hide')
+			$('#contains-new-act-submenu').removeClass('hide')
+			$('#contains-new-res-submenu').addClass('hide')
+        },
+        newActContainer(){
+            $('#contains-existing-submenu').addClass('hide')
+			$('#contains-new-act-submenu').addClass('hide')
+			$('#contains-new-res-submenu').removeClass('hide')
         }
     },
     data() {
         return{
+            src: ['../assets/create-resource.svg'],
+            currentSrc: 0,
             helper_images_info: [
                 {
                     'worksheet': 'create-resources',
@@ -418,6 +450,7 @@ export default {
     },
     mounted(){
         this.changeHelperText('create-resources')
+        // this.changeHelperImg('create-resources')
         this.populateResourcesFromWB()
         this.populateActivitiesFromWB()
     }
