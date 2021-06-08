@@ -58,6 +58,7 @@ export default {
     width: 40px;
     font-size: 30px;
     line-height: 15px;
+    margin-right: 10px;
     vertical-align: center;
     text-align: middle;
     color: #707070;

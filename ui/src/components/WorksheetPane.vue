@@ -4,7 +4,7 @@
             <div id="worksheet_menu_column">
                 <div id='zoom-buttons'>
 					<button id="zoomIn" class='zoom-button'>+</button>
-					<button id="zoomOut" class='zoom-button' style="margin-right: 10px;">-</button>
+					<button id="zoomOut" class='zoom-button'>-</button>
 					<!-- <b class="title-text">Version name</b> -->
 				</div>
                 <button @click="createResourceBox()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
@@ -177,6 +177,30 @@ import $ from 'jquery'
 export default {
     name: 'WorksheetPane',
     methods: {
+        populateResourcesFromWB() {
+            $.each(this.RESOURCE_WORD_BANK, function (i, item) {
+                $('#resType').append($('<option>', {
+                    value: item,
+                    text : item
+                }));
+                $('#resType2').append($('<option>', {
+                    value: item,
+                    text : item
+                    }));
+                });
+        },
+        populateActivitiesFromWB() {
+            $.each(this.ACTIVITY_WORD_BANK, function (i, item) {
+                $('#actType').append($('<option>', {
+                    value: item,
+                    text : item
+                }));
+                $('#actType2').append($('<option>', {
+                    value: item,
+                    text : item
+                    }));
+                });
+        },
         createResourceBox(){
             $(".menu-button").removeClass('enabled')
             $(".left_column").addClass('hide')
@@ -191,21 +215,58 @@ export default {
     },
     data() {
         return{
-            images: [
+            helper_images_info: [
                 {
-                    id: 'create_resource',
-                    file: 'create-resource.svg'
+                    'worksheet': 'create-resources',
+                    'img-path': '../assets/create-resource.svg',
+                    'text-size': '12px',
+                    'scale-width': '95%'
                 },
                 {
-                    id: 'allocate_resource',
-                    file: 'allocate-resource.svg'
-                }
-            ]
+                    'worksheet': 'allocate-resources',
+                    'img-path': '../assets/allocate-resources.svg',
+                    'text-size': '12px',
+                    'scale-width': '95%'
+                },
+                {
+                    'worksheet': 'contains',
+                    'img-path': '../assets/contains-relationship.svg',
+                    'text-size': '12px',
+                    'scale-width': '75%'
+                },
+                {
+                    'worksheet': 'constrain-allocations',
+                    'img-path': '../assets/allocation-constraint.svg',
+                    'text-size': '11px',
+                    'scale-width': '92%'
+                }],
+            RESOURCE_WORD_BANK : [
+                "labor",
+                "capital",
+                "material",
+                "facility",
+                "time",
+                "container",
+                "computer",
+                "equipment",
+                "supplies",
+                "weapon"],
+            ACTIVITY_WORD_BANK : [
+                "assignment",
+                "product",
+                "item",
+                "area",
+                "role",
+                "action",
+                "project",
+                "job",
+                "target"]
         }
     },
     mounted(){
         changeHelperText('create-resources')
-		changeHelperImg('create-resources')
+        this.populateResourcesFromWB()
+        this.populateActivitiesFromWB()
     }
 }
 
@@ -256,36 +317,10 @@ function changeHelperText(worksheetName){
     $('#instance-level-explanatory-text').hide();
 }
 function changeHelperImg(worksheetName){
-    let helperImgArr = [
-			{
-				'worksheet': 'create-resources',
-				'img-path': '../assets/create-resource.svg',
-				'text-size': '12px',
-				'scale-width': '95%'
-			},
-			{
-				'worksheet': 'allocate-resources',
-				'img-path': '../assets/allocate-resources.svg',
-				'text-size': '12px',
-				'scale-width': '95%'
-			},
-			{
-				'worksheet': 'contains',
-				'img-path': '../assets/contains-relationship.svg',
-				'text-size': '12px',
-				'scale-width': '75%'
-			},
-			{
-				'worksheet': 'constrain-allocations',
-				'img-path': '../assets/allocation-constraint.svg',
-				'text-size': '11px',
-				'scale-width': '92%'
-			}
-		]
-    let helperImg = helperImgArr.filter(x=>x.worksheet==worksheetName)[0]
+    let helperImg = this.helper_images_info.filter(x=>x.worksheet==worksheetName)[0]
     console.log("Changing helper image path to: ", helperImg['img-path'])
+    // To do: this jquery way to change img src will not work
     $('#helper-image').attr("src", helperImg['img-path']);
-    $('#helper-image').attr("src", "../assets/create-resource.svg");
     $('#helper-image').width(helperImg['scale-width']);
     $('#pane-level-explanatory-text').css('font-size', helperImg['text-size']);
 }
