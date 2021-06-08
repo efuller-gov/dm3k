@@ -10,7 +10,7 @@ $ sudo docker compose --build -d
 ## For development
 ```
 $ cd ui
-$ sudo docker-compose -f docker-compose-dev.yml up --build -d
+$ sudo docker-compose -f ../docker-compose-dev.yml up --build -d
 ``` 
 
 ### on API
