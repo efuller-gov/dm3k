@@ -8,7 +8,7 @@
 					<!-- <b class="title-text">Version name</b> -->
 				</div>
                 <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
-                <button id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
+                <button @click="allocateResourcesTab()" id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
                 <button id="contains-button" type="button" class="menu-button disabled">Make contains relationship</button>
                 <button id="constrain-allocations-button" type="button" class="menu-button disabled">Constrain allocations</button>
             </div>
@@ -263,6 +263,15 @@ export default {
             }
             */
         },
+        allocateResourcesTab(){
+            $(".menu-button").removeClass('enabled')
+            $(".left_column").addClass('hide')
+            $("#allocate-resources-column").removeClass('hide')
+            $("#allocate-resources-button").addClass('enabled')
+            this.changeHelperText('allocate-resources')
+            this.changeHelperImg('allocate-resources')
+            // resetContainsPrompt()
+        }
     },
     data() {
         return{
