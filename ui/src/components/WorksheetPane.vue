@@ -201,6 +201,34 @@ export default {
                     }));
                 });
         },
+        resetResourcePrompt(){
+            $('#resType').val("none")
+            $('#resName').val("")
+            $('#budgetName').val("")
+            $("#resource-label").html("Label the resource ");
+            $("#resource-budget-label").html("The resource is budgeted by ");
+		},
+        resetActivityPrompt(){
+			$('#resName2').val("none")
+			$('#actType').val("a new activity")
+			$('#actTypeExisting').val("an existing activity")
+			$('#actName').val("")
+			$('#rewardName').val("")
+			$('#costName').val("")
+			$('#activity-label').html("Label the activity ");
+			$('#activity-reward-label').html("Label the reward of the instance ");
+			$('#activity-def-bottom-container').addClass('hide')
+			$('#activity-submenu-container').addClass('hide')
+			$('#actType').addClass('hide')
+			$('#actTypeExisting').addClass('hide')
+			$('#addActivity').addClass('hide')
+			$('.activity-choice').removeClass('enabled')
+        },
+        resetContainsPrompt(){
+			$('#contains-existing-submenu').addClass('hide')
+			$('#contains-new-act-submenu').addClass('hide')
+			$('#contains-new-res-submenu').addClass('hide')
+        },
         changeHelperText(worksheetName){
             let helperText = this.helper_text.filter(x=>x.worksheet==worksheetName)[0]
             $('#pane-level-explanatory-title').text(helperText['pane-title-text']);
@@ -223,9 +251,8 @@ export default {
             $("#create-resources-button").addClass('enabled')
             this.changeHelperText('create-resources')
             this.changeHelperImg('create-resources')
-            // To do: Add these functions in            
-			// resetActivityPrompt()
-			// resetContainsPrompt()
+			this.resetActivityPrompt()
+			this.resetContainsPrompt()
         },
         addResource(){
             $('#allocate-resources-button').removeClass('disabled')
@@ -239,9 +266,11 @@ export default {
             let budgetNameList = newBudgetName.split(",");
             let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
             let newResName = $("#resName").val();
-            console.log("newBudgetNameList ", newBudgetNameList)
             // Send completed resource input to graph
             // To do: figure out how to communicate with graph component
+            // Remove workaround: reset resource prompt after success
+            this.resetResourcePrompt();
+            console.log("newBudgetNameList ", newBudgetNameList)
             /*
             let model = dm3kgraph.graph.getModel()
             if (model.getCell(newResName) != undefined){
@@ -270,7 +299,7 @@ export default {
             $("#allocate-resources-button").addClass('enabled')
             this.changeHelperText('allocate-resources')
             this.changeHelperImg('allocate-resources')
-            // resetContainsPrompt()
+            this.resetContainsPrompt()
         }
     },
     data() {
