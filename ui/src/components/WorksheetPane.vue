@@ -1,6 +1,6 @@
 <template>
     <div id="bottom-container">
-        <AttackGraph v-if="showAttackGraph" @view-resize="resizeGraph"/>
+        <Dm3kGraph />
         <div id="menu">
             <div id="worksheet_menu_column">
                 <div id='zoom-buttons'>
@@ -177,11 +177,11 @@
 <script>
 import $ from 'jquery'
 // import Dm3kGraph from '../js/dm3kgraph/dm3kGraph.js'
-import {AttackGraph} from '../js/attackGraph';
+import {Dm3kGraph} from '../js/dm3kgraph/dm3kGraph';
 
 export default {
     name: 'WorksheetPane',
-    components: {AttackGraph}, 
+    components: {Dm3kGraph}, 
     methods: {
         resolve_img_url: function (path) {
             let images = require.context('../assets/', false, /\.png$|\.svg$/)

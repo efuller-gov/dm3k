@@ -1,16 +1,17 @@
-/**
- *  Module captures the graph area of DM3K viz
- *
- *      DEPENDS ON:  mxgraph      (mxClient.min.js  see https://jgraph.github.io/mxgraph)
- *                   dm3kObjects  (dm3kObjects.js in same folder)
- *                   dataClasses (dataClasses.js in javascript folder)
- */
+import mxgraph from './index';
+import _ from 'lodash';
 
-// TODO - needs documentation!!!
+const {
+  mxGraph,
+  mxEvent,
+  mxCellOverlay,
+  mxImage,
+  mxConstants,
+  mxUtils,
+  mxRectangle
+} = mxgraph;
 
-// GEORGE!! mxGraphModel.getCell(
-
- class Dm3kGraph {
+export class Dm3kGraph {
 
 
      /**
