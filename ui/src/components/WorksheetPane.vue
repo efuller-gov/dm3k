@@ -1,5 +1,6 @@
 <template>
     <div id="bottom-container">
+        <AttackGraph v-if="showAttackGraph" @view-resize="resizeGraph"/>
         <div id="menu">
             <div id="worksheet_menu_column">
                 <div id='zoom-buttons'>
@@ -175,9 +176,12 @@
 
 <script>
 import $ from 'jquery'
+// import Dm3kGraph from '../js/dm3kgraph/dm3kGraph.js'
+import {AttackGraph} from '../js/attackGraph';
 
 export default {
     name: 'WorksheetPane',
+    components: {AttackGraph}, 
     methods: {
         resolve_img_url: function (path) {
             let images = require.context('../assets/', false, /\.png$|\.svg$/)
@@ -360,8 +364,6 @@ export default {
     },
     data() {
         return{
-            src: ['../assets/create-resource.svg'],
-            currentSrc: 0,
             helper_images_info: [
                 {
                     'worksheet': 'create-resources',
@@ -445,7 +447,8 @@ export default {
                     'instance-title-text': '',
                     'instance-body-text': '',
                 }
-            ]
+            ],
+            // dm3kgraph : new Dm3kGraph(document.getElementById('graphContainer'), '../assets/rounded-info-icon-gray.png')
         }
     },
     mounted(){
@@ -453,8 +456,22 @@ export default {
         // this.changeHelperImg('create-resources')
         this.populateResourcesFromWB()
         this.populateActivitiesFromWB()
+        // this.dm3kgraph = new Dm3kGraph(document.getElementById('graphContainer'), '../assets/rounded-info-icon-gray.png')
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 function updateAllDropDowns(g) {
     // update the "Allocate resources to activities" worksheet
@@ -475,14 +492,6 @@ function updateAllDropDowns(g) {
 
     worksheetUtil_populateExistingActivitiesFromGraph(g)
 
-}
-function worksheetUtil_hideShowWorksheet(){
-    $('#menu').toggleClass('shrink')
-    if( $('#menu').hasClass('shrink') ){
-        $('#hide-worksheet-button').html('Expand worksheet')
-    } else{
-        $('#hide-worksheet-button').html('Hide worksheet')
-    }
 }
 function worksheetUtil_updateDropDown(graph, typeList, jQuerySelector, excludeNamesList) {
     jQuerySelector.empty();

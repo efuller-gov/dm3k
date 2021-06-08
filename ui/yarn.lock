@@ -4914,6 +4914,11 @@ jest-worker@^25.4.0:
     merge-stream "^2.0.0"
     supports-color "^7.0.0"
 
+jquery@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.0.tgz#c72a09f15c1bdce142f49dbf1170bdf8adac2470"
+  integrity sha512-JVzAR/AjBvVt2BmYhxRCSYysDsPcssdmTFnzyLEts9qNwmjmu4JTAMYubEfwVOSwpQ1I1sKKFcxhZCI2buerfw==
+
 js-message@1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/js-message/-/js-message-1.0.7.tgz#fbddd053c7a47021871bb8b2c95397cc17c20e47"
@@ -5498,6 +5503,11 @@ mute-stream@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
+
+mxgraph@^4.0.5:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/mxgraph/-/mxgraph-4.2.2.tgz#52336443f10ab1039be79cc3fdd2eb8c00c91ba2"
+  integrity sha512-FrJc5AxzXSqiQNF+8CyJk6VxuKO4UVPgw32FZuFZ3X9W+JqOAQBTokZhh0ZkEqGpEOyp3z778ssmBTvdrTAdqw==
 
 mz@^2.4.0:
   version "2.7.0"
