@@ -143,12 +143,11 @@
 				<p id="instance-level-explanatory-title" class="title-text">Instance-level explanatory text</p>
 				<p id="instance-level-explanatory-text">Explanatory text here, generated for each tab/ worksheet.</p>
                 <!-- To do: FIX these links -->
-				<!-- <img id="helper-image" src="{{ url_for('webapp.static',filename='assets/create-resource.svg') }}"> -->
-				<!-- <p id="i-circle-explainer" class="explanatory-text">By clicking <img src="{{ url_for('webapp.static',filename='assets/rounded-info-icon-gray.png') }}" alt="circle-info" style="vertical-align:text-bottom;" height="20" width="auto"> -->
-					<!-- on any item, see actions that can be taken to define further relationships and instances.</p> -->
+				<img id="helper-image" src="../assets/create-resource.svg">
+				<p id="i-circle-explainer" class="explanatory-text">By clicking <img src="../assets/rounded-info-icon-gray.png" alt="circle-info" style="vertical-align:text-bottom;" height="20" width="auto">
+					on any item, see actions that can be taken to define further relationships and instances.</p>
             </div>
             <div id="helper-info-div">
-				<!-- <div id="hide-worksheet-button" onclick="worksheetUtil_hideShowWorksheet()">Hide worksheet</div> -->
 				<button id="hide-worksheet-button" class='zoom-button' onclick="worksheetUtil_hideShowWorksheet()">Hide worksheet</button>
 				<p class="title-text"><b>Load, save, and submit diagrams.</b></p>
 				<!-- <p>Load diagram from local machine</p> -->
@@ -156,7 +155,7 @@
 				<div style='height: 0px;width: 0px;overflow: hidden;'><input type="file" id="loadLocally" accept="application/json"></div>
 				<!-- <p>Save diagram to work on later</p> -->
 				<label for="diagramName">Save current diagram as </label>
-				<input type="text" class="long-input" id="diagramName" value="georgeVizTest" ><br>
+				<input type="text" class="long-input" id="diagramName" value="dm3kDiagram" ><br>
 				<input type="button" class="done-button" value="Save file" id="saveLocally" style="margin-top: 10px;"><br><br>
 				<p><br>Click below to submit your scenario to DM3K for solving.<br>
 					You may return here to edit your scenario afterwards.</p>
