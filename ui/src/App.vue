@@ -1,17 +1,20 @@
 <template>
   <div id="app">
     <img src="./assets/dm3k_logo.svg">
+    <Dm3kGraph />
     <WorksheetPane />
   </div>
 </template>
 
 <script>
 import WorksheetPane from './components/WorksheetPane.vue'
+import Dm3kGraph from './components/Dm3kGraph.vue'
 
 export default {
   name: 'App',
   components: {
-    WorksheetPane
+    WorksheetPane,
+    Dm3kGraph
   }
 }
 </script>

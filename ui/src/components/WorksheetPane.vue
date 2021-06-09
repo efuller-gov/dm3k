@@ -1,6 +1,5 @@
 <template>
     <div id="bottom-container">
-        <Dm3kGraph />
         <div id="menu">
             <div id="worksheet_menu_column">
                 <div id='zoom-buttons'>
@@ -176,12 +175,11 @@
 
 <script>
 import $ from 'jquery'
-// import Dm3kGraph from '../js/dm3kgraph/dm3kGraph.js'
-import {Dm3kGraph} from '../js/dm3kgraph/dm3kGraph';
+// import {Dm3kGraph} from '../js/dm3kgraph/dm3kGraph';
 
 export default {
     name: 'WorksheetPane',
-    components: {Dm3kGraph}, 
+    // components: {Dm3kGraph}, 
     methods: {
         resolve_img_url: function (path) {
             let images = require.context('../assets/', false, /\.png$|\.svg$/)
@@ -448,7 +446,6 @@ export default {
                     'instance-body-text': '',
                 }
             ],
-            // dm3kgraph : new Dm3kGraph(document.getElementById('graphContainer'), '../assets/rounded-info-icon-gray.png')
         }
     },
     mounted(){
@@ -459,56 +456,4 @@ export default {
         // this.dm3kgraph = new Dm3kGraph(document.getElementById('graphContainer'), '../assets/rounded-info-icon-gray.png')
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-function updateAllDropDowns(g) {
-    // update the "Allocate resources to activities" worksheet
-    worksheetUtil_updateDropDown(g, ['resource'], $('#resName2'),[]);
-
-    // update the "Make contains relationship" worksheet
-    worksheetUtil_updateDropDown(g, ['resource', 'activity'], $('#parentName2'), []);
-    worksheetUtil_updateContainsDropDown(g, $('#childName2'), $('#parentName2'), []);
-
-    worksheetUtil_updateDropDown(g, ['activity'], $('#act-childName'), [])
-    worksheetUtil_updateDropDown(g, ['resource'], $('#res-childName'), [])
-
-    // update the "Constrain allocations" worksheet
-    worksheetUtil_updateDropDown(g, ['resource'], $('#startName1'), []);
-    worksheetUtil_updateAllocatedDropDown(g, $('#stopName1'), $('#startName1'), []);
-    worksheetUtil_updateDropDown(g, ['resource'], $('#startName2'), []);
-    worksheetUtil_updateAllocatedDropDown(g, $('#stopName2'), $('#startName2'), [$('#stopName1').children("option:selected").val()]);
-
-    worksheetUtil_populateExistingActivitiesFromGraph(g)
-
-}
-function worksheetUtil_updateDropDown(graph, typeList, jQuerySelector, excludeNamesList) {
-    jQuerySelector.empty();
-    let updatedOptions = []
-    typeList.forEach(function(typeName, index) {
-        //console.log('Looking for: '+typeName)
-        let options = graph.getAllNamesOfType(typeName);
-        //console.log('Options: ', options)
-        updatedOptions = updatedOptions.concat(options);
-    });
-    
-    excludeNamesList.forEach(function(excludeName, index) {
-        const i = updatedOptions.indexOf(excludeName);
-        if (i > -1) {
-            updatedOptions.splice(i, 1);
-        }
-    });
-    return updatedOptions.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
-}*/
 </script>
