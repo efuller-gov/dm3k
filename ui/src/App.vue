@@ -2,7 +2,7 @@
   <div id="app">
     <img src="./assets/dm3k_logo.svg">
     <Dm3kGraph />
-    <WorksheetPane />
+    <WorksheetPane  @add-resource="addResource" />
   </div>
 </template>
 
@@ -15,6 +15,11 @@ export default {
   components: {
     WorksheetPane,
     Dm3kGraph
+  },
+  methods: {
+    addResource(){
+      console.log("Add resource fired from top level App.")
+    }
   }
 }
 </script>

@@ -271,6 +271,9 @@ export default {
 			this.resetContainsPrompt()
         },
         addResource(){
+            console.log("1) Done button clicked.")
+            this.$emit('add-resource')
+            
             $('#allocate-resources-button').removeClass('disabled')
             $('#contains-button').removeClass('disabled')
             let newResType = $("#resType").val();
@@ -278,15 +281,16 @@ export default {
                 alert('Please provide a label to create a new resource.')
                 return
             }
-            let newBudgetName = $("#budgetName").val();
-            let budgetNameList = newBudgetName.split(",");
-            let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
+            // let newBudgetName = $("#budgetName").val();
+            // let budgetNameList = newBudgetName.split(",");
+            // let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
+
             let newResName = $("#resName").val();
             // Send completed resource input to graph
             // To do: figure out how to communicate with graph component
             // Remove workaround: reset resource prompt after success
             this.resetResourcePrompt();
-            console.log("newBudgetNameList ", newBudgetNameList)
+            // console.log("newBudgetNameList ", newBudgetNameList)
             /*
             let model = dm3kgraph.graph.getModel()
             if (model.getCell(newResName) != undefined){
@@ -448,6 +452,7 @@ export default {
             ],
         }
     },
+    emits: ['add-resource'],
     mounted(){
         this.changeHelperText('create-resources')
         // this.changeHelperImg('create-resources')

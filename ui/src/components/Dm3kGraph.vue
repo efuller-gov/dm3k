@@ -6,10 +6,6 @@
 <script>
 
   import {Dm3kGraph} from '../js/dm3kgraph/dm3kGraph';
-//   import { mapGetters, mapState } from 'vuex';
-//   import * as _ from 'lodash';
-//   import { VIEW_SIZE } from '../enums/view-size.enum';
-//   import { VIEW_TYPE } from '../enums/view-type.enum';
 
   export default {
     name: 'Dm3kGraph',
@@ -23,7 +19,12 @@
     },
     methods: {
         loadDm3kGraph() {
+            console.log("Initializing graph...")
             this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
+        },
+        addResource(){
+            console.log("Add resource in graph component.")
+            this.dm3kGraph.addResource()
         }
     }
   };

@@ -4,11 +4,9 @@ import mxgraph from '../index';
 const {
     mxGraph,
     mxEvent,
-      mxCellOverlay,
-      mxImage,
+    mxCellOverlay,
+    mxImage,
     mxConstants,
-    //   mxUtils,
-    //   mxRectangle
 } = mxgraph;
 
 export class Dm3kGraph {
@@ -284,6 +282,7 @@ export class Dm3kGraph {
     }
 
     addResource(typeName, blockName, xLoc, yLoc, budgetNameList) {
+        console.log("Add resource in graph Javascript.")
         if (this.doesNameExist(blockName)) {
             throw "Cannot use name: " + blockName + " it is already taken"
         } else {
