@@ -283,7 +283,9 @@ export default {
 
             let newResName = $("#resName").val();
             this.$emit('add-resource', 
-                {newResName: newResName,
+                {
+                resType: newResType,
+                resName: newResName,
                 budgetNameList: budgetNameList,
                 newBudgetNameList: newBudgetNameList
                 }

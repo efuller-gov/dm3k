@@ -175,7 +175,7 @@ export class Dm3kGraph {
             ans.details = "Add resource failed: " + err;
 
         }
-
+        console.log("ANS: ", ans)
         return ans
     }
 
