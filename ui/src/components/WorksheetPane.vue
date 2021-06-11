@@ -425,6 +425,28 @@ export default {
             $('#contains-existing-submenu').addClass('hide')
 			$('#contains-new-act-submenu').addClass('hide')
 			$('#contains-new-res-submenu').removeClass('hide')
+        },
+        updateResDropDown(resList, jQuerySelector) {
+            //console.log('worksheetUtil_updateDropDown on '+jQuerySelector.attr('id'));
+
+            jQuerySelector.empty();
+            // let updatedOptions = []
+            // typeList.forEach(function(typeName, index) {
+            //     //console.log('Looking for: '+typeName)
+            //     let options = graph.getAllNamesOfType(typeName);
+            //     //console.log('Options: ', options)
+            //     updatedOptions = updatedOptions.concat(options);
+            // });
+            
+            // excludeNamesList.forEach(function(excludeName, index) {
+            //     const i = updatedOptions.indexOf(excludeName);
+            //     if (i > -1) {
+            //         updatedOptions.splice(i, 1);
+            //     }
+            // });
+
+            //console.log('updatedOptions',updatedOptions)
+            return resList.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
         }
     },
     data() {
@@ -516,6 +538,20 @@ export default {
         }
     },
     emits: ['add-resource'],
+    watch: {
+        '$store.state.resources': {
+            deep: true,
+            handler(resources) {
+                // let latest = n[n.length-1]
+                // let newResType = latest.resType
+                // let newResName = latest.resName
+                // let newBudgetNameList = latest.newBudgetNameList
+                // update resName2 dropdown
+                resources = resources.map(x=>x.resName)
+                this.updateResDropDown(resources, $('#resName2'));
+            }
+        }
+    },
     mounted(){
         this.changeHelperText('create-resources')
         // this.changeHelperImg('create-resources')

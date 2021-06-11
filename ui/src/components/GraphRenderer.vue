@@ -18,20 +18,20 @@
         this.loadDm3kGraph();
     },
     watch: {
-    '$store.state.resources': {
-        deep: true,
-        handler(n) {
-            console.log('queryParameter changed');
-            console.log(n)
-            console.log(n[n.length-1])
-            let latest = n[n.length-1]
-            // re render here?
-            let newResType = latest.resType
-            let newResName = latest.resName
-            let newBudgetNameList = latest.newBudgetNameList
-            this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+        '$store.state.resources': {
+            deep: true,
+            handler(n) {
+                console.log('queryParameter changed');
+                console.log(n)
+                console.log(n[n.length-1])
+                let latest = n[n.length-1]
+                // re render here?
+                let newResType = latest.resType
+                let newResName = latest.resName
+                let newBudgetNameList = latest.newBudgetNameList
+                this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+            }
         }
-    }
     },
     methods: {
         loadDm3kGraph() {
