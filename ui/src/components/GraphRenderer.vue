@@ -18,9 +18,13 @@
         this.loadDm3kGraph();
     },
     watch: {
-        'this.$store.state.resources': function() {
-            console.log("IN GRAPH RENDERER ", this.$store.state.resources)
+    '$store.state.resources': {
+        deep: true,
+        handler(n) {
+            console.log('queryParameter changed');
+            console.log(n)
         }
+    }
     },
     methods: {
         loadDm3kGraph() {
