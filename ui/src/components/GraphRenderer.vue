@@ -17,11 +17,19 @@
     mounted() {
         this.loadDm3kGraph();
     },
+    watch: {
+        'this.$store.state.resources': function() {
+            console.log("IN GRAPH RENDERER ", this.$store.state.resources)
+        }
+    },
     methods: {
         loadDm3kGraph() {
             console.log("Initializing graph...")
             this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
+        // addResource(newResType, newResName, newBudgetNameList){
+        //     this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+        // }
     }
   };
 // on graph store change, render resources
