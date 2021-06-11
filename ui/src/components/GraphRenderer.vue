@@ -23,6 +23,11 @@
         handler(n) {
             console.log('queryParameter changed');
             console.log(n)
+            // re render here?
+            let newResType = 'container'
+            let newResName = 'backpack'
+            let newBudgetNameList = ['space']
+            this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
         }
     }
     },
