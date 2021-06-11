@@ -17,27 +17,10 @@ export default {
     GraphRenderer,
     WorksheetPane,
   },
-  mounted(){
-    this.addResource("new-name-resource-manual")
-  },
   methods: {
-      // computed: {
-      //   resources: {
-      //       get () {
-      //         return this.$store.state.resources
-      //       },
-      //       addResource (resourceName) {
-      //         console.log("In App. New res name is: ", resourceName)
-      //         this.$store.commit('addResource', resourceName)
-      //       }
-      //   }
-      // },
-      // ...mapMutations([
-      //   'addResource'
-      // ])
-      addResource(resourceName){
-        console.log("In App. New res name is: ", resourceName)
-        this.$store.commit('addResource', resourceName)
+      addResource(resourceObj){
+        console.log("In App. New res name is: ", resourceObj)
+        this.$store.commit('addResource', resourceObj)
       }
   }
 }

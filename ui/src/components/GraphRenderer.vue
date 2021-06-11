@@ -24,7 +24,25 @@
         },
     }
   };
+// on graph store change, render resources
+// let model = dm3kgraph.graph.getModel()
+// if (model.getCell(newResName) != undefined){
+//     alert('Cannot create duplicate node. Please choose a new instance name.')
 
+// } else{
+//     let ans = dm3kgraph.addCompleteResource(newResType, newResName, newBudgetNameList);
+
+//     if (ans.success) {
+//         console.log('AddResourceComplete success!')
+//         updateAllDropDowns(dm3kgraph);
+//         let layout = new mxGraphLayout(dm3kgraph.graph);
+//         executeLayout(dm3kgraph.graph, layout);
+//         resetResourcePrompt();
+//     }
+//     else {
+//         alert(ans.details);
+//     }
+// }
 </script>
 
 <style scoped>

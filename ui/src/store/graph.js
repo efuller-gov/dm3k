@@ -10,9 +10,8 @@ export default new Vuex.Store({
   },
   getters: {},
   mutations: {
-    addResource(state, resource) {
-        state.resources.push(resource);
-        console.log("Within vuex. New state name is: ", resource)
+    addResource(state, resourceObj) {
+        state.resources.push(resourceObj);
         console.log("state: ", state)
       }
   },
