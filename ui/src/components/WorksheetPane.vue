@@ -179,7 +179,6 @@ import $ from 'jquery'
 
 export default {
     name: 'WorksheetPane',
-    // components: {Dm3kGraph}, 
     methods: {
         resolve_img_url: function (path) {
             let images = require.context('../assets/', false, /\.png$|\.svg$/)
@@ -272,8 +271,7 @@ export default {
         },
         addResource(){
             console.log("1) Done button clicked.")
-            this.$emit('add-resource')
-            
+        
             $('#allocate-resources-button').removeClass('disabled')
             $('#contains-button').removeClass('disabled')
             let newResType = $("#resType").val();
@@ -286,6 +284,8 @@ export default {
             // let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
 
             let newResName = $("#resName").val();
+            this.$emit('add-resource', newResName)
+
             // Send completed resource input to graph
             // To do: figure out how to communicate with graph component
             // Remove workaround: reset resource prompt after success

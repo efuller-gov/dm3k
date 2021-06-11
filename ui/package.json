@@ -10,7 +10,8 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "jquery": "^3.6.0",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -19,8 +20,8 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11",
-    "mxgraph": "^4.0.5"
+    "mxgraph": "^4.0.5",
+    "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
     "root": true,

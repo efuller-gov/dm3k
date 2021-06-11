@@ -8,7 +8,7 @@
   import {Dm3kGraph} from '../js/dm3kgraph/dm3kGraph';
 
   export default {
-    name: 'Dm3kGraph',
+    name: 'GraphRenderer',
     data() {
       return {
         dm3kGraph: {}

@@ -1,25 +1,44 @@
 <template>
   <div id="app">
     <img src="./assets/dm3k_logo.svg">
-    <Dm3kGraph />
-    <WorksheetPane  @add-resource="addResource" />
+    <GraphRenderer />
+    <WorksheetPane @add-resource="addResource"/>
   </div>
 </template>
 
 <script>
 import WorksheetPane from './components/WorksheetPane.vue'
-import Dm3kGraph from './components/Dm3kGraph.vue'
+import GraphRenderer from './components/GraphRenderer.vue'
+// import { mapMutations } from 'vuex'
 
 export default {
   name: 'App',
   components: {
+    GraphRenderer,
     WorksheetPane,
-    Dm3kGraph
+  },
+  mounted(){
+    this.addResource("new-name-resource-manual")
   },
   methods: {
-    addResource(){
-      console.log("Add resource fired from top level App.")
-    }
+      // computed: {
+      //   resources: {
+      //       get () {
+      //         return this.$store.state.resources
+      //       },
+      //       addResource (resourceName) {
+      //         console.log("In App. New res name is: ", resourceName)
+      //         this.$store.commit('addResource', resourceName)
+      //       }
+      //   }
+      // },
+      // ...mapMutations([
+      //   'addResource'
+      // ])
+      addResource(resourceName){
+        console.log("In App. New res name is: ", resourceName)
+        this.$store.commit('addResource', resourceName)
+      }
   }
 }
 </script>
