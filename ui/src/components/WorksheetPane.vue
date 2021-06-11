@@ -53,7 +53,7 @@
                     <input type="text" id="rewardName"><br><br>
                 </div>
                 <div>
-                    <input type="button" class="done-button hide" value="Done" id="addActivity">
+                    <input @click="addActivity()" type="button" class="done-button hide" value="Done" id="addActivity">
                 </div>
             </div>
             <div id="contains-column" class="left_column hide">
@@ -292,30 +292,7 @@ export default {
             )
 
             // Send completed resource input to graph
-            // To do: figure out how to communicate with graph component
-            // Remove workaround: reset resource prompt after success
             this.resetResourcePrompt();
-            // console.log("newBudgetNameList ", newBudgetNameList)
-            /*
-            let model = dm3kgraph.graph.getModel()
-            if (model.getCell(newResName) != undefined){
-                alert('Cannot create duplicate node. Please choose a new instance name.')
-
-            } else{
-                let ans = dm3kgraph.addCompleteResource(newResType, newResName, newBudgetNameList);
-
-                if (ans.success) {
-                    console.log('AddResourceComplete success!')
-                    updateAllDropDowns(dm3kgraph);
-                    let layout = new mxGraphLayout(dm3kgraph.graph);
-                    executeLayout(dm3kgraph.graph, layout);
-                    resetResourcePrompt();
-                }
-                else {
-                    alert(ans.details);
-                }
-            }
-            */
         },
         allocateResourcesTab(){
             $(".menu-button").removeClass('enabled')
@@ -343,6 +320,87 @@ export default {
             $('#actType').addClass('hide')
             $('#actTypeExisting').removeClass('hide')
             $('#addActivity').removeClass('hide')
+        },
+        addActivity(){
+            $('#constrain-allocations-button').removeClass('disabled')
+            $('#actTypeExisting').removeClass('disabled')
+
+            let newActType = $("#actType").val();
+            let newActName = $("#actName").val();
+            let existingResName = $("#resName2").val();
+            let newRewardName = $("#rewardName").val();
+            if ($('#new-allocation').hasClass('enabled') & ( (newActType=='none') | (newActName=='') ) ){
+                alert('Please fill all fields required to create an activity.')
+                return
+            }
+            if( $('#existing-allocation').hasClass('enabled') & $('#actTypeExisting').val() == 'an existing activity'){
+                alert('You must select an existing activity from the dropdown menu.')
+                return
+            }
+            if( $('#new-allocation').hasClass('enabled') & $('#actType').val() == 'a new activity'){
+                alert('You must select a new activity type from the dropdown menu.')
+                return
+            }
+            // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
+            if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
+                // resetActivityPrompt();
+                alert('Choose either a new activity or an existing activity to allocate to. Do not select both.')
+            }
+            // Allocate to existing activity
+            let costNum = Object.keys(this.dm3kgraph.costs).length
+            if ($("#actType").val() == 'a new activity'){
+                let actName = $("#actTypeExisting").val();
+                let actCell = this.dm3kgraph.getActivity(actName)
+                let actType = actCell.getId()
+                // let duplicateAlloc = 0
+                // check if allocation b/w this res and act already exists
+                // this.dm3kgraph.allocatedLinks.forEach(function(link, i){
+                //     if (link.source.getValue()==existingResName & link.target.getValue()==actName){
+                //         alert('Allocation between '+existingResName+' and '+actName+' already exists.')
+                //         console.log('SUPPOSED TO RETURN HERE!!!!')
+                //         duplicateAlloc = 1
+                //     }
+                // })
+                // if (duplicateAlloc) {
+                //     return
+                // }
+                let ans = this.dm3kgraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
+                if (ans.success) {
+                        console.log('AddActivityComplete success!')
+                        // updateAllDropDowns(dm3kgraph);
+                        // var layout = new mxGraphLayout(dm3kgraph.graph);
+                        // executeLayout(dm3kgraph.graph, layout);
+                        // resetActivityPrompt();
+                    }
+                    else {
+                        alert(ans.details);
+                    }
+            }
+            // Allocate to new activity, and create new activity
+            else{
+                // if (model.getCell(newActName) != undefined){
+                //     alert('Cannot create duplicate node. Please choose a new instance name.')
+                // } else{
+                if (newActType.includes('[')){
+                    let tmp = newActType.split('[')
+                    tmp = newActType.split(']',2)
+
+                    newActType = tmp[0].split('[')[1];
+                    newActName = tmp[1]
+                }
+                let ans = this.dm3kgraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
+                if (ans.success) {
+                    console.log('AddActivityComplete success!')
+                    // updateAllDropDowns(dm3kgraph);
+                    // let layout = new mxGraphLayout(dm3kgraph.graph);
+                    // executeLayout(dm3kgraph.graph, layout);
+                    // resetActivityPrompt();
+                }
+                else {
+                    alert(ans.details);
+                }
+                // }
+            }  
         },
         containsTab(){
             $(".menu-button").removeClass('enabled')

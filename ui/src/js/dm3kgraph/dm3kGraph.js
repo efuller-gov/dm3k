@@ -163,6 +163,7 @@ export class Dm3kGraph {
 
         // to completely add a resource you need to: add resource and add a budget (if it has one)
         try {
+            console.log("Adding resource to res list in graph")
             this.addResource(newResType, newResName, xLoc, yLoc, newBudgetNameList);
 
             let budgetNum = 0;
