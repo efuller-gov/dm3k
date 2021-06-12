@@ -2,7 +2,8 @@
   <div id="app">
     <img src="./assets/dm3k_logo.svg">
     <GraphRenderer />
-    <WorksheetPane @add-resource="addResource"/>
+    <WorksheetPane @add-resource="addResource" @add-existing-allocation="addExistingAllocation"  
+    @add-new-allocation="addNewAllocation"/>
   </div>
 </template>
 
@@ -21,6 +22,14 @@ export default {
       addResource(resourceObj){
         console.log("In App. New res name is: ", resourceObj)
         this.$store.commit('addResource', resourceObj)
+      },
+      addExistingAllocation(activityObj){
+        console.log("In App. Existing activyt obj is: ", activityObj)
+        this.$store.commit('addActivity', activityObj)
+      },
+      addNewAllocation(activityObj){
+        console.log("In App. New activityObj is: ", activityObj)
+        this.$store.commit('addActivity', activityObj)
       }
   }
 }

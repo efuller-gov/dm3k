@@ -37,7 +37,7 @@
                         <!--pull from dm3kgraph.resources -->
                     </select>
                     <label for="actType"> to </label>
-                    <select class="chosen-select activity-select" id="actType" style="margin-left: 0px;" onchange="worksheetUtils_newActivityActivated()">
+                    <select @change="worksheetUtils_newActivityActivated" class="chosen-select activity-select" id="actType" style="margin-left: 0px;">
                         <option selected style="font-weight: bold;">a new activity</option>
                         <option value="custom input">custom input</option>
                     </select>
@@ -284,10 +284,10 @@ export default {
             let newResName = $("#resName").val();
             this.$emit('add-resource', 
                 {
-                resType: newResType,
-                resName: newResName,
-                budgetNameList: budgetNameList,
-                newBudgetNameList: newBudgetNameList
+                    resType: newResType,
+                    resName: newResName,
+                    budgetNameList: budgetNameList,
+                    newBudgetNameList: newBudgetNameList
                 }
             )
 
@@ -322,6 +322,7 @@ export default {
             $('#addActivity').removeClass('hide')
         },
         addActivity(){
+            console.log("-- addActivity")
             $('#constrain-allocations-button').removeClass('disabled')
             $('#actTypeExisting').removeClass('disabled')
 
@@ -329,6 +330,7 @@ export default {
             let newActName = $("#actName").val();
             let existingResName = $("#resName2").val();
             let newRewardName = $("#rewardName").val();
+
             if ($('#new-allocation').hasClass('enabled') & ( (newActType=='none') | (newActName=='') ) ){
                 alert('Please fill all fields required to create an activity.')
                 return
@@ -343,44 +345,24 @@ export default {
             }
             // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
             if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
-                // resetActivityPrompt();
+                this.resetActivityPrompt();
                 alert('Choose either a new activity or an existing activity to allocate to. Do not select both.')
             }
             // Allocate to existing activity
-            let costNum = Object.keys(this.dm3kgraph.costs).length
             if ($("#actType").val() == 'a new activity'){
                 let actName = $("#actTypeExisting").val();
-                let actCell = this.dm3kgraph.getActivity(actName)
-                let actType = actCell.getId()
-                // let duplicateAlloc = 0
-                // check if allocation b/w this res and act already exists
-                // this.dm3kgraph.allocatedLinks.forEach(function(link, i){
-                //     if (link.source.getValue()==existingResName & link.target.getValue()==actName){
-                //         alert('Allocation between '+existingResName+' and '+actName+' already exists.')
-                //         console.log('SUPPOSED TO RETURN HERE!!!!')
-                //         duplicateAlloc = 1
-                //     }
-                // })
-                // if (duplicateAlloc) {
-                //     return
-                // }
-                let ans = this.dm3kgraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
-                if (ans.success) {
-                        console.log('AddActivityComplete success!')
-                        // updateAllDropDowns(dm3kgraph);
-                        // var layout = new mxGraphLayout(dm3kgraph.graph);
-                        // executeLayout(dm3kgraph.graph, layout);
-                        // resetActivityPrompt();
+                console.log('EMIT existing act')
+                this.$emit('add-existing-allocation', 
+                    {
+                        actName: actName,
+                        newActType: newActType,
+                        existingResName: existingResName,
+                        newRewardName: newRewardName,
                     }
-                    else {
-                        alert(ans.details);
-                    }
+                )
             }
             // Allocate to new activity, and create new activity
             else{
-                // if (model.getCell(newActName) != undefined){
-                //     alert('Cannot create duplicate node. Please choose a new instance name.')
-                // } else{
                 if (newActType.includes('[')){
                     let tmp = newActType.split('[')
                     tmp = newActType.split(']',2)
@@ -388,18 +370,14 @@ export default {
                     newActType = tmp[0].split('[')[1];
                     newActName = tmp[1]
                 }
-                let ans = this.dm3kgraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
-                if (ans.success) {
-                    console.log('AddActivityComplete success!')
-                    // updateAllDropDowns(dm3kgraph);
-                    // let layout = new mxGraphLayout(dm3kgraph.graph);
-                    // executeLayout(dm3kgraph.graph, layout);
-                    // resetActivityPrompt();
-                }
-                else {
-                    alert(ans.details);
-                }
-                // }
+                this.$emit('add-new-allocation', 
+                    {
+                        actName: newActName,
+                        newActType: newActType,
+                        existingResName: existingResName,
+                        newRewardName: newRewardName,
+                    }
+                    )
             }  
         },
         containsTab(){
@@ -447,6 +425,13 @@ export default {
 
             //console.log('updatedOptions',updatedOptions)
             return resList.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
+        },
+        worksheetUtils_newActivityActivated(){
+            if ($('#actType').val() != 'a new activity'){
+                $('#actTypeExisting').val('an existing activity')
+                $('#actName').removeAttr('disabled');
+                $('#rewardName').removeAttr('disabled');
+            }
         }
     },
     data() {
@@ -537,7 +522,7 @@ export default {
             ],
         }
     },
-    emits: ['add-resource'],
+    emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation'],
     watch: {
         '$store.state.resources': {
             deep: true,
