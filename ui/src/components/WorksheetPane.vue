@@ -344,10 +344,10 @@ export default {
                 return
             }
             // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
-            if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
-                this.resetActivityPrompt();
-                alert('Choose either a new activity or an existing activity to allocate to. Do not select both.')
-            }
+            // if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
+            //     this.resetActivityPrompt();
+            //     alert('Choose either a new activity or an existing activity to allocate to. Do not select both.')
+            // }
             // Allocate to existing activity
             if ($("#actType").val() == 'a new activity'){
                 let actName = $("#actTypeExisting").val();
