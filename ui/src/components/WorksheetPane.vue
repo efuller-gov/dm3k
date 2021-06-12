@@ -370,6 +370,7 @@ export default {
                     newActType = tmp[0].split('[')[1];
                     newActName = tmp[1]
                 }
+                console.log("EMIT new activity")
                 this.$emit('add-new-allocation', 
                     {
                         actName: newActName,
@@ -404,26 +405,8 @@ export default {
 			$('#contains-new-act-submenu').addClass('hide')
 			$('#contains-new-res-submenu').removeClass('hide')
         },
-        updateResDropDown(resList, jQuerySelector) {
-            //console.log('worksheetUtil_updateDropDown on '+jQuerySelector.attr('id'));
-
+        updateDropDown(resList, jQuerySelector) {
             jQuerySelector.empty();
-            // let updatedOptions = []
-            // typeList.forEach(function(typeName, index) {
-            //     //console.log('Looking for: '+typeName)
-            //     let options = graph.getAllNamesOfType(typeName);
-            //     //console.log('Options: ', options)
-            //     updatedOptions = updatedOptions.concat(options);
-            // });
-            
-            // excludeNamesList.forEach(function(excludeName, index) {
-            //     const i = updatedOptions.indexOf(excludeName);
-            //     if (i > -1) {
-            //         updatedOptions.splice(i, 1);
-            //     }
-            // });
-
-            //console.log('updatedOptions',updatedOptions)
             return resList.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
         },
         worksheetUtils_newActivityActivated(){
@@ -527,13 +510,15 @@ export default {
         '$store.state.resources': {
             deep: true,
             handler(resources) {
-                // let latest = n[n.length-1]
-                // let newResType = latest.resType
-                // let newResName = latest.resName
-                // let newBudgetNameList = latest.newBudgetNameList
-                // update resName2 dropdown
                 resources = resources.map(x=>x.resName)
-                this.updateResDropDown(resources, $('#resName2'));
+                this.updateDropDown(resources, $('#resName2'));
+            }
+        },
+        '$store.state.activities': {
+            deep: true,
+            handler(activities) {
+                activities = activities.map(x=>x.actName)
+                this.updateDropDown(activities, $('#actTypeExisting'));
             }
         }
     },

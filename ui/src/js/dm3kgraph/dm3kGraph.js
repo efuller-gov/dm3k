@@ -17,6 +17,7 @@ export class Dm3kGraph {
      */
     constructor(container) {
 
+        // TODO: info icon doesn't work
         let infoIcon = "../assets/rounded-info-icon-gray.png";
         // Disables the built-in context menu
         mxEvent.disableContextMenu(container);
@@ -263,6 +264,7 @@ export class Dm3kGraph {
     }
 
     getResource(resName) {
+        console.log("getResources ", this.resources)
         let resource = null;
         this.resources.forEach(function(res) {
             if (res.getValue() == resName) {

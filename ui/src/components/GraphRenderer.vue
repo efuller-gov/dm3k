@@ -21,7 +21,7 @@
         '$store.state.resources': {
             deep: true,
             handler(n) {
-                console.log('queryParameter changed');
+                console.log('Resource list changed');
                 console.log(n)
                 console.log(n[n.length-1])
                 let latest = n[n.length-1]
@@ -30,6 +30,23 @@
                 let newResName = latest.resName
                 let newBudgetNameList = latest.newBudgetNameList
                 this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+            }
+        },
+         '$store.state.activities': {
+            deep: true,
+            handler(n) {
+                console.log('Activity list changed');
+                console.log(n)
+                console.log(n[n.length-1])
+                let latest = n[n.length-1]
+                // re render here?
+                let newActType = latest.newActType
+                let newActName = latest.newActName
+                let existingResName = latest.existingResName
+                let newRewardName = latest.newRewardName
+                let costNum = 1 //REMOVE hardcoded workaround here
+                console.log(this.dm3kGraph.resources)
+                this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
             }
         }
     },
