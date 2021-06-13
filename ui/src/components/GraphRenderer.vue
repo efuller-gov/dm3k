@@ -41,11 +41,10 @@
                 let latest = n[n.length-1]
                 // re render here?
                 let newActType = latest.newActType
-                let newActName = latest.newActName
+                let newActName = latest.actName
                 let existingResName = latest.existingResName
                 let newRewardName = latest.newRewardName
                 let costNum = 1 //REMOVE hardcoded workaround here
-                console.log(this.dm3kGraph.resources)
                 this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
             }
         }

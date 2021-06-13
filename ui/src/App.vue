@@ -28,7 +28,8 @@ export default {
         this.$store.commit('addActivity', activityObj)
       },
       addNewAllocation(activityObj){
-        console.log("In App. New activityObj is: ", activityObj)
+        console.log("-----> In App. New activityObj is: ", activityObj)
+        console.log(activityObj)
         this.$store.commit('addActivity', activityObj)
       }
   }

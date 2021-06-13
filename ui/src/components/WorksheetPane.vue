@@ -292,7 +292,7 @@ export default {
             )
 
             // Send completed resource input to graph
-            this.resetResourcePrompt();
+            // this.resetResourcePrompt();
         },
         allocateResourcesTab(){
             $(".menu-button").removeClass('enabled')
@@ -343,11 +343,6 @@ export default {
                 alert('You must select a new activity type from the dropdown menu.')
                 return
             }
-            // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
-            // if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
-            //     this.resetActivityPrompt();
-            //     alert('Choose either a new activity or an existing activity to allocate to. Do not select both.')
-            // }
             // Allocate to existing activity
             if ($("#actType").val() == 'a new activity'){
                 let actName = $("#actTypeExisting").val();
@@ -371,6 +366,7 @@ export default {
                     newActName = tmp[1]
                 }
                 console.log("EMIT new activity")
+                console.log("new act name: ", newActName)
                 this.$emit('add-new-allocation', 
                     {
                         actName: newActName,
