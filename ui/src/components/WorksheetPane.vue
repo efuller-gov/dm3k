@@ -375,7 +375,8 @@ export default {
                         newRewardName: newRewardName,
                     }
                     )
-            }  
+            }
+        this.resetResourcePrompt()
         },
         containsTab(){
             $(".menu-button").removeClass('enabled')
