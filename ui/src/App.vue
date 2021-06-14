@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img src="./assets/dm3k_logo.svg">
+    <!-- <img src="./assets/dm3k_logo.svg"> -->
     <GraphRenderer />
     <WorksheetPane @add-resource="addResource" @add-existing-allocation="addExistingAllocation"  
     @add-new-allocation="addNewAllocation"/>
@@ -47,6 +47,7 @@ export default {
     font-size: 14px;
     color: #707070;
     margin-bottom: 0px;
+    height: 100vh;
   }
   :root {
     --top-padding-for-worksheets: 15px;

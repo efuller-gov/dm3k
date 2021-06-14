@@ -175,7 +175,6 @@
 
 <script>
 import $ from 'jquery'
-// import {Dm3kGraph} from '../js/dm3kgraph/dm3kGraph';
 
 export default {
     name: 'WorksheetPane',
@@ -235,7 +234,7 @@ export default {
 			$('#activity-def-bottom-container').addClass('hide')
 			$('#activity-submenu-container').addClass('hide')
 			$('#actType').addClass('hide')
-			$('#actTypeExisting').addClass('hide')
+			// $('#actTypeExisting').addClass('hide')
 			$('#addActivity').addClass('hide')
 			$('.activity-choice').removeClass('enabled')
         },
@@ -322,7 +321,6 @@ export default {
             $('#addActivity').removeClass('hide')
         },
         addActivity(){
-            console.log("-- addActivity")
             $('#constrain-allocations-button').removeClass('disabled')
             $('#actTypeExisting').removeClass('disabled')
 
@@ -365,8 +363,6 @@ export default {
                     newActType = tmp[0].split('[')[1];
                     newActName = tmp[1]
                 }
-                console.log("EMIT new activity")
-                console.log("new act name: ", newActName)
                 this.$emit('add-new-allocation', 
                     {
                         actName: newActName,
@@ -409,6 +405,18 @@ export default {
         worksheetUtils_newActivityActivated(){
             if ($('#actType').val() != 'a new activity'){
                 $('#actTypeExisting').val('an existing activity')
+                $('#actName').removeAttr('disabled');
+                $('#rewardName').removeAttr('disabled');
+            }
+        },
+        worksheetUtils_existingActivityActivated(){
+            if ($('#actTypeExisting').val() != 'an existing activity'){
+                $('#actType').val('a new activity')
+                $('#actName').attr('disabled', 'disabled');
+                $('#rewardName').attr('disabled', 'disabled');
+                $("#activity-label").html("Label the instance of the ");
+                $("#activity-reward-label").html("The instance has a reward of ");
+            }else{
                 $('#actName').removeAttr('disabled');
                 $('#rewardName').removeAttr('disabled');
             }

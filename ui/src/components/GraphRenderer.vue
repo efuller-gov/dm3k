@@ -1,5 +1,8 @@
 <template>
+    <div>
+    <img src="../assets/dm3k_logo.svg">
     <div id="graphContainer">
+    </div>
     </div>
 </template>
 
