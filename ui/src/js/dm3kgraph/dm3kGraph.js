@@ -184,6 +184,14 @@ export class Dm3kGraph {
     addAllocation(newActName, existingResName, newRewardName, locX = null, locY = null) {
         let actCell = this.getActivity(newActName)
         let newActType = actCell.getId()
+
+        let resInstance = this.resourceInstances.filter(x => x.label == existingResName)[0]
+        let budgetNames = resInstance.budgetNameList;
+        for (const budgetName of budgetNames) {
+            this.addCost(budgetName, newActName, costNum);
+            costNum += 1;
+        }
+
         let costNum = Object.keys(this.costs).length
 
         console.log("ADD ALLOCATION IS CALLED")
@@ -217,10 +225,14 @@ export class Dm3kGraph {
                 return
             }
 
-            let resInstance = this.resourceInstances.filter(x => x.label == existingResName)[0]
-            let budgetNames = resInstance.budgetNameList;
+            // let resInstance = this.resourceInstances.filter(x => x.label == existingResName)[0]
+            // let budgetNames = resInstance.budgetNameList;
             // console.log(budgetNames)
 
+            for (const budgetName of budgetNames) {
+                this.addCost(budgetName, newActName, costNum);
+                costNum += 1;
+            }
             // Check to see if activity already exists
             if (this.getActivityInstance(newActName) == undefined) {
                 // console.log('New Activity');
@@ -243,10 +255,10 @@ export class Dm3kGraph {
 
             }
 
-            for (const budgetName of budgetNames) {
-                this.addCost(budgetName, newActName, costNum);
-                costNum += 1;
-            }
+            // for (const budgetName of budgetNames) {
+            //     this.addCost(budgetName, newActName, costNum);
+            //     costNum += 1;
+            // }
 
             if (existingResName.length > 0) {
                 this.addCanBeAllocatedTo(existingResName, newActName);
