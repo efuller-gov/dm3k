@@ -164,7 +164,7 @@ export class Dm3kGraph {
 
         // to completely add a resource you need to: add resource and add a budget (if it has one)
         try {
-            console.log("Adding resource to res list in graph")
+            // console.log("Adding resource to res list in graph")
             this.addResource(newResType, newResName, xLoc, yLoc, newBudgetNameList);
 
             let budgetNum = 0;
@@ -177,7 +177,7 @@ export class Dm3kGraph {
             ans.details = "Add resource failed: " + err;
 
         }
-        console.log("ANS: ", ans)
+        // console.log("ANS: ", ans)
         return ans
     }
 
@@ -214,11 +214,11 @@ export class Dm3kGraph {
 
             let resInstance = this.resourceInstances.filter(x => x.label == existingResName)[0]
             let budgetNames = resInstance.budgetNameList;
-            console.log(budgetNames)
+            // console.log(budgetNames)
 
             // Check to see if activity already exists
             if (this.getActivityInstance(newActName) == undefined) {
-                console.log('New Activity');
+                // console.log('New Activity');
                 this.addActivity(newActType, newActName, xLoc, yLoc, budgetNames);
             } else {
                 console.log('ACTIVITY ALREADY EXISTS');
@@ -317,7 +317,6 @@ export class Dm3kGraph {
                 } else {
                     this.addReward(newRewardName, newActName);
                 }
-
             }
 
             for (const budgetName of budgetNames) {
