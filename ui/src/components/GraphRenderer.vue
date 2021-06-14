@@ -1,6 +1,6 @@
 <template>
     <div>
-    <img src="../assets/dm3k_logo.svg">
+    <img id="dm3k-logo" src="../assets/dm3k_logo.svg">
     <div id="graphContainer">
     </div>
     </div>
@@ -68,6 +68,9 @@
 </script>
 
 <style scoped>
+  #dm3k-logo{
+    position: absolute;
+  }
   .container {
     border-style: groove;
     border-width: thin;

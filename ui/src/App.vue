@@ -135,11 +135,6 @@ export default {
     margin-bottom: 0px;
     overflow: hidden;
   }
-  #logo{
-    width: 50%;
-    padding: 20px;
-    position: relative;
-  }
   #graphContainer{
     width: 100%;
     height: 60vh;
