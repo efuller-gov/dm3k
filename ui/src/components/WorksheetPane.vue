@@ -142,7 +142,10 @@
 				<p id="pane-level-explanatory-text" class="explanatory-text">Explanatory text here, generated for each tab/ worksheet.</p>
 				<p id="instance-level-explanatory-title" class="title-text">Instance-level explanatory text</p>
 				<p id="instance-level-explanatory-text">Explanatory text here, generated for each tab/ worksheet.</p>
-				<img id="helper-image" src="../assets/create-resource.svg">
+				<img id="create-resources-helper-image" class="helper-img hide" src="../assets/create-resource.svg">
+                <img id="allocate-resources-helper-image" class="helper-img hide" src="../assets/allocate-resources.svg">
+                <img id="contains-helper-image" class="helper-img hide" src="../assets/contains-relationship.svg">
+                <img id="constrain-allocations-helper-image" class="helper-img hide" src="../assets/allocation-constraint.svg">
 				<!-- <img id="helper-image" :src="src[currentSrc]"> -->
                 <!-- <img id="helper-image" :src="resolve_img_url(picture_src)" /> -->
 				<p id="i-circle-explainer" class="explanatory-text">By clicking <img src="../assets/rounded-info-icon-gray.png" alt="circle-info" style="vertical-align:text-bottom;" height="20" width="auto">
@@ -251,12 +254,15 @@ export default {
             $('#instance-level-explanatory-text').hide();
         },
         changeHelperImg(worksheetName){
+            let worksheet_names = ["allocate-resources", "create-resources", "contains", "constrain-allocations"]
             let helperImg = this.helper_images_info.filter(x=>x.worksheet==worksheetName)[0]
-            // console.log("Changing helper image path to: ", helperImg['img-path'])
-            // To do: this jquery way to change img src will not work
-            $('#helper-image').attr("src", helperImg['img-path']);
-            $('#helper-image').width(helperImg['scale-width']);
+            $('#'+worksheetName+"-helper-image").width(helperImg['scale-width']);
             $('#pane-level-explanatory-text').css('font-size', helperImg['text-size']);
+            $(".helper-image").addClass('hide')
+            for (let wk of worksheet_names.filter(x=>x!=worksheetName)){
+                $('#'+wk+"-helper-image").addClass('hide')
+            }
+            $('#'+worksheetName+"-helper-image").removeClass('hide')
         },
         createResourceTab(){
             $(".menu-button").removeClass('enabled')
@@ -537,10 +543,19 @@ export default {
     },
     mounted(){
         this.changeHelperText('create-resources')
-        // this.changeHelperImg('create-resources')
+        this.changeHelperImg('create-resources')
         this.populateResourcesFromWB()
         this.populateActivitiesFromWB()
         // this.dm3kgraph = new Dm3kGraph(document.getElementById('graphContainer'), '../assets/rounded-info-icon-gray.png')
     }
 }
 </script>
+
+<style scoped>
+/* .show{
+    display: block;
+} */
+.hide{
+    display: none;
+}
+</style>
