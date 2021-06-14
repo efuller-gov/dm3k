@@ -2,7 +2,9 @@
   <div id="app">
     <!-- <img src="./assets/dm3k_logo.svg"> -->
     <GraphRenderer />
-    <WorksheetPane @add-resource="addResource" @add-existing-allocation="addExistingAllocation"  
+    <WorksheetPane 
+    @add-resource="addResource" 
+    @add-existing-allocation="addExistingAllocation"  
     @add-new-allocation="addNewAllocation"/>
   </div>
 </template>
@@ -10,7 +12,6 @@
 <script>
 import WorksheetPane from './components/WorksheetPane.vue'
 import GraphRenderer from './components/GraphRenderer.vue'
-// import { mapMutations } from 'vuex'
 
 export default {
   name: 'App',
@@ -20,16 +21,12 @@ export default {
   },
   methods: {
       addResource(resourceObj){
-        console.log("In App. New res name is: ", resourceObj)
         this.$store.commit('addResource', resourceObj)
       },
       addExistingAllocation(activityObj){
-        console.log("In App. Existing activyt obj is: ", activityObj)
-        this.$store.commit('addActivity', activityObj)
+        this.$store.commit('addAllocation', activityObj)
       },
       addNewAllocation(activityObj){
-        console.log("-----> In App. New activityObj is: ", activityObj)
-        console.log(activityObj)
         this.$store.commit('addActivity', activityObj)
       }
   }
@@ -61,6 +58,7 @@ export default {
     color: #707070;
     margin-bottom: 0px;
   }
+  
   .flow {
     animation: dash 0.5s linear;
     animation-iteration-count: infinite;

@@ -7,7 +7,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
       resources : [],
-      activities: []
+      activities: [],
+      allocatedLinks : []
   },
   getters: {},
   mutations: {
@@ -16,6 +17,10 @@ export default new Vuex.Store({
         console.log("state: ", state)
       },
     addActivity(state, activityObj) {
+        state.activities.push(activityObj);
+        console.log("state: ", state)
+      },
+    addAllocation(state, activityObj) {
         state.activities.push(activityObj);
         console.log("state: ", state)
       }

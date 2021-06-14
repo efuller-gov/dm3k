@@ -252,7 +252,7 @@ export default {
         },
         changeHelperImg(worksheetName){
             let helperImg = this.helper_images_info.filter(x=>x.worksheet==worksheetName)[0]
-            console.log("Changing helper image path to: ", helperImg['img-path'])
+            // console.log("Changing helper image path to: ", helperImg['img-path'])
             // To do: this jquery way to change img src will not work
             $('#helper-image').attr("src", helperImg['img-path']);
             $('#helper-image').width(helperImg['scale-width']);
@@ -344,11 +344,14 @@ export default {
             // Allocate to existing activity
             if ($("#actType").val() == 'a new activity'){
                 let actName = $("#actTypeExisting").val();
-                console.log('EMIT existing act')
+                // let actCell = this.dm3kgraph.getActivity(actName)
+                // let actType = actCell.getId()
+                // let duplicateAlloc = 0
+                // Need to get existing <actType> and <costNum> from GraphRenderer component
                 this.$emit('add-existing-allocation', 
                     {
                         actName: actName,
-                        newActType: newActType,
+                        // newActType: newActType,
                         existingResName: existingResName,
                         newRewardName: newRewardName,
                     }

@@ -24,9 +24,9 @@
         '$store.state.resources': {
             deep: true,
             handler(n) {
-                console.log('Resource list changed');
-                console.log(n)
-                console.log(n[n.length-1])
+                // console.log('Resource list changed');
+                // console.log(n)
+                // console.log(n[n.length-1])
                 let latest = n[n.length-1]
                 // re render here?
                 let newResType = latest.resType
@@ -37,11 +37,11 @@
         },
          '$store.state.activities': {
             deep: true,
-            handler(n) {
-                console.log('Activity list changed');
-                console.log(n)
-                console.log(n[n.length-1])
-                let latest = n[n.length-1]
+            handler(activities) {
+                console.log('EXISTING ACT TEST: Activity list changed');
+                console.log("activities ", activities)
+                let latest = activities[activities.length-1]
+                console.log("latest act ", latest)
                 // re render here?
                 let newActType = latest.newActType
                 let newActName = latest.actName
@@ -57,30 +57,8 @@
             console.log("Initializing graph...")
             this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
-        // addResource(newResType, newResName, newBudgetNameList){
-        //     this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
-        // }
     }
   };
-// on graph store change, render resources
-// let model = dm3kgraph.graph.getModel()
-// if (model.getCell(newResName) != undefined){
-//     alert('Cannot create duplicate node. Please choose a new instance name.')
-
-// } else{
-//     let ans = dm3kgraph.addCompleteResource(newResType, newResName, newBudgetNameList);
-
-//     if (ans.success) {
-//         console.log('AddResourceComplete success!')
-//         updateAllDropDowns(dm3kgraph);
-//         let layout = new mxGraphLayout(dm3kgraph.graph);
-//         executeLayout(dm3kgraph.graph, layout);
-//         resetResourcePrompt();
-//     }
-//     else {
-//         alert(ans.details);
-//     }
-// }
 </script>
 
 <style scoped>
@@ -105,7 +83,7 @@
 
   #graphContainer {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     margin: 0px;
     padding: 0px;
     min-height: 72vh;
