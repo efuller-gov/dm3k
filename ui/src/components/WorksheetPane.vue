@@ -291,7 +291,7 @@ export default {
             )
 
             // Send completed resource input to graph
-            // this.resetResourcePrompt();
+            this.resetResourcePrompt();
         },
         allocateResourcesTab(){
             $(".menu-button").removeClass('enabled')

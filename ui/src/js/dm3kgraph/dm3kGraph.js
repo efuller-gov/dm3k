@@ -185,6 +185,7 @@ export class Dm3kGraph {
         let actCell = this.getActivity(newActName)
         let newActType = actCell.getId()
         let costNum = Object.keys(this.costs).length
+        console.log("----> Cost num: ", costNum)
         var ans = {
             "success": true,
             "details": ""
@@ -259,7 +260,7 @@ export class Dm3kGraph {
     }
 
     addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum, locX = null, locY = null) {
-        console.log('----> addCompleteActivity')
+        // console.log('----> addCompleteActivity')
         var ans = {
             "success": true,
             "details": ""
@@ -296,7 +297,7 @@ export class Dm3kGraph {
 
             let resInstance = this.resourceInstances.filter(x => x.label == existingResName)[0]
             let budgetNames = resInstance.budgetNameList;
-            console.log(budgetNames)
+            // console.log(budgetNames)
 
             // Check to see if activity already exists
             if (this.getActivityInstance(newActName) == undefined) {
