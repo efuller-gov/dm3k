@@ -186,6 +186,7 @@ export class Dm3kGraph {
         let newActType = actCell.getId()
         let costNum = Object.keys(this.costs).length
         console.log("----> Cost num: ", costNum)
+        console.log("this.costs ", this.costs)
         var ans = {
             "success": true,
             "details": ""
@@ -301,20 +302,20 @@ export class Dm3kGraph {
 
             // Check to see if activity already exists
             if (this.getActivityInstance(newActName) == undefined) {
-                console.log('New Activity');
+                // console.log('New Activity');
                 this.addActivity(newActType, newActName, xLoc, yLoc, budgetNames);
             } else {
-                console.log('ACTIVITY ALREADY EXISTS');
+                // console.log('ACTIVITY ALREADY EXISTS');
             }
 
             if (newRewardName == undefined) {
-                console.log("Activity does not have a reward");
+                // console.log("Activity does not have a reward");
             } else {
                 let rewardNames = this.getAllNamesOfAttachmentsFor(newActName, 'activity', 'reward');
 
                 // check to see if reward already exists
                 if (rewardNames.includes(newRewardName)) {
-                    console.log("reward name '" + newRewardName + "' already exists")
+                    // console.log("reward name '" + newRewardName + "' already exists")
                 } else {
                     this.addReward(newRewardName, newActName);
                 }
@@ -328,12 +329,12 @@ export class Dm3kGraph {
             if (existingResName.length > 0) {
                 this.addCanBeAllocatedTo(existingResName, newActName);
             } else {
-                console.log("Didnt find allocated link for " + existingResName);
+                // console.log("Didnt find allocated link for " + existingResName);
             }
         } catch (err) {
             ans.success = false;
             ans.details = "Add activity failed: " + err;
-            console.log("ERROR: Add Activity failed: " + err)
+            // console.log("ERROR: Add Activity failed: " + err)
 
         }
 
@@ -341,7 +342,7 @@ export class Dm3kGraph {
     }
 
     getResource(resName) {
-        console.log("getResources ", this.resources)
+        // console.log("getResources ", this.resources)
         let resource = null;
         this.resources.forEach(function(res) {
             if (res.getValue() == resName) {
@@ -362,7 +363,7 @@ export class Dm3kGraph {
     }
 
     addResource(typeName, blockName, xLoc, yLoc, budgetNameList) {
-        console.log("Add resource in graph Javascript.")
+        // console.log("Add resource in graph Javascript.")
         if (this.doesNameExist(blockName)) {
             throw "Cannot use name: " + blockName + " it is already taken"
         } else {
@@ -374,7 +375,7 @@ export class Dm3kGraph {
     }
 
     addActivity(typeName, blockName, xLoc, yLoc, costNameList) {
-        console.log('Adding Activity: ' + blockName + ' at ' + xLoc + ',' + yLoc);
+        // console.log('Adding Activity: ' + blockName + ' at ' + xLoc + ',' + yLoc);
         if (this.doesNameExist(blockName)) {
             throw "Cannot use name: " + blockName + " it is already taken"
         } else {
@@ -412,7 +413,7 @@ export class Dm3kGraph {
     }
 
     addReward(rewardName, actName) {
-        console.log("Adding Reward " + rewardName + " to activity " + actName);
+        // console.log("Adding Reward " + rewardName + " to activity " + actName);
         // TODO - what about multiple rewards
 
         // find the activity
@@ -425,7 +426,7 @@ export class Dm3kGraph {
     }
 
     addCanBeAllocatedTo(resName, actName) {
-        console.log("Adding 'allocatedTo' link between " + resName + " and " + actName)
+        // console.log("Adding 'allocatedTo' link between " + resName + " and " + actName)
 
         var res = null;
         var act = null;
@@ -460,9 +461,6 @@ export class Dm3kGraph {
     }
 
     getAllocatedToInstance(resName, actName) {
-        console.log(this.allocatedToInstances)
-        console.log(resName)
-        console.log(actName)
         return this.allocatedToInstances.filter(x => (x.resName == resName) && (x.actName == actName))[0]
     }
 
@@ -500,10 +498,10 @@ export class Dm3kGraph {
 
         // Check to see if activity already exists
         if (this.getActivityInstance(parentName) == undefined) {
-            console.log('New Activity')
+            // console.log('New Activity')
             this.addActivity(parentType, parentName, xLoc, yLoc, []); // empty list budget names since not connected to resource  
         } else {
-            console.log('ACTIVITY ALREADY EXISTS')
+            // console.log('ACTIVITY ALREADY EXISTS')
         }
 
         // add the reward if there is a reward name
@@ -524,10 +522,10 @@ export class Dm3kGraph {
 
         // Check to see if activity already exists
         if (this.getResourceInstance(parentName) == undefined) {
-            console.log('New Resource')
+            // console.log('New Resource')
             this.addResource(parentType, parentName, xLoc, yLoc, []); // empty list budget names since not connected to resource  
         } else {
-            console.log('RESOURCE ALREADY EXISTS')
+            // console.log('RESOURCE ALREADY EXISTS')
         }
 
         // add the contains edge
@@ -846,6 +844,8 @@ function addDM3KBudget(graph, budgetName, res, budgetNum) {
  *  @return (mxCell) block: a vertex in the mxGraph representing a cost
  */
 function addDM3KCost(graph, costName, act, costNum) {
+    console.log("----> addDM3KCost ")
+    console.log("---> costNum ", costNum)
     const width = 65;
     const height = 40;
     const space = 20; // space between cost and activity

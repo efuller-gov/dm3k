@@ -376,6 +376,8 @@ export default {
                     )
             }
         this.resetResourcePrompt()
+        // this.resetActivityPrompt()
+
         },
         containsTab(){
             $(".menu-button").removeClass('enabled')

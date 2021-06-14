@@ -46,16 +46,13 @@
         '$store.state.allocatedLinks': {
             deep: true,
             handler(links) {
-                console.log('EXISTING ACT TEST: Activity list changed');
-                console.log("links ", links)
+                // console.log('EXISTING ACT TEST: Activity list changed');
+                // console.log("links ", links)
                 let latest = links[links.length-1]
-                console.log("latest act ", latest)
-                // re render here?
+                // console.log("latest act ", latest)
                 let actName = latest.actName
                 let existingResName = latest.existingResName
                 let newRewardName = latest.newRewardName
-                // let costNum = 1 //REMOVE hardcoded workaround here
-                // this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                 this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
             }
         }
@@ -63,7 +60,7 @@
     },
     methods: {
         loadDm3kGraph() {
-            console.log("Initializing graph...")
+            // console.log("Initializing graph...")
             this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
     }
