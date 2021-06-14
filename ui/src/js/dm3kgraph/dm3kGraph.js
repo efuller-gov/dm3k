@@ -145,6 +145,12 @@ export class Dm3kGraph {
 
 
     addCompleteResource(newResType, newResName, newBudgetNameList, locX = null, locY = null) {
+        let model = this.graph.getModel()
+        if (model.getCell(newResName) != undefined){
+            alert('Cannot create duplicate node. Please choose a new instance name.')
+            return
+        }
+
         var ans = {
             "success": true,
             "details": ""
@@ -276,18 +282,21 @@ export class Dm3kGraph {
     }
 
     addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum, locX = null, locY = null) {
-        console.log('----> addCompleteActivity IS CALLED')
-        var ans = {
+        let model = this.graph.getModel()
+        if (model.getCell(newActName) != undefined){
+            alert('Cannot create duplicate allocation.')
+            return
+        }
+        let ans = {
             "success": true,
             "details": ""
         }
 
         // first determine the number of resources
-        // let model = this.graph.getModel()
         let existingResGeo = this.getResource(existingResName).getGeometry()
-        var numAct = Object.keys(this.activities).length;
-        var xLoc = locX;
-        var yLoc = locY;
+        let numAct = Object.keys(this.activities).length;
+        let xLoc = locX;
+        let yLoc = locY;
 
         if (!xLoc) {
             xLoc = existingResGeo.x + 450;
