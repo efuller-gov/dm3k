@@ -4,8 +4,8 @@
     <GraphRenderer />
     <WorksheetPane 
     @add-resource="addResource" 
-    @add-existing-allocation="addExistingAllocation"  
-    @add-new-allocation="addNewAllocation"/>
+    @add-existing-allocation="addAllocation"  
+    @add-new-allocation="addActivity"/>
   </div>
 </template>
 
@@ -23,10 +23,10 @@ export default {
       addResource(resourceObj){
         this.$store.commit('addResource', resourceObj)
       },
-      addExistingAllocation(activityObj){
+      addAllocation(activityObj){
         this.$store.commit('addAllocation', activityObj)
       },
-      addNewAllocation(activityObj){
+      addActivity(activityObj){
         this.$store.commit('addActivity', activityObj)
       }
   }

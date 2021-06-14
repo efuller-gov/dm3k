@@ -13,17 +13,22 @@ export default new Vuex.Store({
   getters: {},
   mutations: {
     addResource(state, resourceObj) {
-        state.resources.push(resourceObj);
-        console.log("state: ", state)
-      },
+      state.resources.push(resourceObj)
+    },
     addActivity(state, activityObj) {
-        state.activities.push(activityObj);
-        console.log("state: ", state)
-      },
-    addAllocation(state, activityObj) {
-        state.activities.push(activityObj);
-        console.log("state: ", state)
-      }
+      console.log("--> store addActivity: ")
+      state.activities.push(activityObj);
+      console.log("activityObj ", activityObj)
+    },
+    addAllocation(state, allocObj) {
+      // --allocObj--
+      // actName: actName,
+      // existingResName: existingResName,
+      console.log("--> store addAllocation: ")
+      state.allocatedLinks.push(allocObj);
+      console.log("allocObj ", allocObj)
+      // console.log("state: ", state)
+    }
   },
   actions: {}
 });

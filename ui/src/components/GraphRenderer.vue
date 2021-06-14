@@ -23,12 +23,8 @@
     watch: {
         '$store.state.resources': {
             deep: true,
-            handler(n) {
-                // console.log('Resource list changed');
-                // console.log(n)
-                // console.log(n[n.length-1])
-                let latest = n[n.length-1]
-                // re render here?
+            handler(resources) {
+                let latest = resources[resources.length-1]
                 let newResType = latest.resType
                 let newResName = latest.resName
                 let newBudgetNameList = latest.newBudgetNameList
@@ -38,19 +34,32 @@
          '$store.state.activities': {
             deep: true,
             handler(activities) {
-                console.log('EXISTING ACT TEST: Activity list changed');
-                console.log("activities ", activities)
                 let latest = activities[activities.length-1]
-                console.log("latest act ", latest)
-                // re render here?
                 let newActType = latest.newActType
                 let newActName = latest.actName
                 let existingResName = latest.existingResName
                 let newRewardName = latest.newRewardName
-                let costNum = 1 //REMOVE hardcoded workaround here
+                let costNum = 1 //REMOVE hardcoded workaround here??
                 this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
             }
+        },
+        '$store.state.allocatedLinks': {
+            deep: true,
+            handler(links) {
+                console.log('EXISTING ACT TEST: Activity list changed');
+                console.log("links ", links)
+                let latest = links[links.length-1]
+                console.log("latest act ", latest)
+                // re render here?
+                let actName = latest.actName
+                let existingResName = latest.existingResName
+                let newRewardName = latest.newRewardName
+                // let costNum = 1 //REMOVE hardcoded workaround here
+                // this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
+                this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
+            }
         }
+
     },
     methods: {
         loadDm3kGraph() {

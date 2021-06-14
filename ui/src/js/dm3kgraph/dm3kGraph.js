@@ -181,6 +181,83 @@ export class Dm3kGraph {
         return ans
     }
 
+    addAllocation(newActName, existingResName, newRewardName, locX = null, locY = null) {
+        let actCell = this.getActivity(newActName)
+        let newActType = actCell.getId()
+        let costNum = Object.keys(this.costs).length
+        var ans = {
+            "success": true,
+            "details": ""
+        }
+
+        // first determine the number of resources
+        // let model = this.graph.getModel()
+        let existingResGeo = this.getResource(existingResName).getGeometry()
+        var numAct = Object.keys(this.activities).length;
+        var xLoc = locX;
+        var yLoc = locY;
+
+        if (!xLoc) {
+            xLoc = existingResGeo.x + 450;
+        }
+        if (!yLoc) {
+            yLoc = 120 * numAct;
+        }
+
+        try {
+            // Throw alert if user is trying to allocate a resource without a cost. 
+            //// Note: Resources without costs are meant to solely be used as containers
+            if (this.resourceInstances.filter(x => x.label == existingResName)[0].budgetLabel == '') {
+                alert('You cannot allocate a resource without a budget. Non-budgeted resources are only intended to be containers.')
+                return
+            }
+
+            let resInstance = this.resourceInstances.filter(x => x.label == existingResName)[0]
+            let budgetNames = resInstance.budgetNameList;
+            console.log(budgetNames)
+
+            // Check to see if activity already exists
+            if (this.getActivityInstance(newActName) == undefined) {
+                console.log('New Activity');
+                this.addActivity(newActType, newActName, xLoc, yLoc, budgetNames);
+            } else {
+                console.log('ACTIVITY ALREADY EXISTS');
+            }
+
+            if (newRewardName == undefined) {
+                console.log("Activity does not have a reward");
+            } else {
+                let rewardNames = this.getAllNamesOfAttachmentsFor(newActName, 'activity', 'reward');
+
+                // check to see if reward already exists
+                if (rewardNames.includes(newRewardName)) {
+                    console.log("reward name '" + newRewardName + "' already exists")
+                } else {
+                    this.addReward(newRewardName, newActName);
+                }
+
+            }
+
+            for (const budgetName of budgetNames) {
+                this.addCost(budgetName, newActName, costNum);
+                costNum += 1;
+            }
+
+            if (existingResName.length > 0) {
+                this.addCanBeAllocatedTo(existingResName, newActName);
+            } else {
+                console.log("Didnt find allocated link for " + existingResName);
+            }
+        } catch (err) {
+            ans.success = false;
+            ans.details = "Add activity failed: " + err;
+            console.log("ERROR: Add Activity failed: " + err)
+
+        }
+
+        return ans
+    }
+
     addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum, locX = null, locY = null) {
         console.log('----> addCompleteActivity')
         var ans = {
