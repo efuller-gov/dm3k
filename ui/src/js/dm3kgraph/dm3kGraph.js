@@ -185,8 +185,11 @@ export class Dm3kGraph {
         let actCell = this.getActivity(newActName)
         let newActType = actCell.getId()
         let costNum = Object.keys(this.costs).length
+
+        console.log("ADD ALLOCATION IS CALLED")
         console.log("----> Cost num: ", costNum)
         console.log("this.costs ", this.costs)
+        console.log("---->Object.keys(this.costs) ", Object.keys(this.costs))
         var ans = {
             "success": true,
             "details": ""
@@ -261,7 +264,7 @@ export class Dm3kGraph {
     }
 
     addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum, locX = null, locY = null) {
-        // console.log('----> addCompleteActivity')
+        console.log('----> addCompleteActivity IS CALLED')
         var ans = {
             "success": true,
             "details": ""
