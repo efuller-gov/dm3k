@@ -355,7 +355,6 @@ export default {
                 // let actType = actCell.getId()
                 // let duplicateAlloc = 0
                 // Need to get existing <actType> and <costNum> from GraphRenderer component
-                console.log("------------> EMIT add-existing-allocation")
                 this.$emit('add-existing-allocation', 
                     {
                         actName: actName,
@@ -374,7 +373,6 @@ export default {
                     newActType = tmp[0].split('[')[1];
                     newActName = tmp[1]
                 }
-                console.log("------------> EMIT add-new-allocation")
                 this.$emit('add-new-allocation', 
                     {
                         actName: newActName,

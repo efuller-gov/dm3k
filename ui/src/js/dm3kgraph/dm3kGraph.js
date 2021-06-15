@@ -199,10 +199,6 @@ export class Dm3kGraph {
 
         let costNum = Object.keys(this.costs).length
 
-        console.log("ADD ALLOCATION IS CALLED")
-        console.log("----> Cost num: ", costNum)
-        console.log("this.costs ", this.costs)
-        console.log("---->Object.keys(this.costs) ", Object.keys(this.costs))
         var ans = {
             "success": true,
             "details": ""
@@ -242,9 +238,10 @@ export class Dm3kGraph {
             if (this.getActivityInstance(newActName) == undefined) {
                 // console.log('New Activity');
                 this.addActivity(newActType, newActName, xLoc, yLoc, budgetNames);
-            } else {
-                console.log('ACTIVITY ALREADY EXISTS');
-            }
+            } 
+            // else {
+            //     console.log('ACTIVITY ALREADY EXISTS');
+            // }
 
             if (newRewardName == undefined) {
                 console.log("Activity does not have a reward");
