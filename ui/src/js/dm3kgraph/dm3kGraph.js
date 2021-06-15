@@ -18,7 +18,8 @@ export class Dm3kGraph {
     constructor(container) {
 
         // TODO: info icon doesn't work
-        let infoIcon = "../assets/rounded-info-icon-gray.png";
+        // let infoIcon = "../../assets/rounded-info-icon-gray.png";
+        let infoIcon = require('../../assets/rounded-info-icon-gray.png')
         // Disables the built-in context menu
         mxEvent.disableContextMenu(container);
 
@@ -738,7 +739,9 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
         block = graph.insertVertex(parent, typeName, blockName, xLoc, yLoc, width, height, blockStyle);
         // var typeLabel = graph.insertVertex(block, blockName, typeName, typeXLoc, typeYLoc, typeSize, typeSize, typeStyle, true);
         graph.insertVertex(block, blockName, typeName, typeXLoc, typeYLoc, typeSize, typeSize, typeStyle, true);
+        console.log("----> In addDM3KResAct: infoIcon ", infoIcon)
         var iCircle = new mxCellOverlay(new mxImage(infoIcon, infoIconSize, infoIconSize), infoToolTip);
+        console.log("iCircle ", iCircle)
 
         // the overlay point to be within the resource box
         var pt = iCircle.offset;
