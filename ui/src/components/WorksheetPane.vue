@@ -182,10 +182,6 @@ import $ from 'jquery'
 export default {
     name: 'WorksheetPane',
     methods: {
-        resolve_img_url: function (path) {
-            let images = require.context('../assets/', false, /\.png$|\.svg$/)
-            return images("./"+path)
-        },
         populateResourcesFromWB() {
             $.each(this.RESOURCE_WORD_BANK, function (i, item) {
                 $('#resType').append($('<option>', {
@@ -550,9 +546,6 @@ export default {
 </script>
 
 <style scoped>
-/* .show{
-    display: block;
-} */
 .hide{
     display: none;
 }

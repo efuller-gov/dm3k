@@ -8,8 +8,17 @@ export default new Vuex.Store({
   state: {
       resources : [],
       activities: [],
-      allocatedLinks : []
-  },
+      allocatedLinks : [],
+      containsLinks : [],
+      constraints : [],
+      resourceInstances : [],
+      activityInstances : [],
+      containsInstances : [],
+      allocatedToInstances : [],
+      rewards : {},
+      budgets : {},
+      costs : {}
+},
   getters: {},
   mutations: {
     addResource(state, resourceObj) {

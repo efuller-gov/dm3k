@@ -1,22 +1,25 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/dm3k_logo.svg"> -->
     <GraphRenderer />
+    <Modals />
     <WorksheetPane 
-    @add-resource="addResource" 
-    @add-existing-allocation="addAllocation"  
-    @add-new-allocation="addActivity"/>
+      @add-resource="addResource" 
+      @add-existing-allocation="addAllocation"  
+      @add-new-allocation="addActivity"
+    />
   </div>
 </template>
 
 <script>
 import WorksheetPane from './components/WorksheetPane.vue'
 import GraphRenderer from './components/GraphRenderer.vue'
+import Modals from './components/Modals.vue'
 
 export default {
   name: 'App',
   components: {
     GraphRenderer,
+    Modals,
     WorksheetPane,
   },
   methods: {
@@ -28,7 +31,7 @@ export default {
       },
       addActivity(activityObj){
         this.$store.commit('addActivity', activityObj)
-      }
+      },
   }
 }
 </script>

@@ -680,36 +680,36 @@ export class Dm3kGraph {
         });
         return nameArray.includes(name)
     }
-
-    showInstanceModal(event){
-        console.log("IN SHOW INSTANACE MODAL. Event: ", event)
-        let cellId = event.detail.id;
-        let cellName = event.detail.name;
-        let cellType = event.detail.type;   // 'Resource'  or 'Activity' or 'Contains' or 'AllocatedTo'
-        let eventDetail = event.detail
-        let instanceType = cellId;
-        let instanceName = cellName;
-        let resOrAct = cellType;
-        let budgetName = event.detail.budget;
-        let rewardName = event.detail.reward;
-        let costName = event.detail.cost;
-        let graph = this.dm3kgraph;
     
-        if (cellType.includes('AllocatedTo')){
-            resOrAct = 'allocation'
-            let resourceName = cellName.split('_')[0]
-            let activityName = cellName.split('_')[1]
-            this.showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, resourceName, activityName)
-        } else if (cellType.includes('Contains')) {
-            resOrAct = 'contains'
-            let parentName = cellName.split('_')[0]
-            let childName = cellName.split('_')[1]
+//     showInstanceModal(event){
+//         console.log("IN SHOW INSTANACE MODAL. Event: ", event)
+//         let cellId = event.detail.id;
+//         let cellName = event.detail.name;
+//         let cellType = event.detail.type;   // 'Resource'  or 'Activity' or 'Contains' or 'AllocatedTo'
+//         let eventDetail = event.detail
+//         let instanceType = cellId;
+//         let instanceName = cellName;
+//         let resOrAct = cellType;
+//         let budgetName = event.detail.budget;
+//         let rewardName = event.detail.reward;
+//         let costName = event.detail.cost;
+//         let graph = this.dm3kgraph;
+    
+//         if (cellType.includes('AllocatedTo')){
+//             resOrAct = 'allocation'
+//             let resourceName = cellName.split('_')[0]
+//             let activityName = cellName.split('_')[1]
+//             this.showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, resourceName, activityName)
+//         } else if (cellType.includes('Contains')) {
+//             resOrAct = 'contains'
+//             let parentName = cellName.split('_')[0]
+//             let childName = cellName.split('_')[1]
             
-            this.showContainsModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, parentName, childName)
-        } else{
-            showModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, eventDetail)
-        }
-    }
+//             this.showContainsModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, parentName, childName)
+//         } else{
+//             showModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, eventDetail)
+//         }
+//     }
 }
 
 // ********************************************************************* //
