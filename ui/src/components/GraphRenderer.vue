@@ -14,7 +14,8 @@
     name: 'GraphRenderer',
     data() {
       return {
-        dm3kGraph: {}
+        dm3kGraph: {},
+        infoIcon: require('../assets/info-icon.png')
       }
     },
     mounted() {
