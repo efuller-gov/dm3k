@@ -177,6 +177,57 @@ export default {
             // });
             $('#table-title').html(titleText)
             // return table
+        },
+        showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, resourceName, activityName){
+            //get data table for the selected res or act type
+            $('#alloc-selector').show()
+            $('#add-row').text('Add allocation between instances')
+            let modal = document.querySelector(".modal")
+            modal.style.display = "block"
+            modal.style.display = "block"
+
+            let titleText = ''
+            //Columns are Instances of resources | Dropdowns for all available instances of activities
+            titleText = "Allocated individual resource instances of <b> " + resourceName + " </b>to activity instances of <b>" + activityName + "</b>."
+            // let res_tabledata = graph.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData;
+            // let act_tabledata = graph.activityInstances.filter(x => x.label == activityName)[0].instanceTableData;
+            // let resource_instances = res_tabledata.map(x => x.name)
+            // let activity_instances = act_tabledata.map(x => x.name)
+            // resource_instances.push('ALL')
+            // activity_instances.push('ALL')
+            
+            // //tabledata = res_tabledata;
+            // tabledata = graph.getAllocatedToInstance(resourceName, activityName).instanceTableData;
+
+            // tablecols = [
+            //         {title: "", formatter:minusButton, width:5, hozAlign:"center", cellClick:
+            //             function(e, cell){
+            //             let label = cell.getRow().getData().name
+            //             removeRow(label)}
+            //         },
+            //         {title: "resource type: "+resourceName, field:"resourceInstance", width:200, editor:"select",
+            //             editorParams: {
+            //                 values: resource_instances,
+            //                 defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
+            //                 verticalNavigation:"hybrid"}},
+            //         {title: "activity type: "+activityName, field:"activityInstance", width:200, hozAlign:"left",
+            //             editor:"select",
+            //             editorParams: {
+            //                 values: activity_instances,
+            //                 defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
+            //                 verticalNavigation:"hybrid"},
+            //         }
+            //     ]
+            // table = new Tabulator("#modal-instance-table", {
+            //         height:TABLEHEIGHT,
+            //         addRowPos:"bottom",
+            //         reactiveData: true,
+            //         data: tabledata,
+            //         layout:TABLELAYOUT,
+            //         columns:tablecols,
+            // });
+            $('#table-title').html(titleText)
+            // return table
         }
     }
 }
