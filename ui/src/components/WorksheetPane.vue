@@ -178,6 +178,8 @@
 
 <script>
 import $ from 'jquery'
+import {ResourceInstance} from '../js/dm3kgraph/dataClasses';
+import {ActivityInstance} from '../js/dm3kgraph/dataClasses';
 
 export default {
     name: 'WorksheetPane',
@@ -283,6 +285,7 @@ export default {
             let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
 
             let newResName = $("#resName").val();
+            this.$store.state.resourceInstances.push(new ResourceInstance(newResType, newResName, budgetNameList))
             this.$emit('add-resource', 
                 {
                     resType: newResType,
@@ -347,14 +350,10 @@ export default {
             // if ($("#actType").val() == 'a new activity'){
             if ($("#existing-allocation").hasClass("enabled")){
                 let actName = $("#actTypeExisting").val();
-                // let actCell = this.dm3kgraph.getActivity(actName)
-                // let actType = actCell.getId()
-                // let duplicateAlloc = 0
-                // Need to get existing <actType> and <costNum> from GraphRenderer component
+                // TODO: push to store's allocationLinks
                 this.$emit('add-existing-allocation', 
                     {
                         actName: actName,
-                        // newActType: newActType,
                         existingResName: existingResName,
                         newRewardName: newRewardName,
                     }
@@ -369,6 +368,9 @@ export default {
                     newActType = tmp[0].split('[')[1];
                     newActName = tmp[1]
                 }
+                // TODO: How am I going to get the costs for activities from here?
+                let costNameList = []
+                this.$store.state.activityInstances.push(new ActivityInstance(newActType, newActName, costNameList))
                 this.$emit('add-new-allocation', 
                     {
                         actName: newActName,
@@ -376,7 +378,8 @@ export default {
                         existingResName: existingResName,
                         newRewardName: newRewardName,
                     }
-                    )
+                )
+                console.log("store: ", this.$store.state)
             }
         this.resetResourcePrompt()
         // this.resetActivityPrompt()

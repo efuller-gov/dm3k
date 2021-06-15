@@ -43,6 +43,8 @@
 
 <script>
 import $ from 'jquery'
+// var Tabulator = require("tabulator-tables"); //import Tabulator library
+import Tabulator from "tabulator-tables"
 
 export default {
     name: 'Modals',
@@ -100,7 +102,7 @@ export default {
                     parentName,
                     childName)
             } else{
-                this.showModal(
+                this.showActResModal(
                     instanceType,
                     instanceName,
                     resOrAct,
@@ -110,7 +112,23 @@ export default {
                     eventDetail)
             }
         },
-        showModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, details){
+        showActResModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, details){
+
+            function removeRow(label){
+                tabledata.pop(tabledata.filter(x=>x.label==label))
+            }
+            let minusButton = function(){
+                return "<span class='remove-button-class'></span>";
+            };
+            const TABLEHEIGHT = "300px";
+            const TABLELAYOUT = "fitColumns";
+            let tablecols = [];
+            // var tabledata = [];
+            // var modalTableName = '';
+            // var modalInstanceName = '';
+            // var modalTableNameCnt = 0;
+            // var tableColWidthPX = 90;
+        
             console.log(budgetName, rewardName, costName, details)
             //get data table for the selected res or act type
             let modal = document.querySelector(".modal")
@@ -127,20 +145,20 @@ export default {
                 "You may also assign each instance with a <b>cost</b> and a <b>reward</b>."
                 $('#add-row').text('Add activity instance')
                 // tabledata = graph.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
-                // tablecols = [
-                //         {title: "", formatter:minusButton, width:5, hozAlign:"center", cellClick:
-                //             function(e, cell){
-                //             let label = cell.getRow().getData().name
-                //             removeRow(label)}
-                //         },
-                //         {title: instanceName+" instance name", field:"name", editor:"input"},
-                //     ]
-                // for (let c of costName) {
-                //     tablecols.push({title:"Cost ("+c+")", field:"cost_"+c, hozAlign:"left", sorter:"number", editor:"input"})
-                // }
-                // if (rewardName != '') {
-                //     tablecols.push({title:"Reward ("+rewardName+")", field:"reward", hozAlign:"left", sorter:"number", editor:"input"})
-                // }
+                tablecols = [
+                        {title: "", formatter:minusButton, width:5, hozAlign:"center", cellClick:
+                            function(e, cell){
+                            let label = cell.getRow().getData().name
+                            removeRow(label)}
+                        },
+                        {title: instanceName+" instance name", field:"name", editor:"input"},
+                    ]
+                for (let c of costName) {
+                    tablecols.push({title:"Cost ("+c+")", field:"cost_"+c, hozAlign:"left", sorter:"number", editor:"input"})
+                }
+                if (rewardName != '') {
+                    tablecols.push({title:"Reward ("+rewardName+")", field:"reward", hozAlign:"left", sorter:"number", editor:"input"})
+                }
             }
             if (resOrAct == 'Resource' || resOrAct == 'resource'){
                 //Columns are Instance | Cost
@@ -149,16 +167,16 @@ export default {
                 // Get tabledata for this resource from the graph
                 // tabledata = graph.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 // // console.log("Table Data: %O", tabledata)
-                // tablecols = [
-                //         {title: "", formatter:minusButton, width:5, hozAlign:"center", cellClick:
-                //             function(e, cell){
-                //             let label = cell.getRow().getData().name
-                //             removeRow(label)}
-                //         },
-                //         {title: instanceName + " instance name", field:"name", editor:"input"}]
-                // for (let b of budgetName) {
-                //     tablecols.push({title:"Budget ("+b+")", field:"budget_"+b, hozAlign:"left", sorter:"number", editor:"input"})
-                // } 
+                tablecols = [
+                        {title: "", formatter:minusButton, width:5, hozAlign:"center", cellClick:
+                            function(e, cell){
+                            let label = cell.getRow().getData().name
+                            removeRow(label)}
+                        },
+                        {title: instanceName + " instance name", field:"name", editor:"input"}]
+                for (let b of budgetName) {
+                    tablecols.push({title:"Budget ("+b+")", field:"budget_"+b, hozAlign:"left", sorter:"number", editor:"input"})
+                } 
             }
             
             // Make it easier to add activities and resources
@@ -167,16 +185,19 @@ export default {
             // let lastEntryArray = tabledata[tabledata.length-1].name.split("_");
             // modalTableNameCnt = parseInt(lastEntryArray[lastEntryArray.length - 1]);
 
-            // table = new Tabulator("#modal-instance-table", {
-            //         height:TABLEHEIGHT,
-            //         addRowPos:"bottom",
-            //         reactiveData: true,
-            //         data: tabledata,
-            //         layout:TABLELAYOUT,
-            //         columns:tablecols,
-            // });
+            let tabledata = []
+            
+            let table = new Tabulator("#modal-instance-table", {
+                    height:TABLEHEIGHT,
+                    addRowPos:"bottom",
+                    reactiveData: true,
+                    data: tabledata,
+                    layout:TABLELAYOUT,
+                    columns:tablecols,
+            });
+            
             $('#table-title').html(titleText)
-            // return table
+            return table
         },
         showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, resourceName, activityName){
             //get data table for the selected res or act type
@@ -234,5 +255,44 @@ export default {
 </script>
 
 <style scoped>
+    .tabulator {
+    font-size: 12px;
+    border: none;
+    }
 
+    .tabulator .tabulator-header {
+    font-weight: normal;
+    border-bottom: 1px solid;
+    border-bottom-color: rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.54);
+    }
+
+    .tabulator .tabulator-header .tabulator-col {
+    height: 48px;
+    background-color: #ffffff;
+    border: none;
+    padding: 0 7px;
+    }
+
+    .tabulator-row {
+    border-bottom: 1px solid;
+    border-bottom-color: rgba(0, 0, 0, 0.12);
+    min-height: 48px;
+    vertical-align: middle;
+    }
+
+    .tabulator-row .tabulator-cell {
+    padding: 16px 7px;
+    border-right: none;
+    vertical-align: middle;
+    }
+
+    .tabulator-row .tabulator-cell:first-of-type,
+    .tabulator .tabulator-header .tabulator-col:first-of-type {
+    padding-left: 24px;
+    }
+
+    .tabulator-row.tabulator-row-even {
+    background-color: #ffffff;
+    }
 </style>

@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "jquery": "^3.6.0",
+    "tabulator-tables": "^4.9.3",
     "vue": "^2.6.11",
     "vuex": "^3.6.2"
   },
