@@ -104,7 +104,7 @@
         },
         addListener(){
           let container = document.getElementById('graphContainer')
-          container.addEventListener('CircleIClicked', this.showInstanceModal)
+          container.addEventListener('CircleIClicked', this.dm3kGraph.showInstanceModal)
         }
     }
   };
