@@ -2,7 +2,7 @@
 <template>
     <div>
         <div class="modal">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <span @click="closeModal" class="close-btn">&times;</span>
         <div class="modal-header">
         </div>
         <div class="modal-content">
@@ -53,6 +53,10 @@ export default {
         })
     },
     methods:{
+        closeModal(){
+			let modal = document.querySelector(".modal")
+			modal.style.display = "none"
+		},
         showInstanceModal(event){
             console.log("IN SHOW INSTANACE MODAL. Event: ", event)
             let cellId = event.detail.id;
