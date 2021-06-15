@@ -1,6 +1,7 @@
 
 <template>
     <div>
+        <link href="https://unpkg.com/tabulator-tables@4.4.1/dist/css/tabulator.min.css" rel="stylesheet">
         <div class="modal">
         <span @click="closeModal" class="close-btn">&times;</span>
         <div class="modal-header">
@@ -13,8 +14,8 @@
           <div id="instance-table-control-buttons">
             <button id="add-row">Add instance row</button>
           </div>
-            <div id="modal-instance-table" class="instance-table"></div>
-					</div>
+            <div ref="table" id="modal-instance-table" class="instance-table"></div>
+		</div>
         </div>
         <div class="modal-footer">
         </div>
@@ -123,7 +124,7 @@ export default {
             const TABLEHEIGHT = "300px";
             const TABLELAYOUT = "fitColumns";
             let tablecols = [];
-            // var tabledata = [];
+            let tabledata = [];
             // var modalTableName = '';
             // var modalInstanceName = '';
             // var modalTableNameCnt = 0;
@@ -166,6 +167,8 @@ export default {
                 $('#add-row').text('Add resource instance')
                 // Get tabledata for this resource from the graph
                 // tabledata = graph.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                console.log("TABLEDATA: ", tabledata)
                 // // console.log("Table Data: %O", tabledata)
                 tablecols = [
                         {title: "", formatter:minusButton, width:5, hozAlign:"center", cellClick:
@@ -184,10 +187,9 @@ export default {
 
             // let lastEntryArray = tabledata[tabledata.length-1].name.split("_");
             // modalTableNameCnt = parseInt(lastEntryArray[lastEntryArray.length - 1]);
-
-            let tabledata = []
             
-            let table = new Tabulator("#modal-instance-table", {
+            // let table = new Tabulator("#modal-instance-table", {
+            let table = new Tabulator(this.$refs.table, {
                     height:TABLEHEIGHT,
                     addRowPos:"bottom",
                     reactiveData: true,
@@ -195,7 +197,7 @@ export default {
                     layout:TABLELAYOUT,
                     columns:tablecols,
             });
-            
+            // this.$refs.table
             $('#table-title').html(titleText)
             return table
         },
@@ -255,44 +257,4 @@ export default {
 </script>
 
 <style scoped>
-    .tabulator {
-    font-size: 12px;
-    border: none;
-    }
-
-    .tabulator .tabulator-header {
-    font-weight: normal;
-    border-bottom: 1px solid;
-    border-bottom-color: rgba(0, 0, 0, 0.12);
-    color: rgba(0, 0, 0, 0.54);
-    }
-
-    .tabulator .tabulator-header .tabulator-col {
-    height: 48px;
-    background-color: #ffffff;
-    border: none;
-    padding: 0 7px;
-    }
-
-    .tabulator-row {
-    border-bottom: 1px solid;
-    border-bottom-color: rgba(0, 0, 0, 0.12);
-    min-height: 48px;
-    vertical-align: middle;
-    }
-
-    .tabulator-row .tabulator-cell {
-    padding: 16px 7px;
-    border-right: none;
-    vertical-align: middle;
-    }
-
-    .tabulator-row .tabulator-cell:first-of-type,
-    .tabulator .tabulator-header .tabulator-col:first-of-type {
-    padding-left: 24px;
-    }
-
-    .tabulator-row.tabulator-row-even {
-    background-color: #ffffff;
-    }
-</style>
+  </style
