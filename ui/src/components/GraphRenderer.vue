@@ -1,9 +1,46 @@
 <template>
-    <div>
+  <div>
     <img id="dm3k-logo" src="../assets/dm3k_logo.svg">
     <div id="graphContainer">
+      <div class="modal">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-header">
+        </div>
+        <div class="modal-content">
+          <div id="table-left-aligned-content">
+            <div id="table-title"></div>
+          </div>
+          <div id="table-and-control-buttons-container">
+          <div id="instance-table-control-buttons">
+            <button id="add-row">Add instance row</button>
+          </div>
+            <div id="modal-instance-table" class="instance-table"></div>
+					</div>
+        </div>
+        <div class="modal-footer">
+        </div>
+			</div>
+			<div id="soln-modal" class="soln-modal">
+				<span class="close-btn" onclick="closeSolnModal()">&times;</span>
+				<div class="modal-content">
+					<img id='soln-explainer-graphic' onclick="location.href='./'" src="../assets/output-explainer.png">
+					<p id="soln-title">Optimal Allocation Plan</p>
+					<button id="soln-explainer-btn" onclick="toggleSolnGraphicExplainer()">Show me how to read this</button>
+					<div id="soln-table-top-aligned-content">
+						Size and sort activity instance columns by
+						<select class="chosen-select" id="widthFunctionToggle">
+							<option value="cost">cost</option>
+							<option value="ratio">reward / cost ratio</option>
+							<option value="reward">reward</option>
+						</select>
+					</div>
+					<div id="soln-visualization"></div>
+				</div>
+				<div class="modal-footer">
+				</div>
+      </div>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -15,11 +52,13 @@
     data() {
       return {
         dm3kGraph: {},
-        infoIcon: require('../assets/info-icon.png')
+        infoIcon: require('../assets/info-icon.png'),
+        solnExplainer: require("../assets/output-explainer.png")
       }
     },
     mounted() {
         this.loadDm3kGraph();
+        this.addListener();
     },
     watch: {
         '$store.state.resources': {
@@ -60,6 +99,13 @@
         loadDm3kGraph() {
             this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
+        showInstanceModal(){
+          console.log("!!!! SHOW MODAL")
+        },
+        addListener(){
+          let container = document.getElementById('graphContainer')
+          container.addEventListener('CircleIClicked', this.showInstanceModal)
+        }
     }
   };
 </script>

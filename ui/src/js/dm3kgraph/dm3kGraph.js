@@ -745,6 +745,7 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
 
         // detect click on the circle-i
         iCircle.addListener(mxEvent.CLICK, function(sender, evt) {
+            console.log("-- ICIRCLE clicked")
             var cell = evt.getProperty('cell');
             var cellType = 'Activity';
             var budgetName = [];
@@ -1000,6 +1001,7 @@ function addDM3KAllocatedEdge(container, graph, res, act, infoIcon) {
 
         // detect click on the circle-i
         iCircle.addListener(mxEvent.CLICK, function(sender, evt) {
+            console.log("-- ICIRCLE clicked")
             var cell = evt.getProperty('cell');
             console.log("Circle-I of 'can be allocated to' link from: " + cell.source.value + " to " + cell.target.value);
 
@@ -1017,6 +1019,7 @@ function addDM3KAllocatedEdge(container, graph, res, act, infoIcon) {
                 }
             );
             container.dispatchEvent(event)
+            // Instead of this-- 
 
         });
 
@@ -1063,6 +1066,7 @@ function addDM3KContainsEdge(container, graph, parentBlock, childBlock, infoIcon
 
         // detect click on the circle-i
         iCircle.addListener(mxEvent.CLICK, function(sender, evt) {
+            console.log("-- ICIRCLE clicked")
             var cell = evt.getProperty('cell');
             console.log("Circle-I of 'contains' link from: " + cell.source.value + " to " + cell.target.value);
 
