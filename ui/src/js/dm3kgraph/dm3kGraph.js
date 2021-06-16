@@ -569,25 +569,6 @@ export class Dm3kGraph {
 
     }
 
-    /*  getType(name) {
-         var type = 'unknown';
-
-         if (name in this.resources) {
-             type = 'resource';
-         }
-         else if (name in this.activities) {
-             type = 'actvitiy';
-         }
-         else if (name in this.containsLinks) {
-             type = 'containsLink'
-         }
-         else if (name in this.allocatedLinks) {
-             type = 'allocatedLink'
-         }
-
-         return type
-     } */
-
     isResource(name) {
         return this.getAllNamesOfType('resource').includes(name)
     }
@@ -699,8 +680,36 @@ export class Dm3kGraph {
         });
         return nameArray.includes(name)
     }
-
-
+    
+//     showInstanceModal(event){
+//         console.log("IN SHOW INSTANACE MODAL. Event: ", event)
+//         let cellId = event.detail.id;
+//         let cellName = event.detail.name;
+//         let cellType = event.detail.type;   // 'Resource'  or 'Activity' or 'Contains' or 'AllocatedTo'
+//         let eventDetail = event.detail
+//         let instanceType = cellId;
+//         let instanceName = cellName;
+//         let resOrAct = cellType;
+//         let budgetName = event.detail.budget;
+//         let rewardName = event.detail.reward;
+//         let costName = event.detail.cost;
+//         let graph = this.dm3kgraph;
+    
+//         if (cellType.includes('AllocatedTo')){
+//             resOrAct = 'allocation'
+//             let resourceName = cellName.split('_')[0]
+//             let activityName = cellName.split('_')[1]
+//             this.showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, resourceName, activityName)
+//         } else if (cellType.includes('Contains')) {
+//             resOrAct = 'contains'
+//             let parentName = cellName.split('_')[0]
+//             let childName = cellName.split('_')[1]
+            
+//             this.showContainsModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, parentName, childName)
+//         } else{
+//             showModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, eventDetail)
+//         }
+//     }
 }
 
 // ********************************************************************* //
@@ -745,6 +754,7 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
 
         // detect click on the circle-i
         iCircle.addListener(mxEvent.CLICK, function(sender, evt) {
+            console.log("-- ICIRCLE clicked")
             var cell = evt.getProperty('cell');
             var cellType = 'Activity';
             var budgetName = [];
@@ -1000,6 +1010,7 @@ function addDM3KAllocatedEdge(container, graph, res, act, infoIcon) {
 
         // detect click on the circle-i
         iCircle.addListener(mxEvent.CLICK, function(sender, evt) {
+            console.log("-- ICIRCLE clicked")
             var cell = evt.getProperty('cell');
             console.log("Circle-I of 'can be allocated to' link from: " + cell.source.value + " to " + cell.target.value);
 
@@ -1017,6 +1028,7 @@ function addDM3KAllocatedEdge(container, graph, res, act, infoIcon) {
                 }
             );
             container.dispatchEvent(event)
+            // Instead of this-- 
 
         });
 
@@ -1063,6 +1075,7 @@ function addDM3KContainsEdge(container, graph, parentBlock, childBlock, infoIcon
 
         // detect click on the circle-i
         iCircle.addListener(mxEvent.CLICK, function(sender, evt) {
+            console.log("-- ICIRCLE clicked")
             var cell = evt.getProperty('cell');
             console.log("Circle-I of 'contains' link from: " + cell.source.value + " to " + cell.target.value);
 

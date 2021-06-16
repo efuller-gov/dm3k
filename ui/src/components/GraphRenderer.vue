@@ -1,9 +1,9 @@
 <template>
-    <div>
+  <div>
     <img id="dm3k-logo" src="../assets/dm3k_logo.svg">
     <div id="graphContainer">
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
@@ -15,11 +15,13 @@
     data() {
       return {
         dm3kGraph: {},
-        infoIcon: require('../assets/info-icon.png')
+        infoIcon: require('../assets/info-icon.png'),
+        solnExplainer: require("../assets/output-explainer.png")
       }
     },
     mounted() {
         this.loadDm3kGraph();
+        this.addListener();
     },
     watch: {
         '$store.state.resources': {
@@ -60,6 +62,16 @@
         loadDm3kGraph() {
             this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
+        showInstanceModal(){
+          console.log("!!!! SHOW MODAL")
+        },
+        addListener(){
+          let container = document.getElementById('graphContainer')
+          container.addEventListener('CircleIClicked', this.emitModal)
+        },
+        emitModal(e){
+          this.$root.$emit('show-instance-modal', e)
+        }
     }
   };
 </script>

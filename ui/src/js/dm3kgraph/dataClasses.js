@@ -2,7 +2,7 @@
  *  Class definitions for instances of resources and activities.
  **/
 
-class AllocationInstance {
+export class AllocationInstance {
 
     constructor(resClassName, actClassName) {
         this.resName = resClassName;
@@ -38,7 +38,7 @@ class AllocationInstance {
     }
 }
 
-class ContainsInstance {
+export class ContainsInstance {
 
     constructor(parentName, childName, parentType) {
         this.parentName = parentName;
@@ -76,7 +76,7 @@ class ContainsInstance {
     }
 }
 
- class ResourceInstance {
+export class ResourceInstance {
 
      /**
       *  Define resource instance for storage and assignment to activities via UI.
@@ -137,9 +137,9 @@ class ContainsInstance {
         }
         return detailList 
     }
- }
+}
 
-class ActivityInstance {
+export class ActivityInstance {
 
      /**
       *  Define activity instance for storage and assignment to activities via UI.
