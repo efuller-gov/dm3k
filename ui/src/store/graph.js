@@ -24,17 +24,19 @@ export default new Vuex.Store({
     addResource(state, resourceObj) {
       state.resources.push(resourceObj)
     },
-    addResourceInstance(state, payload){
-      let resName = payload['resName']
-      let resourceInstanceObj = payload['newInstance']
-      console.log("pushing ", resourceInstanceObj)
+    addResourceInstance(state, resPayload){
+      let resName = resPayload['instanceName']
+      let resourceInstanceObj = resPayload['newInstance']
       state.resourceInstances.filter(x=>x.label==resName)[0].instanceTableData.push(resourceInstanceObj)
-      console.log("FROM STORE state.resourceInstances ", state.resourceInstances)
     },
     addActivity(state, activityObj) {
-      console.log("--> store addActivity: ")
       state.activities.push(activityObj);
-      console.log("activityObj ", activityObj)
+    },
+    addActivityInstance(state, actPayload){
+      let actName = actPayload['instanceName']
+      let activityInstanceObj = actPayload['newInstance']
+      console.log("-- Within store. Pushing new act inst: ", activityInstanceObj)
+      state.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.push(activityInstanceObj)
     },
     addAllocation(state, allocObj) {
       state.allocatedLinks.push(allocObj);

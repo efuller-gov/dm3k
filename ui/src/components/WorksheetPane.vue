@@ -368,8 +368,7 @@ export default {
                     newActType = tmp[0].split('[')[1];
                     newActName = tmp[1]
                 }
-                // TODO: How am I going to get the costs for activities from here?
-                let costNameList = []
+                let costNameList = this.$store.state.resources.filter(x=>x.resName == existingResName)[0].budgetNameList
                 this.$store.state.activityInstances.push(new ActivityInstance(newActType, newActName, costNameList))
                 this.$emit('add-new-allocation', 
                     {
