@@ -22,10 +22,10 @@ export default new Vuex.Store({
   getters: {},
   mutations: {
     addResource(state, resourceObj) {
-      state.resourceInstances.push(resourceObj)
+      state.resources.push(resourceObj)
     },
     addResourceInstance(state, resourceInstanceObj){
-      state.resources.push(resourceInstanceObj)
+      state.resourceInstances.push(resourceInstanceObj)
     },
     addActivity(state, activityObj) {
       console.log("--> store addActivity: ")
