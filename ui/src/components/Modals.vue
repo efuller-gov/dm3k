@@ -65,26 +65,38 @@ export default {
         minusButton(){
             return "<span class='remove-button-class'></span>";
         },
+        // addDefaultRow(sample_name) {
+        //     let instanceExample = {name: sample_name};
+        //     let inst = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName);
+        //     console.log("inst ", inst)
+        //     let budgetNameList = inst.budgetNameList;
+        //     console.log("inst example ", instanceExample)
+        //     for (let budgetName of budgetNameList) {
+        //         console.log("budgetName ", budgetName)
+        //         instanceExample["budget_"+budgetName] = 1;
+        //     }
+        //     console.log("inst example ", instanceExample)
+        //     this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName).instanceTableData.push(instanceExample)
+        // },
         addRow(e){
             console.log("---> addRow e: ", e)
             if ($('#add-row').text().includes('resource')){
-                let resOrAct = 'Resource'
-                let modalTableName = this.instanceName+"_"+resOrAct+"_instance";
-                // let lastEntryArray = tabledata[tabledata.length-1].name.split("_");
-                // let modalTableNameCnt = parseInt(lastEntryArray[lastEntryArray.length - 1]);
-                // modalTableNameCnt += 1
-                let modalTableNameCnt = 1;
-                let newName = modalTableName +"_"+modalTableNameCnt;
+                let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
+                console.log("resourceInstance ", resourceInstance)
+                let newName = this.instanceName + "_Resource_instance_" + resourceInstance.instanceTableData.length;
+                console.log("newName ", newName)
                 // let instanceName = modalInstanceName;
                 // let resourceInstance = this.dm3kgraph.getResourceInstance(instanceName);
-                console.log("before", this.$store.state.resourceInstances)
-                let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.name==this.instanceName);
-                console.log("retreived resourceInstance ", resourceInstance)
-                resourceInstance.addDefaultRow(newName);
-                console.log("updated resourceInstance", resourceInstance)
-                this.$store.commit('addResourceInstance', resourceInstance)
-                console.log("after", this.$store.state.resourceInstances)
-
+                // this.addDefaultRow(newName);
+                let instanceExample = {name: newName};
+                let budgetNameList = resourceInstance.budgetNameList;
+                console.log("budgetNameList ", budgetNameList)
+                for (let budgetName of budgetNameList) {
+                    console.log("budgetName ", budgetName)
+                    instanceExample["budget_"+budgetName] = 1;
+                }
+                console.log("inst example ", instanceExample)
+                this.$store.commit('addResourceInstance', {resName : this.instanceName, newInstance: instanceExample})
             }
             // if ($('#add-row').text().includes('allocation')) {
             //     tabledata.push({resourceInstance: "ALL", activityInstance: 'ALL'})
@@ -113,7 +125,6 @@ export default {
 			modal.style.display = "none"
 		},
         showInstanceModal(event){
-            console.log("IN SHOW INSTANACE MODAL. Event: ", event)
             let cellId = event.detail.id;
             let cellName = event.detail.name;
             let cellType = event.detail.type;   // 'Resource'  or 'Activity' or 'Contains' or 'AllocatedTo'
