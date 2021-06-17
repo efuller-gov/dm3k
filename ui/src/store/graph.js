@@ -46,6 +46,10 @@ export default new Vuex.Store({
       console.log("--> AllocationInstance", ai)
       state.allocatedToInstances.push(ai);
       console.log("--> state.allocatedToInstances ", state.allocatedToInstances)
+    },
+    removeResourceInstance(state, resObj){
+      console.log("-----> REMOVE RES INSTANCE ", state.resourceInstances.filter(x=>x.label==resObj['name'])[0])
+      state.resourceInstances.filter(x=>x.label==resObj['name'])[0]
     }
   },
   actions: {}

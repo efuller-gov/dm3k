@@ -95,10 +95,6 @@ export default {
                 this.$store.commit('addActivityInstance', {instanceName : this.instanceName, newInstance: instanceExample})
             }
         },
-        removeRow(label, tabledata){
-            // TO DO: this won't work. Needs to access store.
-            tabledata.pop(tabledata.filter(x=>x.label==label))
-        },
         closeModal(){
 			let modal = document.querySelector(".modal")
 			modal.style.display = "none"
@@ -151,6 +147,10 @@ export default {
             }
         },
         showActResModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName){
+
+            function removeRow(label){
+                tabledata.pop(tabledata.filter(x=>x.label==label))
+            }
             let tablecols = [];
             let tabledata = [];
         
@@ -175,7 +175,11 @@ export default {
                         {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                             function(e, cell){
                             let label = cell.getRow().getData().name
-                            this.removeRow(label, tabledata)}
+                            // this.removeRow(label, tabledata)
+                            console.log("remove row")
+                            console.log("label ", label)
+                            console.log("tabledata ", tabledata)
+                            }
                         },
                         {title: instanceName+" instance name", field:"name", editor:"input"},
                     ]
@@ -193,12 +197,25 @@ export default {
                 // Get tabledata for this resource from the graph
                 tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [
-                        {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
-                            function(e, cell){
-                            let label = cell.getRow().getData().name
-                            this.removeRow(label, tabledata)}
+                        {title: "", formatter:"buttonCross", width:5, hozAlign:"center", 
+                        cellClick: function(e, cell){
+                                let label = cell.getRow().getData().name
+                                // this.removeRow(label, tabledata)
+                                console.log("remove row")
+                                console.log("label ", label)
+                                console.log("tabledata ", tabledata)
+                                console.log("this.resource")
+                                console.log(instanceName)
+                                console.log(resOrAct)
+                                // HERE
+                                console.log("-----> commit removeResourceInstnace")
+                                removeRow(label)
+                                // removeRow({name: instanceName, instanceName: label})
+                                // this.$store.commit('removeResourceInstance', {name: instanceName, instanceName: label})
+                            }
                         },
                         {title: instanceName + " instance name", field:"name", editor:"input"}]
+                    console.log("tabledata ", this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData)
                 for (let b of budgetName) {
                     tablecols.push({title:"Budget ("+b+")", field:"budget_"+b, hozAlign:"left", sorter:"number", editor:"input"})
                 } 
@@ -245,7 +262,11 @@ export default {
                     {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                         function(e, cell){
                         let label = cell.getRow().getData().name
-                        this.removeRow(label, tabledata)}
+                        // this.removeRow(label, tabledata)
+                        console.log("remove row")
+                        console.log("label ", label)
+                        console.log("tabledata ", tabledata)
+                        }
                     },
                     {title: "resource type: "+resourceName, field:"resourceInstance", width:200, editor:"select",
                         editorParams: {
@@ -272,6 +293,9 @@ export default {
         }
     }
 }
+// function removeRow(obj){
+//     this.$store.commit('removeResourceInstance', obj)
+// }
 </script>
 
 <style>
