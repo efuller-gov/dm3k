@@ -12,7 +12,7 @@
           </div>
           <div id="table-and-control-buttons-container">
           <div id="instance-table-control-buttons">
-            <button id="add-row">Add instance row</button>
+            <button @click="addRow" id="add-row">Add instance row</button>
           </div>
             <div ref="table" id="modal-instance-table" class="instance-table"></div>
 		</div>
@@ -57,14 +57,55 @@ export default {
     data(){
         return{
            TABLEHEIGHT :  "300px",
-           TABLELAYOUT : "fitColumns"
+           TABLELAYOUT : "fitColumns",
+           instanceName : []
         }
     },
     methods:{
         minusButton(){
             return "<span class='remove-button-class'></span>";
         },
+        addRow(e){
+            console.log("---> addRow e: ", e)
+            if ($('#add-row').text().includes('resource')){
+                let resOrAct = 'Resource'
+                let modalTableName = this.instanceName+"_"+resOrAct+"_instance";
+                // let lastEntryArray = tabledata[tabledata.length-1].name.split("_");
+                // let modalTableNameCnt = parseInt(lastEntryArray[lastEntryArray.length - 1]);
+                // modalTableNameCnt += 1
+                let modalTableNameCnt = 1;
+                let newName = modalTableName +"_"+modalTableNameCnt;
+                // let instanceName = modalInstanceName;
+                // let resourceInstance = this.dm3kgraph.getResourceInstance(instanceName);
+                console.log("before", this.$store.state.resourceInstances)
+                let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.name==this.instanceName);
+                console.log("retreived resourceInstance ", resourceInstance)
+                resourceInstance.addDefaultRow(newName);
+                console.log("updated resourceInstance", resourceInstance)
+                this.$store.commit('addResourceInstance', resourceInstance)
+                console.log("after", this.$store.state.resourceInstances)
+
+            }
+            // if ($('#add-row').text().includes('allocation')) {
+            //     tabledata.push({resourceInstance: "ALL", activityInstance: 'ALL'})
+            // }
+            // if ($('#add-row').text().includes('contains')){
+            //     tabledata.push({parentInstance: "ALL", childInstance: 'ALL'});
+            // }
+            // if ($('#add-row').text().includes('activity')){
+            //     let resOrAct = 'Activity'
+            //     let modalTableName = instanceName+"_"+resOrAct+"_instance";
+			//     let lastEntryArray = tabledata[tabledata.length-1].name.split("_");
+			//     let modalTableNameCnt = parseInt(lastEntryArray[lastEntryArray.length - 1]);
+            //     modalTableNameCnt += 1
+            //     let newName = modalTableName +"_"+modalTableNameCnt;
+            //     let instanceName = modalInstanceName;
+            //     let activityInstance = dm3kgraph.getActivityInstance(instanceName);
+            //     activityInstance.addDefaultRow(newName)
+            // }
+        },
         removeRow(label, tabledata){
+            // TO DO: this won't work. Needs to access store.
             tabledata.pop(tabledata.filter(x=>x.label==label))
         },
         closeModal(){
@@ -76,7 +117,7 @@ export default {
             let cellId = event.detail.id;
             let cellName = event.detail.name;
             let cellType = event.detail.type;   // 'Resource'  or 'Activity' or 'Contains' or 'AllocatedTo'
-            let eventDetail = event.detail
+            // let eventDetail = event.detail
             let instanceType = cellId;
             let instanceName = cellName;
             let resOrAct = cellType;
@@ -117,28 +158,20 @@ export default {
                     resOrAct,
                     budgetName,
                     rewardName,
-                    costName,
-                    eventDetail)
+                    costName)
             }
         },
-        showActResModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, details){
-            console.log("--> Show ACTRES modal")
-
-            // const TABLEHEIGHT = "300px";
-            // const TABLELAYOUT = "fitColumns";
+        showActResModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName){
             let tablecols = [];
             let tabledata = [];
-            // var modalTableName = '';
-            // var modalInstanceName = '';
-            // var modalTableNameCnt = 0;
         
-            console.log(budgetName, rewardName, costName, details)
             //get data table for the selected res or act type
             let modal = document.querySelector(".modal")
             $('#alloc-selector').hide()
             modal.style.display = "block"
             modal.style.display = "block"
             let titleText = ''
+            this.instanceName = instanceName
 
             // let modalInstanceName = instanceName
 
