@@ -1,6 +1,7 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
+import {AllocationInstance} from '../js/dm3kgraph/dataClasses';
 
 Vue.use(Vuex);
 
@@ -35,11 +36,15 @@ export default new Vuex.Store({
     addActivityInstance(state, actPayload){
       let actName = actPayload['instanceName']
       let activityInstanceObj = actPayload['newInstance']
-      console.log("-- Within store. Pushing new act inst: ", activityInstanceObj)
       state.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.push(activityInstanceObj)
     },
     addAllocation(state, allocObj) {
       state.allocatedLinks.push(allocObj);
+    },
+    addCanBeAllocatedTo(state, allocObj){
+      let ai = new AllocationInstance(allocObj['existingResName'], allocObj['actName']);
+      console.log("--> AllocationInstance", ai)
+      state.allocatedToInstances.push(ai);
     }
   },
   actions: {}

@@ -65,19 +65,6 @@ export default {
         minusButton(){
             return "<span class='remove-button-class'></span>";
         },
-        // addDefaultRow(sample_name) {
-        //     let instanceExample = {name: sample_name};
-        //     let inst = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName);
-        //     console.log("inst ", inst)
-        //     let budgetNameList = inst.budgetNameList;
-        //     console.log("inst example ", instanceExample)
-        //     for (let budgetName of budgetNameList) {
-        //         console.log("budgetName ", budgetName)
-        //         instanceExample["budget_"+budgetName] = 1;
-        //     }
-        //     console.log("inst example ", instanceExample)
-        //     this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName).instanceTableData.push(instanceExample)
-        // },
         addRow(){
             if ($('#add-row').text().includes('resource')){
                 let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
@@ -89,9 +76,11 @@ export default {
                 }
                 this.$store.commit('addResourceInstance', {instanceName : this.instanceName, newInstance: instanceExample})
             }
-            // if ($('#add-row').text().includes('allocation')) {
-            //     tabledata.push({resourceInstance: "ALL", activityInstance: 'ALL'})
-            // }
+            if ($('#add-row').text().includes('allocation')) {
+                console.log("Allocation modal")
+                console.log(this.$store.state.allocatedLinks)
+                // tabledata.push({resourceInstance: "ALL", activityInstance: 'ALL'})
+            }
             // if ($('#add-row').text().includes('contains')){
             //     tabledata.push({parentInstance: "ALL", childInstance: 'ALL'});
             // }
@@ -226,6 +215,7 @@ export default {
         },
         showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, resourceName, activityName){
             console.log("--> Show ALLOCATION modal")
+            console.log(this.$store.state.allocatedLinks)
             //get data table for the selected res or act type
             $('#alloc-selector').show()
             $('#add-row').text('Add allocation between instances')
