@@ -78,25 +78,16 @@ export default {
         //     console.log("inst example ", instanceExample)
         //     this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName).instanceTableData.push(instanceExample)
         // },
-        addRow(e){
-            console.log("---> addRow e: ", e)
+        addRow(){
             if ($('#add-row').text().includes('resource')){
                 let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
-                console.log("resourceInstance ", resourceInstance)
                 let newName = this.instanceName + "_Resource_instance_" + resourceInstance.instanceTableData.length;
-                console.log("newName ", newName)
-                // let instanceName = modalInstanceName;
-                // let resourceInstance = this.dm3kgraph.getResourceInstance(instanceName);
-                // this.addDefaultRow(newName);
                 let instanceExample = {name: newName};
                 let budgetNameList = resourceInstance.budgetNameList;
-                console.log("budgetNameList ", budgetNameList)
                 for (let budgetName of budgetNameList) {
-                    console.log("budgetName ", budgetName)
                     instanceExample["budget_"+budgetName] = 1;
                 }
-                console.log("inst example ", instanceExample)
-                this.$store.commit('addResourceInstance', {resName : this.instanceName, newInstance: instanceExample})
+                this.$store.commit('addResourceInstance', {instanceName : this.instanceName, newInstance: instanceExample})
             }
             // if ($('#add-row').text().includes('allocation')) {
             //     tabledata.push({resourceInstance: "ALL", activityInstance: 'ALL'})
@@ -104,17 +95,16 @@ export default {
             // if ($('#add-row').text().includes('contains')){
             //     tabledata.push({parentInstance: "ALL", childInstance: 'ALL'});
             // }
-            // if ($('#add-row').text().includes('activity')){
-            //     let resOrAct = 'Activity'
-            //     let modalTableName = instanceName+"_"+resOrAct+"_instance";
-			//     let lastEntryArray = tabledata[tabledata.length-1].name.split("_");
-			//     let modalTableNameCnt = parseInt(lastEntryArray[lastEntryArray.length - 1]);
-            //     modalTableNameCnt += 1
-            //     let newName = modalTableName +"_"+modalTableNameCnt;
-            //     let instanceName = modalInstanceName;
-            //     let activityInstance = dm3kgraph.getActivityInstance(instanceName);
-            //     activityInstance.addDefaultRow(newName)
-            // }
+            if ($('#add-row').text().includes('activity')){
+                let activityInstance = this.$store.state.activityInstances.filter(x=>x.label == this.instanceName)[0];
+                let newName = this.instanceName + "_Activity_instance_" + activityInstance.instanceTableData.length;
+                console.log("activityInstance ", activityInstance)
+                let instanceExample = {name: newName, reward: 1};
+                for (const costName of activityInstance.costNameList) {
+                    instanceExample["cost_"+costName] = 1;
+                }
+                this.$store.commit('addActivityInstance', {instanceName : this.instanceName, newInstance: instanceExample})
+            }
         },
         removeRow(label, tabledata){
             // TO DO: this won't work. Needs to access store.
@@ -128,7 +118,6 @@ export default {
             let cellId = event.detail.id;
             let cellName = event.detail.name;
             let cellType = event.detail.type;   // 'Resource'  or 'Activity' or 'Contains' or 'AllocatedTo'
-            // let eventDetail = event.detail
             let instanceType = cellId;
             let instanceName = cellName;
             let resOrAct = cellType;
@@ -192,6 +181,7 @@ export default {
                 "You may also assign each instance with a <b>cost</b> and a <b>reward</b>."
                 $('#add-row').text('Add activity instance')
                 tabledata = this.$store.state.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                console.log("---> Activity tabledata ", tabledata)
                 tablecols = [
                         {title: "", formatter:this.minusButton, width:5, hozAlign:"center", cellClick:
                             function(e, cell){
@@ -224,12 +214,6 @@ export default {
                     tablecols.push({title:"Budget ("+b+")", field:"budget_"+b, hozAlign:"left", sorter:"number", editor:"input"})
                 } 
             }
-            
-            // Make it easier to add activities and resources
-            // modalTableName = instanceName+"_"+resOrAct+"_instance";
-            // let lastEntryArray = tabledata[tabledata.length-1].name.split("_");
-            // modalTableNameCnt = parseInt(lastEntryArray[lastEntryArray.length - 1]);
-
                     new Tabulator(this.$refs.table, {
                     height:this.TABLEHEIGHT,
                     addRowPos:"bottom",
