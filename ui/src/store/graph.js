@@ -36,6 +36,10 @@ export default new Vuex.Store({
     addActivityInstance(state, actPayload){
       let actName = actPayload['instanceName']
       let activityInstanceObj = actPayload['newInstance']
+<<<<<<< HEAD
+=======
+      console.log("-- Within store. Pushing new act inst: ", activityInstanceObj)
+>>>>>>> 700db81224dd8330c639219f1d7a537a1c70da7c
       state.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.push(activityInstanceObj)
     },
     addAllocation(state, allocObj) {
