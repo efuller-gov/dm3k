@@ -239,7 +239,7 @@ export default {
 
             console.log("activityName ", activityName)
             console.log("resourceName ", resourceName)
-
+            console.log("this.$store.state.allocatedToInstances ", this.$store.state.allocatedToInstances)
             let tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName)).map(x=>x.instanceTableData[0]);
             console.log("allocation inst table data ", tabledata)
             // let tabledata = []
