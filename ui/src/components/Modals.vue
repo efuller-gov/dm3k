@@ -60,13 +60,11 @@ export default {
            TABLELAYOUT : "fitColumns",
            instanceName : [],
            resourceName : [],
-           activityName : []
+           activityName : [],
+           xIcon: require("../assets/x-icon.svg")
         }
     },
     methods:{
-        minusButton(){
-            return "<span class='remove-button-class'></span>";
-        },
         addRow(){
             if ($('#add-row').text().includes('resource')){
                 let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
@@ -174,7 +172,7 @@ export default {
                 tabledata = this.$store.state.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 console.log("---> Activity tabledata ", tabledata)
                 tablecols = [
-                        {title: "", formatter:this.minusButton, width:5, hozAlign:"center", cellClick:
+                        {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                             function(e, cell){
                             let label = cell.getRow().getData().name
                             this.removeRow(label, tabledata)}
@@ -195,7 +193,7 @@ export default {
                 // Get tabledata for this resource from the graph
                 tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [
-                        {title: "", formatter:this.minusButton, width:5, hozAlign:"center", cellClick:
+                        {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                             function(e, cell){
                             let label = cell.getRow().getData().name
                             this.removeRow(label, tabledata)}
@@ -242,10 +240,9 @@ export default {
             console.log("this.$store.state.allocatedToInstances ", this.$store.state.allocatedToInstances)
             let tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName)).map(x=>x.instanceTableData[0]);
             console.log("allocation inst table data ", tabledata)
-            // let tabledata = []
 
             let tablecols = [
-                    {title: "", formatter:this.minusButton, width:5, hozAlign:"center", cellClick:
+                    {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                         function(e, cell){
                         let label = cell.getRow().getData().name
                         this.removeRow(label, tabledata)}
@@ -277,5 +274,13 @@ export default {
 }
 </script>
 
-<style scoped>
-  </style
+<style>
+span.remove-button-class{
+  background: url("../assets/x-icon.svg") no-repeat top left;
+  background-size: contain;
+  cursor: pointer;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+}
+</style
