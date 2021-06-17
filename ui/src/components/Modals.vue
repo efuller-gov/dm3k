@@ -235,8 +235,11 @@ export default {
             
             //tabledata = res_tabledata;
             // TODO: How am I going to lookup allocations from here?
-            // let tabledata = graph.getAllocatedToInstance(resourceName, activityName).instanceTableData;
-            let tabledata = []
+            console.log("activityName ", activityName)
+            console.log("resourceName ", resourceName)
+            console.log("this.$store.allocatedToInstances ", this.$store.state.allocatedToInstances)
+            let tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
+            // let tabledata = []
 
             let tablecols = [
                     {title: "", formatter:this.minusButton, width:5, hozAlign:"center", cellClick:
