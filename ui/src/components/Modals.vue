@@ -58,7 +58,9 @@ export default {
         return{
            TABLEHEIGHT :  "300px",
            TABLELAYOUT : "fitColumns",
-           instanceName : []
+           instanceName : [],
+           resourceName : [],
+           activityName : []
         }
     },
     methods:{
@@ -79,7 +81,7 @@ export default {
             if ($('#add-row').text().includes('allocation')) {
                 console.log("Allocation modal")
                 console.log(this.$store.state.allocatedLinks)
-                // tabledata.push({resourceInstance: "ALL", activityInstance: 'ALL'})
+                this.$store.commit('addCanBeAllocatedTo', {existingResName: this.resourceName, actName: this.activityName})
             }
             // if ($('#add-row').text().includes('contains')){
             //     tabledata.push({parentInstance: "ALL", childInstance: 'ALL'});
@@ -215,6 +217,8 @@ export default {
         },
         showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, resourceName, activityName){
             console.log("--> Show ALLOCATION modal")
+            this.resourceName = resourceName
+            this.activityName = activityName
             console.log(this.$store.state.allocatedLinks)
             //get data table for the selected res or act type
             $('#alloc-selector').show()
@@ -232,13 +236,12 @@ export default {
             let activity_instances = act_tabledata.map(x => x.name)
             resource_instances.push('ALL')
             activity_instances.push('ALL')
-            
-            //tabledata = res_tabledata;
-            // TODO: How am I going to lookup allocations from here?
+
             console.log("activityName ", activityName)
             console.log("resourceName ", resourceName)
-            console.log("this.$store.allocatedToInstances ", this.$store.state.allocatedToInstances)
-            let tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
+
+            let tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName)).map(x=>x.instanceTableData[0]);
+            console.log("allocation inst table data ", tabledata)
             // let tabledata = []
 
             let tablecols = [

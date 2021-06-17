@@ -45,6 +45,7 @@ export default new Vuex.Store({
       let ai = new AllocationInstance(allocObj['existingResName'], allocObj['actName']);
       console.log("--> AllocationInstance", ai)
       state.allocatedToInstances.push(ai);
+      console.log("--> state.allocatedToInstances ", state.allocatedToInstances)
     }
   },
   actions: {}
