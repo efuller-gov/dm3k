@@ -378,7 +378,6 @@ export default {
                         newRewardName: newRewardName,
                     }
                 )
-                console.log("store: ", this.$store.state)
             }
         this.resetResourcePrompt()
         // this.resetActivityPrompt()

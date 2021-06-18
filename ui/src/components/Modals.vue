@@ -77,8 +77,6 @@ export default {
                 this.$store.commit('addResourceInstance', {instanceName : this.instanceName, newInstance: instanceExample})
             }
             if ($('#add-row').text().includes('allocation')) {
-                console.log("Allocation modal")
-                console.log(this.$store.state.allocatedLinks)
                 this.$store.commit('addCanBeAllocatedTo', {existingResName: this.resourceName, actName: this.activityName})
             }
             // if ($('#add-row').text().includes('contains')){
@@ -87,7 +85,6 @@ export default {
             if ($('#add-row').text().includes('activity')){
                 let activityInstance = this.$store.state.activityInstances.filter(x=>x.label == this.instanceName)[0];
                 let newName = this.instanceName + "_Activity_instance_" + activityInstance.instanceTableData.length;
-                console.log("activityInstance ", activityInstance)
                 let instanceExample = {name: newName, reward: 1};
                 for (const costName of activityInstance.costNameList) {
                     instanceExample["cost_"+costName] = 1;
@@ -170,19 +167,15 @@ export default {
                 "You may also assign each instance with a <b>cost</b> and a <b>reward</b>."
                 $('#add-row').text('Add activity instance')
                 tabledata = this.$store.state.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
-                console.log("---> Activity tabledata ", tabledata)
                 tablecols = [
                         {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                             function(e, cell){
                             let label = cell.getRow().getData().name
-                            // this.removeRow(label, tabledata)
-                            console.log("remove row")
-                            console.log("label ", label)
-                            console.log("tabledata ", tabledata)
+                            removeRow(label)
                             }
                         },
                         {title: instanceName+" instance name", field:"name", editor:"input"},
-                    ]
+                ]
                 for (let c of costName) {
                     tablecols.push({title:"Cost ("+c+")", field:"cost_"+c, hozAlign:"left", sorter:"number", editor:"input"})
                 }
@@ -197,114 +190,96 @@ export default {
                 // Get tabledata for this resource from the graph
                 tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [
-                        {title: "", formatter:"buttonCross", width:5, hozAlign:"center", 
-                        cellClick: function(e, cell){
-                                let label = cell.getRow().getData().name
-                                // this.removeRow(label, tabledata)
-                                console.log("remove row")
-                                console.log("label ", label)
-                                console.log("tabledata ", tabledata)
-                                console.log("this.resource")
-                                console.log(instanceName)
-                                console.log(resOrAct)
-                                // HERE
-                                console.log("-----> commit removeResourceInstnace")
-                                removeRow(label)
-                                // removeRow({name: instanceName, instanceName: label})
-                                // this.$store.commit('removeResourceInstance', {name: instanceName, instanceName: label})
-                            }
-                        },
-                        {title: instanceName + " instance name", field:"name", editor:"input"}]
-                    console.log("tabledata ", this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData)
+                    {title: "", formatter:"buttonCross", width:5, hozAlign:"center", 
+                    cellClick: function(e, cell){
+                            let label = cell.getRow().getData().name
+                            removeRow(label)
+                        }
+                    },
+                    {title: instanceName + " instance name", field:"name", editor:"input"}
+                ]
                 for (let b of budgetName) {
                     tablecols.push({title:"Budget ("+b+")", field:"budget_"+b, hozAlign:"left", sorter:"number", editor:"input"})
                 } 
             }
-                    new Tabulator(this.$refs.table, {
-                    height:this.TABLEHEIGHT,
-                    addRowPos:"bottom",
-                    reactiveData: true,
-                    data: tabledata,
-                    layout:this.TABLELAYOUT,
-                    columns:tablecols,
+            new Tabulator(this.$refs.table, {
+                height:this.TABLEHEIGHT,
+                addRowPos:"bottom",
+                reactiveData: true,
+                data: tabledata,
+                layout:this.TABLELAYOUT,
+                columns:tablecols,
             });
             $('#table-title').html(titleText)
         },
         showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, resourceName, activityName){
+            
+            function removeRow(label){
+                tabledata.pop(tabledata.filter(x=>x.label==label))
+            }
+
+            let titleText = ''
+            let tablecols = [];
+            let tabledata = [];
+
             console.log("--> Show ALLOCATION modal")
             this.resourceName = resourceName
             this.activityName = activityName
-            console.log(this.$store.state.allocatedLinks)
-            //get data table for the selected res or act type
             $('#alloc-selector').show()
             $('#add-row').text('Add allocation between instances')
             let modal = document.querySelector(".modal")
             modal.style.display = "block"
             modal.style.display = "block"
 
-            let titleText = ''
             //Columns are Instances of resources | Dropdowns for all available instances of activities
             titleText = "Allocated individual resource instances of <b> " + resourceName + " </b>to activity instances of <b>" + activityName + "</b>."
-            let res_tabledata = this.$store.state.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData;
-            let act_tabledata = this.$store.state.activityInstances.filter(x => x.label == activityName)[0].instanceTableData;
-            let resource_instances = res_tabledata.map(x => x.name)
-            let activity_instances = act_tabledata.map(x => x.name)
+            let resource_instances = this.$store.state.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData.map(x => x.name)
+            let activity_instances = this.$store.state.activityInstances.filter(x => x.label == activityName)[0].instanceTableData.map(x => x.name)
             resource_instances.push('ALL')
             activity_instances.push('ALL')
+        
+            // tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName)).map(x=>x.instanceTableData[0]);
+            tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
+            console.log("tabledata ", tabledata)
 
-            console.log("activityName ", activityName)
-            console.log("resourceName ", resourceName)
-            console.log("this.$store.state.allocatedToInstances ", this.$store.state.allocatedToInstances)
-            let tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName)).map(x=>x.instanceTableData[0]);
-            console.log("allocation inst table data ", tabledata)
-
-            let tablecols = [
-                    {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
-                        function(e, cell){
+            tablecols = [
+                {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
+                    function(e, cell){
                         let label = cell.getRow().getData().name
-                        // this.removeRow(label, tabledata)
                         console.log("remove row")
                         console.log("label ", label)
                         console.log("tabledata ", tabledata)
-                        }
-                    },
-                    {title: "resource type: "+resourceName, field:"resourceInstance", width:200, editor:"select",
-                        editorParams: {
-                            values: resource_instances,
-                            defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
-                            verticalNavigation:"hybrid"}},
-                    {title: "activity type: "+activityName, field:"activityInstance", width:200, hozAlign:"left",
-                        editor:"select",
-                        editorParams: {
-                            values: activity_instances,
-                            defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
-                            verticalNavigation:"hybrid"},
+                        removeRow(label)
                     }
-                ]
-            new Tabulator("#modal-instance-table", {
-                    height:this.TABLEHEIGHT,
-                    addRowPos:"bottom",
-                    reactiveData: true,
-                    data: tabledata,
-                    layout:this.TABLELAYOUT,
-                    columns:tablecols,
+                },
+                {title: "resource type: "+resourceName, field:"resourceInstance", width:200, 
+                    editor:"select",
+                    editorParams: {
+                        values: resource_instances,
+                        defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
+                        verticalNavigation:"hybrid"}},
+                {title: "activity type: "+activityName, field:"activityInstance", width:200, hozAlign:"left",
+                    editor:"select",
+                    editorParams: {
+                        values: activity_instances,
+                        defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
+                        verticalNavigation:"hybrid"},
+                }
+            ]
+            console.log(tablecols)
+            new Tabulator(this.$refs.table, {
+                height:this.TABLEHEIGHT,
+                addRowPos:"bottom",
+                reactiveData: true,
+                data: tabledata,
+                layout:this.TABLELAYOUT,
+                columns:tablecols,
             });
             $('#table-title').html(titleText)
         }
     }
 }
-// function removeRow(obj){
-//     this.$store.commit('removeResourceInstance', obj)
-// }
 </script>
 
 <style>
-span.remove-button-class{
-  background: url("../assets/x-icon.svg") no-repeat top left;
-  background-size: contain;
-  cursor: pointer;
-  display: inline-block;
-  height: 10px;
-  width: 10px;
-}
 </style

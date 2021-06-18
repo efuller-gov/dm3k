@@ -31,7 +31,7 @@ export default {
       },
       addActivity(activityObj){
         this.$store.commit('addActivity', activityObj)
-        this.$store.commit('addCanBeAllocatedTo', activityObj)
+        // this.$store.commit('addCanBeAllocatedTo', activityObj)
       },
   }
 }
