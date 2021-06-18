@@ -146,7 +146,8 @@ export default {
         showActResModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName){
 
             function removeRow(label){
-                tabledata.pop(tabledata.filter(x=>x.label==label))
+                let ind = tabledata.findIndex(x=>x.name==label)
+                tabledata.splice(ind, 1)
             }
             let tablecols = [];
             let tabledata = [];
@@ -214,8 +215,9 @@ export default {
         },
         showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, resourceName, activityName){
             
-            function removeRow(label){
-                tabledata.pop(tabledata.filter(x=>x.label==label))
+            function removeRow(dataObj){
+                let ind = tabledata.findIndex(x=>((x.activityInstance==dataObj.activityInstance) && (x.resourceInstance==dataObj.resourceInstance)))
+                tabledata.splice(ind, 1)
             }
 
             let titleText = ''
@@ -238,18 +240,16 @@ export default {
             resource_instances.push('ALL')
             activity_instances.push('ALL')
         
-            // tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName)).map(x=>x.instanceTableData[0]);
             tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
             console.log("tabledata ", tabledata)
 
             tablecols = [
                 {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                     function(e, cell){
-                        let label = cell.getRow().getData().name
-                        console.log("remove row")
-                        console.log("label ", label)
+                        console.log("----- remove row")
+                        console.log("cell.getRow().getData() ", cell.getRow().getData())
                         console.log("tabledata ", tabledata)
-                        removeRow(label)
+                        removeRow(cell.getRow().getData())
                     }
                 },
                 {title: "resource type: "+resourceName, field:"resourceInstance", width:200, 
