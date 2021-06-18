@@ -1,6 +1,7 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
+import {AllocationInstance} from '../js/dm3kgraph/dataClasses';
 
 Vue.use(Vuex);
 
@@ -24,19 +25,35 @@ export default new Vuex.Store({
     addResource(state, resourceObj) {
       state.resources.push(resourceObj)
     },
+    addResourceInstance(state, resPayload){
+      let resName = resPayload['instanceName']
+      let resourceInstanceObj = resPayload['newInstance']
+      state.resourceInstances.filter(x=>x.label==resName)[0].instanceTableData.push(resourceInstanceObj)
+    },
     addActivity(state, activityObj) {
-      console.log("--> store addActivity: ")
       state.activities.push(activityObj);
-      console.log("activityObj ", activityObj)
+      // Add AllocationInstance when first create
+      let ai = new AllocationInstance(activityObj['existingResName'], activityObj['actName']);
+      state.allocatedToInstances.push(ai);
+    },
+    addActivityInstance(state, actPayload){
+      let actName = actPayload['instanceName']
+      let activityInstanceObj = actPayload['newInstance']
+      state.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.push(activityInstanceObj)
     },
     addAllocation(state, allocObj) {
-      // --allocObj--
-      // actName: actName,
-      // existingResName: existingResName,
-      console.log("--> store addAllocation: ")
       state.allocatedLinks.push(allocObj);
-      console.log("allocObj ", allocObj)
-      // console.log("state: ", state)
+      let ai = new AllocationInstance(allocObj['existingResName'], allocObj['actName']);
+      state.allocatedToInstances.push(ai);
+    },
+    addCanBeAllocatedTo(state, allocObj){
+      state.allocatedToInstances.filter(x=>(x.actName==allocObj['actName'] && x.resName==allocObj['existingResName']))[0].instanceTableData.push(
+        { activityInstance: "ALL",
+          resourceInstance: "ALL"}
+      );
+    },
+    removeResourceInstance(state, resObj){
+      state.resourceInstances.filter(x=>x.label==resObj['name'])[0]
     }
   },
   actions: {}

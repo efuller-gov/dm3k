@@ -62,9 +62,6 @@
         loadDm3kGraph() {
             this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
-        showInstanceModal(){
-          console.log("!!!! SHOW MODAL")
-        },
         addListener(){
           let container = document.getElementById('graphContainer')
           container.addEventListener('CircleIClicked', this.emitModal)

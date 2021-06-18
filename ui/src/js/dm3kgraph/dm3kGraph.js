@@ -349,7 +349,7 @@ export class Dm3kGraph {
             if (existingResName.length > 0) {
                 this.addCanBeAllocatedTo(existingResName, newActName);
             } else {
-                // console.log("Didnt find allocated link for " + existingResName);
+                console.log("Didnt find allocated link for " + existingResName);
             }
         } catch (err) {
             ans.success = false;
