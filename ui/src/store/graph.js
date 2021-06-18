@@ -32,11 +32,9 @@ export default new Vuex.Store({
     },
     addActivity(state, activityObj) {
       state.activities.push(activityObj);
-      console.log("____addActivity paylod", activityObj)
       // Add AllocationInstance when first create
       let ai = new AllocationInstance(activityObj['existingResName'], activityObj['actName']);
       state.allocatedToInstances.push(ai);
-      console.log("__result state.allocatedToInstances ", state.allocatedToInstances)
     },
     addActivityInstance(state, actPayload){
       let actName = actPayload['instanceName']
@@ -44,24 +42,17 @@ export default new Vuex.Store({
       state.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.push(activityInstanceObj)
     },
     addAllocation(state, allocObj) {
-      console.log("addAllocation paylod", allocObj)
       state.allocatedLinks.push(allocObj);
       let ai = new AllocationInstance(allocObj['existingResName'], allocObj['actName']);
       state.allocatedToInstances.push(ai);
     },
     addCanBeAllocatedTo(state, allocObj){
-      // let ai = new AllocationInstance(allocObj['existingResName'], allocObj['actName']);
-      console.log("--> ADD AllocationInstance to..." )
-      console.log("allocObj ", allocObj)
-      console.log("state.allocatedToInstances ", state.allocatedToInstances)
       state.allocatedToInstances.filter(x=>(x.actName==allocObj['actName'] && x.resName==allocObj['existingResName']))[0].instanceTableData.push(
         { activityInstance: "ALL",
           resourceInstance: "ALL"}
       );
-      console.log("--> RESULT state.allocatedToInstances ", state.allocatedToInstances)
     },
     removeResourceInstance(state, resObj){
-      console.log("-----> REMOVE RES INSTANCE ", state.resourceInstances.filter(x=>x.label==resObj['name'])[0])
       state.resourceInstances.filter(x=>x.label==resObj['name'])[0]
     }
   },

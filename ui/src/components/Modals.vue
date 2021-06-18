@@ -224,7 +224,6 @@ export default {
             let tablecols = [];
             let tabledata = [];
 
-            console.log("--> Show ALLOCATION modal")
             this.resourceName = resourceName
             this.activityName = activityName
             $('#alloc-selector').show()
@@ -241,14 +240,10 @@ export default {
             activity_instances.push('ALL')
         
             tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
-            console.log("tabledata ", tabledata)
 
             tablecols = [
                 {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                     function(e, cell){
-                        console.log("----- remove row")
-                        console.log("cell.getRow().getData() ", cell.getRow().getData())
-                        console.log("tabledata ", tabledata)
                         removeRow(cell.getRow().getData())
                     }
                 },
@@ -266,7 +261,6 @@ export default {
                         verticalNavigation:"hybrid"},
                 }
             ]
-            console.log(tablecols)
             new Tabulator(this.$refs.table, {
                 height:this.TABLEHEIGHT,
                 addRowPos:"bottom",
