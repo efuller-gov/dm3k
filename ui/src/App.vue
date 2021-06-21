@@ -6,6 +6,7 @@
       @add-resource="addResource" 
       @add-existing-allocation="addAllocation"  
       @add-new-allocation="addActivity"
+      @clear-graph="clearGraph"
     />
   </div>
 </template>
@@ -32,6 +33,9 @@ export default {
       addActivity(activityObj){
         this.$store.commit('addActivity', activityObj)
       },
+      clearGraph(){
+        // this.$store.commit('clearGraph')
+      }
   }
 }
 </script>

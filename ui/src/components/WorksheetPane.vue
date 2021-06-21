@@ -155,7 +155,7 @@
 				<button @click="worksheetUtil_hideShowWorksheet()" id="hide-worksheet-button" class='zoom-button'>Hide worksheet</button>
 				<p class="title-text"><b>Load, save, and submit diagrams.</b></p>
 				<!-- <p>Load diagram from local machine</p> -->
-				<input type="button" class="done-button" value="Load existing diagram" onclick="getFile()"><br><br><br>
+				<input @click.self="getConfigFile" type="button" class="done-button" value="Load existing diagram"><br><br><br>
 				<div style='height: 0px;width: 0px;overflow: hidden;'><input type="file" id="loadLocally" accept="application/json"></div>
 				<!-- <p>Save diagram to work on later</p> -->
 				<label for="diagramName">Save current diagram as </label>
@@ -347,10 +347,8 @@ export default {
                 return
             }
             // Allocate to existing activity
-            // if ($("#actType").val() == 'a new activity'){
             if ($("#existing-allocation").hasClass("enabled")){
                 let actName = $("#actTypeExisting").val();
-                // TODO: push to store's allocationLinks
                 this.$emit('add-existing-allocation', 
                     {
                         actName: actName,
@@ -379,8 +377,8 @@ export default {
                     }
                 )
             }
-        this.resetResourcePrompt()
-        // this.resetActivityPrompt()
+            this.resetResourcePrompt()
+            // this.resetActivityPrompt()
         },
         containsTab(){
             $(".menu-button").removeClass('enabled')
@@ -428,10 +426,86 @@ export default {
                 $('#actName').removeAttr('disabled');
                 $('#rewardName').removeAttr('disabled');
             }
+        },
+        getConfigFile(){
+            
+            this.$emit('clear-graph')
+
+            let promise = new Promise(function(resolve) {
+                $('#loadLocally').trigger('click')
+
+                // Load a file from local storage
+                $("#loadLocally").change(function(e) {
+                    console.log("Loading a file from local...")
+                    const file = e.target.files[0];
+                    if (!file) {
+                        return;
+                    }
+
+                    var reader = new FileReader()
+                    reader.onload = function(e) {
+                        var inputJsonString = e.target.result;
+                        
+                        // clear and redraw the graph
+                        var inputJson = JSON.parse(inputJsonString);
+                        this.inputJson = inputJson;
+                        resolve(inputJson)
+                        // return inputJson
+                        // dm3kconversion_reverse(dm3kgraph, inputJson);
+                        // // update the worksheets and make sure all worksheets are enabled
+                        // updateAllDropDowns(dm3kgraph);
+                        // $('#allocate-resources-button').removeClass('disabled')
+                        // $('#contains-button').removeClass('disabled')
+                        // $('#constrain-allocations-button').removeClass('disabled')
+                        // $('#actTypeExisting').removeClass('disabled')
+                    }
+                    reader.readAsText(file);
+                })
+            });
+
+            // resolve runs the first function in .then
+            promise.then(
+                result => this.readFromJson(result),
+                error => alert(error)
+            );
+        },
+        readFromJson(inputJson){
+            console.log(">> readFromJson: inputJson ", inputJson)
+            // for (let rc of [{resType: "container", resName: "backpack", budgetNameList: ["space"], newBudgetNameList: ["space"]},
+            //                     {resType: "item", resName: "campigItem", budgetNameList: ["space"], newBudgetNameList: ["space"]}]) {
+            //             console.log(rc)
+            //             this.$emit('add-resource', 
+            //                 {
+            //                     resType:  rc.resType,
+            //                     resName: rc.resName,
+            //                     budgetNameList: rc.budgetNameList,
+            //                     newBudgetNameList: rc.newBudgetNameList
+            //                 }
+            //             )
+            //         }
+
+            for (let rc of inputJson.resourceClasses) {
+                console.log(rc)
+                console.log({
+                        resType:  rc.typeName,
+                        resName: rc.className,
+                        budgetNameList: rc.budgets,
+                        newBudgetNameList: rc.budgets
+                    })
+                this.$emit('add-resource', 
+                    {
+                        resType:  rc.typeName,
+                        resName: rc.className,
+                        budgetNameList: rc.budgets,
+                        newBudgetNameList: rc.budgets
+                    }
+                )
+            }
         }
     },
     data() {
         return{
+            inputJson: [],
             helper_images_info: [
                 {
                     'worksheet': 'create-resources',
@@ -518,7 +592,7 @@ export default {
             ],
         }
     },
-    emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation'],
+    emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation', 'clear-graph'],
     watch: {
         '$store.state.resources': {
             deep: true,
