@@ -291,7 +291,8 @@ export default {
                     resType: newResType,
                     resName: newResName,
                     budgetNameList: budgetNameList,
-                    newBudgetNameList: newBudgetNameList
+                    newBudgetNameList: newBudgetNameList,
+                    drawn: false
                 }
             )
 
@@ -446,7 +447,6 @@ export default {
                     reader.onload = function(e) {
                         var inputJsonString = e.target.result;
                         
-                        // clear and redraw the graph
                         var inputJson = JSON.parse(inputJsonString);
                         this.inputJson = inputJson;
                         resolve(inputJson)
@@ -471,33 +471,25 @@ export default {
         },
         readFromJson(inputJson){
             console.log(">> readFromJson: inputJson ", inputJson)
-            // for (let rc of [{resType: "container", resName: "backpack", budgetNameList: ["space"], newBudgetNameList: ["space"]},
-            //                     {resType: "item", resName: "campigItem", budgetNameList: ["space"], newBudgetNameList: ["space"]}]) {
-            //             console.log(rc)
-            //             this.$emit('add-resource', 
-            //                 {
-            //                     resType:  rc.resType,
-            //                     resName: rc.resName,
-            //                     budgetNameList: rc.budgetNameList,
-            //                     newBudgetNameList: rc.newBudgetNameList
-            //                 }
-            //             )
-            //         }
-
             for (let rc of inputJson.resourceClasses) {
-                console.log(rc)
-                console.log({
-                        resType:  rc.typeName,
-                        resName: rc.className,
-                        budgetNameList: rc.budgets,
-                        newBudgetNameList: rc.budgets
-                    })
                 this.$emit('add-resource', 
                     {
                         resType:  rc.typeName,
                         resName: rc.className,
                         budgetNameList: rc.budgets,
-                        newBudgetNameList: rc.budgets
+                        newBudgetNameList: rc.budgets,
+                        drawn: false
+                    }
+                )
+            }
+            for (let ac of inputJson.activityClasses) {
+                console.log("add new ac: ", ac)
+                this.$emit('add-new-allocation', 
+                    {
+                        actName: ac.className,
+                        newActType: ac.typeName,
+                        // existingResName: existingResName,
+                        // newRewardName: newRewardName,
                     }
                 )
             }

@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <GraphRenderer />
+    <GraphRenderer 
+     @clear-graph="clearGraph"
+    />
     <Modals />
     <WorksheetPane 
       @add-resource="addResource" 
@@ -26,6 +28,7 @@ export default {
   methods: {
       addResource(resourceObj){
         this.$store.commit('addResource', resourceObj)
+        console.log("added resource: ", this.$store.state.resources)
       },
       addAllocation(activityObj){
         this.$store.commit('addAllocation', activityObj)
@@ -34,7 +37,7 @@ export default {
         this.$store.commit('addActivity', activityObj)
       },
       clearGraph(){
-        // this.$store.commit('clearGraph')
+        this.$store.commit('clearGraph')
       }
   }
 }
