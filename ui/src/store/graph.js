@@ -51,9 +51,11 @@ export default new Vuex.Store({
       console.log("---- In STORE add res instnace ", state.resourceInstances)
     },
     addActivity(state, activityObj) {
+      console.log("----> IN STORE, addActivity ", activityObj)
       state.activities.push(activityObj);
       // Add AllocationInstance when first create
       let ai = new AllocationInstance(activityObj['existingResName'], activityObj['actName']);
+      console.log("ai ", ai)
       state.allocatedToInstances.push(ai);
     },
     addActivityInstance(state, actPayload){

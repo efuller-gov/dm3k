@@ -9,6 +9,7 @@ export class AllocationInstance {
         this.actName = actClassName;
         this.instanceTableData = [];
         this.addToInstanceTable('ALL', 'ALL')
+        this.drawn = false
     }
 
     addToInstanceTable(resInstanceName, actInstanceName) {

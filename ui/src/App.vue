@@ -11,8 +11,6 @@
       @add-new-allocation="addActivity"
       @add-contains="addContains"
       @clear-graph="clearGraph"
-      @zoom-in="addActivity"
-      @zoom-out="clearGraph"
     />
   </div>
 </template>
@@ -41,6 +39,7 @@ export default {
         this.$store.commit('addAllocation', activityObj)
       },
       addActivity(activityObj){
+        console.log("--add activity")
         this.$store.commit('addActivity', activityObj)
       },
       addContains(containsObj){

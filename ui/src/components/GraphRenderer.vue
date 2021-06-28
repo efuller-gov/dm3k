@@ -47,6 +47,7 @@
             deep: true,
             handler(activities) {
                 console.log("----> activities", activities)
+                console.log("activities.filter(x=>x.drawn==false) ", activities.filter(x=>x.drawn==false))
                 // let latest = activities[activities.length-1]
                 for (let latest of activities.filter(x=>x.drawn==false)){
                   let newActType = latest.newActType

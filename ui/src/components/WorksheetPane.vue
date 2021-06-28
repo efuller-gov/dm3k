@@ -361,6 +361,7 @@ export default {
                         actName: actName,
                         existingResName: existingResName,
                         newRewardName: newRewardName,
+                        drawn: false
                     }
                 )
             }
@@ -381,6 +382,7 @@ export default {
                         newActType: newActType,
                         existingResName: existingResName,
                         newRewardName: newRewardName,
+                        drawn: false
                     }
                 )
             }
