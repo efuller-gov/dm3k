@@ -9,6 +9,8 @@
       @add-existing-allocation="addAllocation"  
       @add-new-allocation="addActivity"
       @clear-graph="clearGraph"
+      @zoom-in="addActivity"
+      @zoom-out="clearGraph"
     />
   </div>
 </template>
@@ -29,7 +31,6 @@ export default {
   methods: {
       addResource(resourceObj){
         this.$store.commit('addResource', resourceObj)
-        // console.log("added resource: ", this.$store.state.resources)
       },
       addAllocation(activityObj){
         this.$store.commit('addAllocation', activityObj)

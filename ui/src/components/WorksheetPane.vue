@@ -3,8 +3,8 @@
         <div id="menu">
             <div id="worksheet_menu_column">
                 <div id='zoom-buttons'>
-					<button id="zoomIn" class='zoom-button'>+</button>
-					<button id="zoomOut" class='zoom-button'>-</button>
+					<button @click="zoomIn" id="zoomIn" class='zoom-button'>+</button>
+					<button @click="zoomOut" id="zoomOut" class='zoom-button'>-</button>
 					<!-- <b class="title-text">Version name</b> -->
 				</div>
                 <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
@@ -184,6 +184,13 @@ import {ActivityInstance} from '../js/dm3kgraph/dataClasses';
 export default {
     name: 'WorksheetPane',
     methods: {
+        zoomIn(){
+            // dm3kgraph.graph.zoomIn()
+            this.$root.$emit('zoom-in')            
+		},
+        zoomOut(){
+            this.$root.$emit('zoom-out')            
+		},
         populateResourcesFromWB() {
             $.each(this.RESOURCE_WORD_BANK, function (i, item) {
                 $('#resType').append($('<option>', {
@@ -430,7 +437,7 @@ export default {
         },
         getConfigFile(){
             
-            this.$emit('clear-graph')
+            // this.$emit('clear-graph')
             
             let promise = new Promise(function(resolve) {
                 $('#loadLocally').trigger('click')
@@ -484,14 +491,22 @@ export default {
             }
             for (let ac of inputJson.activityClasses) {
                 console.log("add new ac: ", ac)
-                this.$emit('add-new-allocation', 
-                    {
-                        actName: ac.className,
-                        newActType: ac.typeName,
-                        // existingResName: existingResName,
-                        // newRewardName: newRewardName,
-                    }
-                )
+                // LEFT OFF HERE: I NEED TO FIND WHAT THESE ACTS ARE ALLOCATED TO
+                // console.log("---> See if can identify res from inputJson")
+                // console.log(inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className))
+                for (let rc of inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className)) {
+                    console.log("---> See if can identify res from inputJson")
+                    console.log("rc ", rc)
+                    this.$emit('add-new-allocation', 
+                        {
+                            actName: ac.className,
+                            newActType: ac.typeName,
+                            existingResName: rc.resourceClassName,
+                            newRewardName: ac.rewards,
+                            drawn: false
+                        }
+                    )
+                }
             }
         }
     },

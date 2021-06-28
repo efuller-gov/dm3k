@@ -49,13 +49,19 @@
          '$store.state.activities': {
             deep: true,
             handler(activities) {
-                let latest = activities[activities.length-1]
-                let newActType = latest.newActType
-                let newActName = latest.actName
-                let existingResName = latest.existingResName
-                let newRewardName = latest.newRewardName
-                let costNum = 1 //REMOVE hardcoded workaround here??
-                this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
+                // let latest = activities[activities.length-1]
+                for (let latest of activities.filter(x=>x.drawn==false)){
+                  let newActType = latest.newActType
+                  let newActName = latest.actName
+                  let existingResName = latest.existingResName
+                  let newRewardName = latest.newRewardName
+                  let costNum = 1 //REMOVE hardcoded workaround here??
+                  console.log("---> In GraphRenderer: addCompleteActivity")
+                  console.log(activities)
+                  console.log("latest: ", latest)
+                  this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
+                  latest.drawn = true
+                }
             }
         },
         '$store.state.allocatedLinks': {
@@ -72,11 +78,19 @@
     },
     methods: {
         loadDm3kGraph() {
-            this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
+          this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
+        },
+        zoomIn(){
+          this.dm3kgraph.graph.zoomIn()
+        },
+        zoomOut(){
+          this.dm3kgraph.graph.zoomOut()
         },
         addListener(){
           let container = document.getElementById('graphContainer')
           container.addEventListener('CircleIClicked', this.emitModal)
+          container.addEventListener('zoom-in', this.zoomIn)
+          container.addEventListener('zoom-out', this.zoomOut)
         },
         emitModal(e){
           this.$root.$emit('show-instance-modal', e)
