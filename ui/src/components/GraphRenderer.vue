@@ -24,6 +24,7 @@
         this.addListener();
         this.$root.$on('zoomIn', this.zoomIn)
         this.$root.$on('zoomOut', this.zoomOut)
+        this.$root.$on('clear-graph', this.clearGraph)
     },
     watch: {
         '$store.state.resources': {
@@ -102,8 +103,9 @@
           this.$root.$emit('show-instance-modal', e)
         },
         clearGraph(){
-          console.log(">>>>> Clearing graph render")
-          $('#graphContainer').empty()
+          // $('#graphContainer').empty()
+          console.log("--- !!!CLEAR GRAPH IN RENDERER")
+          this.dm3kGraph.clearAll()
         }
     }
   };

@@ -10,7 +10,6 @@
       @add-existing-allocation="addAllocation"  
       @add-new-allocation="addActivity"
       @add-contains="addContains"
-      @clear-graph="clearGraph"
     />
   </div>
 </template>
@@ -47,7 +46,7 @@ export default {
       },
       clearGraph(){
         this.$store.commit('clearGraph')
-        $('#graphContainer').empty()
+        // $('#graphContainer').empty()
         // const customEvent = new CustomEvent('clear-graph-render');
         // document.dispatchEvent(customEvent);
       }

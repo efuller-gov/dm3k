@@ -25,17 +25,6 @@ export class Dm3kGraph {
         this.graph = new mxGraph(container);
         this.container = container;
 
-        // add mouse wheel handling
-        var boundMouseWheelFunction = (function(evt, up) {
-            if (up) {
-                this.graph.zoomIn();
-            }
-            else {
-                this.graph.zoomOut();
-            }
-            mxEvent.consume(evt);
-        }).bind(this);
-
         // Do not allow removing labels from parents
         this.graph.graphHandler.removeCellsFromParent = false;
         this.graph.setPanning(true);

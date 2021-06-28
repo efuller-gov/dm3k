@@ -22,21 +22,6 @@ export default new Vuex.Store({
 },
   getters: {},
   mutations: {
-    clearGraph(state) {
-      console.log("Clearing graph...")
-      state.resources = []
-      state.activities = []
-      state.allocatedLinks = []
-      state.containsLinks = []
-      state.constraints = []
-      state.resourceInstances = []
-      state.activityInstances = []
-      state.containsInstances = []
-      state.allocatedToInstances = []
-      state.rewards = {}
-      state.budgets = {}
-      state.costs = {}
-    },
     addResource(state, resourceObj) {
       state.resources.push(resourceObj)
       console.log("---- In STORE add res  ", state.resources)
