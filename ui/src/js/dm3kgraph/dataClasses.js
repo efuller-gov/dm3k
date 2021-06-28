@@ -95,7 +95,7 @@ export class ResourceInstance {
          this.allocated_to = 'ALL';
          let sample_name = ""+label+"_Resource_instance_0";
          this.addDefaultRow(sample_name)
-         console.log("Resource Instance TableData: %O", this.instanceTableData)   
+        //  console.log("Resource Instance TableData: %O", this.instanceTableData)   
      }
 
     addDefaultRow(sample_name) {

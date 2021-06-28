@@ -39,11 +39,16 @@ export default new Vuex.Store({
     },
     addResource(state, resourceObj) {
       state.resources.push(resourceObj)
+      console.log("---- In STORE add res  ", state.resources)
     },
     addResourceInstance(state, resPayload){
       let resName = resPayload['instanceName']
       let resourceInstanceObj = resPayload['newInstance']
+      console.log("---> in store, resPayload ", resPayload)
+      console.log("state.resourceInstances ", state.resourceInstances)
+      console.log("state.resourceInstances.filter(x=>x.label==resName)[0] ", state.resourceInstances.filter(x=>x.label==resName)[0])
       state.resourceInstances.filter(x=>x.label==resName)[0].instanceTableData.push(resourceInstanceObj)
+      console.log("---- In STORE add res instnace ", state.resourceInstances)
     },
     addActivity(state, activityObj) {
       state.activities.push(activityObj);

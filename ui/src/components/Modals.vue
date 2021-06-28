@@ -189,6 +189,7 @@ export default {
                 titleText = "<p>"+instanceName + ", " + instanceType+"</p>You can define any number of <b>" + instanceName + "'s</b>, a <b>"+instanceType+" resource</b>. You may also assign each instance with a <b>budget</b> amount."
                 $('#add-row').text('Add resource instance')
                 // Get tabledata for this resource from the graph
+                console.log("SHOW res intance table data ", this.$store.state.resourceInstances)
                 tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [
                     {title: "", formatter:"buttonCross", width:5, hozAlign:"center", 

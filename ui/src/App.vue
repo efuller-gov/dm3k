@@ -6,6 +6,7 @@
     <Modals />
     <WorksheetPane 
       @add-resource="addResource" 
+      @add-resource-instance="addResourceInstance" 
       @add-existing-allocation="addAllocation"  
       @add-new-allocation="addActivity"
       @add-contains="addContains"
@@ -32,6 +33,9 @@ export default {
   methods: {
       addResource(resourceObj){
         this.$store.commit('addResource', resourceObj)
+      },
+      addResourceInstance(resourceObj){
+        this.$store.commit('addResourceInstance', resourceObj)
       },
       addAllocation(activityObj){
         this.$store.commit('addAllocation', activityObj)

@@ -478,6 +478,9 @@ export default {
         readFromJson(inputJson){
             console.log(">> readFromJson: inputJson ", inputJson)
             for (let rc of inputJson.resourceClasses) {
+                console.log("AUTO PUSHING RES INST ")
+                this.$store.state.resourceInstances.push(new ResourceInstance(rc.typeName, rc.className, rc.budgets))
+                console.log("this.$store.state.resourceInstances", this.$store.state.resourceInstances)
                 this.$emit('add-resource', 
                     {
                         resType:  rc.typeName,
@@ -487,6 +490,19 @@ export default {
                         drawn: false
                     }
                 )
+            }
+            console.log("...resource instances...");
+            // Add resource instances
+            for (let ri of inputJson.resourceInstances) {
+                console.log("Adding res instances: ri ", ri)
+                for (let ri_instance of ri.instanceTable) {
+                    // console.log("Adding res instances: ri_instance ", ri_instance)
+                    let newInstance = {name: ri_instance.instanceName};
+                    let budgetName = Object.keys(ri_instance.budget)[0]
+                    newInstance["budget_"+budgetName] = ri_instance.budget[budgetName];
+                    console.log("newInstance ", newInstance)
+                    this.$store.commit('addResourceInstance', {instanceName : ri.className, newInstance: newInstance})
+                }
             }
             for (let ac of inputJson.activityClasses) {
                 for (let rc of inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className)) {
