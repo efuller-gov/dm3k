@@ -29,17 +29,20 @@
             handler(resources) {
                 // let latest = resources[resources.length-1]
                 console.log("resources ", resources)
-                console.log("resources.filter(x=>x.drawn==false) ", resources.filter(x=>x.drawn==false))
+                // if (resources == []){
+                //   this.clearGraph()
+                // }
+                // console.log("resources.filter(x=>x.drawn==false) ", resources.filter(x=>x.drawn==false))
                 for (let latest of resources.filter(x=>x.drawn==false)){
                   let newResType = latest.resType
                   let newResName = latest.resName
                   let newBudgetNameList = latest.newBudgetNameList
-                  console.log(">> graphRenderer: render ", newResName)
-                  console.log("this.dm3kGraph ", this.dm3kGraph)
-                  console.log("res length ", this.dm3kGraph.resources.length)
-                  console.log(latest)
+                  // console.log(">> graphRenderer: render ", newResName)
+                  // console.log("this.dm3kGraph ", this.dm3kGraph)
+                  // console.log("res length ", this.dm3kGraph.resources.length)
+                  // console.log(latest)
                   this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
-                  // latest.drawn = true
+                  latest.drawn = true
                 }
             }
         },

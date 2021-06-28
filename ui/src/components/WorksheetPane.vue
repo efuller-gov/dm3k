@@ -431,7 +431,7 @@ export default {
         getConfigFile(){
             
             this.$emit('clear-graph')
-
+            
             let promise = new Promise(function(resolve) {
                 $('#loadLocally').trigger('click')
 

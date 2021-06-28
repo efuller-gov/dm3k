@@ -17,6 +17,7 @@
 import WorksheetPane from './components/WorksheetPane.vue'
 import GraphRenderer from './components/GraphRenderer.vue'
 import Modals from './components/Modals.vue'
+import $ from 'jquery'
 
 export default {
   name: 'App',
@@ -28,7 +29,7 @@ export default {
   methods: {
       addResource(resourceObj){
         this.$store.commit('addResource', resourceObj)
-        console.log("added resource: ", this.$store.state.resources)
+        // console.log("added resource: ", this.$store.state.resources)
       },
       addAllocation(activityObj){
         this.$store.commit('addAllocation', activityObj)
@@ -38,6 +39,9 @@ export default {
       },
       clearGraph(){
         this.$store.commit('clearGraph')
+        $('#graphContainer').empty()
+        // const customEvent = new CustomEvent('clear-graph-render');
+        // document.dispatchEvent(customEvent);
       }
   }
 }
