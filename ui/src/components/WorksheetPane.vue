@@ -185,7 +185,6 @@ export default {
     name: 'WorksheetPane',
     methods: {
         zoomIn(){
-            // dm3kgraph.graph.zoomIn()
             this.$root.$emit('zoomIn')            
 		},
         zoomOut(){
@@ -490,19 +489,27 @@ export default {
                 )
             }
             for (let ac of inputJson.activityClasses) {
-                console.log("add new ac: ", ac)
-                // LEFT OFF HERE: I NEED TO FIND WHAT THESE ACTS ARE ALLOCATED TO
-                // console.log("---> See if can identify res from inputJson")
-                // console.log(inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className))
                 for (let rc of inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className)) {
-                    console.log("---> See if can identify res from inputJson")
-                    console.log("rc ", rc)
                     this.$emit('add-new-allocation', 
                         {
                             actName: ac.className,
                             newActType: ac.typeName,
                             existingResName: rc.resourceClassName,
                             newRewardName: ac.rewards,
+                            drawn: false
+                        }
+                    )
+                }
+            }
+            // add contains links - resources
+            for (let rc of inputJson.resourceClasses) {
+                let resName = rc.className;
+                // NOTE - resources should always exist...so no need to do check like contains links - activities below
+                for (let ccName of rc.containsClasses) {
+                    this.$emit('add-contains', 
+                        {
+                            resName: resName,
+                            ccName: ccName,
                             drawn: false
                         }
                     )

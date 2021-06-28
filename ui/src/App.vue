@@ -8,6 +8,7 @@
       @add-resource="addResource" 
       @add-existing-allocation="addAllocation"  
       @add-new-allocation="addActivity"
+      @add-contains="addContains"
       @clear-graph="clearGraph"
       @zoom-in="addActivity"
       @zoom-out="clearGraph"
@@ -37,6 +38,9 @@ export default {
       },
       addActivity(activityObj){
         this.$store.commit('addActivity', activityObj)
+      },
+      addContains(containsObj){
+        this.$store.commit('addContainsLink', containsObj)
       },
       clearGraph(){
         this.$store.commit('clearGraph')

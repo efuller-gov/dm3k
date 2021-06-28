@@ -29,12 +29,7 @@
         '$store.state.resources': {
             deep: true,
             handler(resources) {
-                // let latest = resources[resources.length-1]
-                console.log("resources ", resources)
-                // if (resources == []){
-                //   this.clearGraph()
-                // }
-                // console.log("resources.filter(x=>x.drawn==false) ", resources.filter(x=>x.drawn==false))
+                // console.log("resources ", resources)
                 for (let latest of resources.filter(x=>x.drawn==false)){
                   let newResType = latest.resType
                   let newResName = latest.resName
@@ -51,6 +46,7 @@
          '$store.state.activities': {
             deep: true,
             handler(activities) {
+                console.log("----> activities", activities)
                 // let latest = activities[activities.length-1]
                 for (let latest of activities.filter(x=>x.drawn==false)){
                   let newActType = latest.newActType
@@ -59,7 +55,6 @@
                   let newRewardName = latest.newRewardName
                   let costNum = 1 //REMOVE hardcoded workaround here??
                   console.log("---> In GraphRenderer: addCompleteActivity")
-                  console.log(activities)
                   console.log("latest: ", latest)
                   this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                   latest.drawn = true
@@ -75,19 +70,27 @@
                 let newRewardName = latest.newRewardName
                 this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
             }
+        },
+        '$store.state.containsLinks': {
+            deep: true,
+            handler(links) {
+                // let latest = links[links.length-1]
+                for (let latest of links.filter(x=>x.drawn==false)){
+                  console.log("!!!Add contains ", latest)
+                  this.dm3kGraph.addContains(latest.resName, latest.ccName);
+                  latest.drawn = true
+                }
+            }
         }
-
     },
     methods: {
         loadDm3kGraph() {
           this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
         zoomIn(){
-          console.log("ZOOOOOOOOOOOOM IN")
           this.dm3kGraph.graph.zoomIn()
         },
         zoomOut(){
-          console.log("ZOOOOOOOOOOOOM OUT")
           this.dm3kGraph.graph.zoomOut()
         },
         addListener(){

@@ -56,6 +56,9 @@ export default new Vuex.Store({
       let activityInstanceObj = actPayload['newInstance']
       state.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.push(activityInstanceObj)
     },
+    addContainsLink(state, containsObj){
+      state.containsLinks.push(containsObj);
+    },
     addAllocation(state, allocObj) {
       state.allocatedLinks.push(allocObj);
       let ai = new AllocationInstance(allocObj['existingResName'], allocObj['actName']);
