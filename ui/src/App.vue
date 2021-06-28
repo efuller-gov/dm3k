@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <GraphRenderer 
-     @clear-graph="clearGraph"
+     @clear-graph="clearGraph"    
     />
     <Modals />
     <WorksheetPane 

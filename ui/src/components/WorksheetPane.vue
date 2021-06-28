@@ -186,10 +186,10 @@ export default {
     methods: {
         zoomIn(){
             // dm3kgraph.graph.zoomIn()
-            this.$root.$emit('zoom-in')            
+            this.$root.$emit('zoomIn')            
 		},
         zoomOut(){
-            this.$root.$emit('zoom-out')            
+            this.$root.$emit('zoomOut')            
 		},
         populateResourcesFromWB() {
             $.each(this.RESOURCE_WORD_BANK, function (i, item) {

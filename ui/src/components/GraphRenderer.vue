@@ -22,6 +22,8 @@
     mounted() {
         this.loadDm3kGraph();
         this.addListener();
+        this.$root.$on('zoomIn', this.zoomIn)
+        this.$root.$on('zoomOut', this.zoomOut)
     },
     watch: {
         '$store.state.resources': {
@@ -81,16 +83,16 @@
           this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
         zoomIn(){
-          this.dm3kgraph.graph.zoomIn()
+          console.log("ZOOOOOOOOOOOOM IN")
+          this.dm3kGraph.graph.zoomIn()
         },
         zoomOut(){
-          this.dm3kgraph.graph.zoomOut()
+          console.log("ZOOOOOOOOOOOOM OUT")
+          this.dm3kGraph.graph.zoomOut()
         },
         addListener(){
           let container = document.getElementById('graphContainer')
           container.addEventListener('CircleIClicked', this.emitModal)
-          container.addEventListener('zoom-in', this.zoomIn)
-          container.addEventListener('zoom-out', this.zoomOut)
         },
         emitModal(e){
           this.$root.$emit('show-instance-modal', e)
