@@ -50,7 +50,6 @@
                   let newRewardName = latest.newRewardName
                   let costNum = 1 //REMOVE hardcoded workaround here??
                   console.log("---> In GraphRenderer: addCompleteActivity")
-                  console.log("latest: ", latest)
                   this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                   latest.drawn = true
                 }

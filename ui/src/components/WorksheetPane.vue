@@ -376,8 +376,6 @@ export default {
                 }
                 let costNameList = this.$store.state.resources.filter(x=>x.resName == existingResName)[0].budgetNameList
                 this.$store.state.activityInstances.push(new ActivityInstance(newActType, newActName, costNameList))
-                console.log("PUSH NEW Activity Instance ",  this.$store.state.activityInstances)
-                console.log("INST ", new ActivityInstance(newActType, newActName, costNameList))
                 this.$emit('add-new-allocation', 
                     {
                         actName: newActName,
@@ -493,30 +491,43 @@ export default {
                     }
                 )
             }
-            console.log("...resource instances...");
             // Add resource instances
             for (let ri of inputJson.resourceInstances) {
-                console.log("Adding res instances: ri ", ri)
                 for (let ri_instance of ri.instanceTable) {
                     // console.log("Adding res instances: ri_instance ", ri_instance)
                     let newInstance = {name: ri_instance.instanceName};
                     let budgetName = Object.keys(ri_instance.budget)[0]
                     newInstance["budget_"+budgetName] = ri_instance.budget[budgetName];
-                    console.log("newInstance ", newInstance)
                     this.$store.commit('addResourceInstance', {instanceName : ri.className, newInstance: newInstance})
                 }
             }
             for (let ac of inputJson.activityClasses) {
                 for (let rc of inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className)) {
-                    this.$emit('add-new-allocation', 
-                        {
-                            actName: ac.className,
-                            newActType: ac.typeName,
-                            existingResName: rc.resourceClassName,
-                            newRewardName: ac.rewards,
-                            drawn: false
-                        }
-                    )
+                    console.log("this.$store.state.activities ", this.$store.state.activities)
+                    console.log("this.$store.state.activities.map(x=>x.actName) ", this.$store.state.activities.map(x=>x.actName))
+                    console.log("ac.className ", ac.className)
+                    if (this.$store.state.activities.map(x=>x.actName).includes(ac.className)){
+                        console.log("EMIT--> add-existing-allocation")
+                        this.$emit('add-existing-allocation', 
+                            {
+                                actName: ac.className,
+                                existingResName: rc.resourceClassName,
+                                newRewardName: ac.rewards,
+                                drawn: false
+                            }
+                        )
+                    } else {
+                        console.log("EMIT--> add-new-allocation")
+                        this.$emit('add-new-allocation', 
+                            {
+                                actName: ac.className,
+                                newActType: ac.typeName,
+                                existingResName: rc.resourceClassName,
+                                newRewardName: ac.rewards,
+                                drawn: false
+                            }
+                        )
+                    }
                 }
             }
             // add contains links - resources
@@ -537,22 +548,13 @@ export default {
             console.log(inputJson.activityInstances);
             // Add activity instances
             for (let ai of inputJson.activityInstances) {
-                console.log("-----> ai ", ai);
                 let ai_name = ai.className;
-                console.log(ai_name);
-                // console.log(dm3kgraph.activityInstances)
-                // ai_dm3k = dm3kgraph.getActivityInstance(ai_name);
-                // ai_dm3k.clearInstanceTable();
                 for (let ai_instance of ai.instanceTable) {
                     let newInstance = {name: ai_name};
-                    // let budgetName = Object.keys(ri_instance.budget)[0]
-                    // newInstance["budget_"+budgetName] = ri_instance.budget[budgetName];
-                    console.log("ai_instance ", ai_instance)
                     let c = ai_instance.cost
                     let costName = Object.keys(c)[0]
                     newInstance["cost_"+costName] = c[costName]
                     newInstance["reward"] = ai_instance["reward"]
-                    console.log("newInstance ", newInstance)
                     this.$emit('add-activity-instance', {instanceName: ai_name, newInstance: newInstance})
                 }
             }

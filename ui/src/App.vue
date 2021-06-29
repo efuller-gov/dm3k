@@ -42,7 +42,6 @@ export default {
       },
       addActivityInstance(activityObj){
         this.$store.commit('addActivityInstance', activityObj)
-        console.log("---> addActivityInstnace ", activityObj)
       },
       addContains(containsObj){
         this.$store.commit('addContainsLink', containsObj)
