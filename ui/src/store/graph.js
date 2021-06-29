@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import {AllocationInstance} from '../js/dm3kgraph/dataClasses';
+import {ActivityInstance} from '../js/dm3kgraph/dataClasses';
 
 Vue.use(Vuex);
 
@@ -35,17 +36,20 @@ export default new Vuex.Store({
       state.activities.push(activityObj);
       // Add AllocationInstance when first create
       let ai = new AllocationInstance(activityObj['existingResName'], activityObj['actName']);
-      console.log("ai ", ai)
+      // console.log("ai ", ai)
+      let costNameList = state.resources.filter(x=>x.resName == activityObj['existingResName'])[0].budgetNameList
+      state.activityInstances.push(new ActivityInstance(activityObj['newActType'], activityObj['actName'], costNameList))
+      console.log("AFTER pushing new instance ", state.activityInstances)
       state.allocatedToInstances.push(ai);
     },
     addActivityInstance(state, actPayload){
-      console.log("----> IN STORE, addActivityInstance actPayload ", actPayload)
+      // console.log("----> IN STORE, addActivityInstance actPayload ", actPayload)
       let actName = actPayload['instanceName']
-      console.log("actName ", actName)
-      console.log("state.activityInstances.filter(x=>x.label==actName) ", state.activityInstances.filter(x=>x.label==actName))
-      console.log("state.activityInstances ", state.activityInstances)
+      // console.log("actName ", actName)
+      // console.log("state.activityInstances.filter(x=>x.label==actName) ", state.activityInstances.filter(x=>x.label==actName))
+      // console.log("state.activityInstances ", state.activityInstances)
       let activityInstanceObj = actPayload['newInstance']
-      console.log("activityInstanceObj ", activityInstanceObj)
+      // console.log("activityInstanceObj ", activityInstanceObj)
       state.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.push(activityInstanceObj)
     },
     addContainsLink(state, containsObj){

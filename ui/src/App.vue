@@ -38,7 +38,6 @@ export default {
         this.$store.commit('addAllocation', activityObj)
       },
       addActivity(activityObj){
-        console.log("--add activity")
         this.$store.commit('addActivity', activityObj)
       },
       addActivityInstance(activityObj){

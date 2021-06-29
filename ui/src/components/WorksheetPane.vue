@@ -377,6 +377,7 @@ export default {
                 let costNameList = this.$store.state.resources.filter(x=>x.resName == existingResName)[0].budgetNameList
                 this.$store.state.activityInstances.push(new ActivityInstance(newActType, newActName, costNameList))
                 console.log("PUSH NEW Activity Instance ",  this.$store.state.activityInstances)
+                console.log("INST ", new ActivityInstance(newActType, newActName, costNameList))
                 this.$emit('add-new-allocation', 
                     {
                         actName: newActName,
