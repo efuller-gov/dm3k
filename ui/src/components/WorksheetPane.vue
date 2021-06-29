@@ -185,10 +185,10 @@ export default {
     name: 'WorksheetPane',
     methods: {
         zoomIn(){
-            this.$root.$emit('zoomIn')            
+            this.$root.$emit('zoom-in')            
 		},
         zoomOut(){
-            this.$root.$emit('zoomOut')            
+            this.$root.$emit('zoom-out')            
 		},
         populateResourcesFromWB() {
             $.each(this.RESOURCE_WORD_BANK, function (i, item) {
