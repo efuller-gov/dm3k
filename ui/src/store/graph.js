@@ -24,16 +24,11 @@ export default new Vuex.Store({
   mutations: {
     addResource(state, resourceObj) {
       state.resources.push(resourceObj)
-      console.log("---- In STORE add res  ", state.resources)
     },
     addResourceInstance(state, resPayload){
       let resName = resPayload['instanceName']
       let resourceInstanceObj = resPayload['newInstance']
-      console.log("---> in store, resPayload ", resPayload)
-      console.log("state.resourceInstances ", state.resourceInstances)
-      console.log("state.resourceInstances.filter(x=>x.label==resName)[0] ", state.resourceInstances.filter(x=>x.label==resName)[0])
       state.resourceInstances.filter(x=>x.label==resName)[0].instanceTableData.push(resourceInstanceObj)
-      console.log("---- In STORE add res instnace ", state.resourceInstances)
     },
     addActivity(state, activityObj) {
       console.log("----> IN STORE, addActivity ", activityObj)
@@ -44,8 +39,13 @@ export default new Vuex.Store({
       state.allocatedToInstances.push(ai);
     },
     addActivityInstance(state, actPayload){
+      console.log("----> IN STORE, addActivityInstance actPayload ", actPayload)
       let actName = actPayload['instanceName']
+      console.log("actName ", actName)
+      console.log("state.activityInstances.filter(x=>x.label==actName) ", state.activityInstances.filter(x=>x.label==actName))
+      console.log("state.activityInstances ", state.activityInstances)
       let activityInstanceObj = actPayload['newInstance']
+      console.log("activityInstanceObj ", activityInstanceObj)
       state.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.push(activityInstanceObj)
     },
     addContainsLink(state, containsObj){

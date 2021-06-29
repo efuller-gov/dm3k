@@ -376,6 +376,7 @@ export default {
                 }
                 let costNameList = this.$store.state.resources.filter(x=>x.resName == existingResName)[0].budgetNameList
                 this.$store.state.activityInstances.push(new ActivityInstance(newActType, newActName, costNameList))
+                console.log("PUSH NEW Activity Instance ",  this.$store.state.activityInstances)
                 this.$emit('add-new-allocation', 
                     {
                         actName: newActName,
@@ -459,14 +460,13 @@ export default {
                         var inputJson = JSON.parse(inputJsonString);
                         this.inputJson = inputJson;
                         resolve(inputJson)
-                        // return inputJson
                         // dm3kconversion_reverse(dm3kgraph, inputJson);
                         // // update the worksheets and make sure all worksheets are enabled
                         // updateAllDropDowns(dm3kgraph);
-                        // $('#allocate-resources-button').removeClass('disabled')
-                        // $('#contains-button').removeClass('disabled')
-                        // $('#constrain-allocations-button').removeClass('disabled')
-                        // $('#actTypeExisting').removeClass('disabled')
+                        $('#allocate-resources-button').removeClass('disabled')
+                        $('#contains-button').removeClass('disabled')
+                        $('#constrain-allocations-button').removeClass('disabled')
+                        $('#actTypeExisting').removeClass('disabled')
                     }
                     reader.readAsText(file);
                 })
@@ -481,9 +481,7 @@ export default {
         readFromJson(inputJson){
             console.log(">> readFromJson: inputJson ", inputJson)
             for (let rc of inputJson.resourceClasses) {
-                console.log("AUTO PUSHING RES INST ")
                 this.$store.state.resourceInstances.push(new ResourceInstance(rc.typeName, rc.className, rc.budgets))
-                console.log("this.$store.state.resourceInstances", this.$store.state.resourceInstances)
                 this.$emit('add-resource', 
                     {
                         resType:  rc.typeName,
@@ -534,6 +532,53 @@ export default {
                     )
                 }
             }
+            console.log("...activity instances...");
+            console.log(inputJson.activityInstances);
+            // Add activity instances
+            for (let ai of inputJson.activityInstances) {
+                console.log("-----> ai ", ai);
+                let ai_name = ai.className;
+                console.log(ai_name);
+                // console.log(dm3kgraph.activityInstances)
+                // ai_dm3k = dm3kgraph.getActivityInstance(ai_name);
+                // ai_dm3k.clearInstanceTable();
+                for (let ai_instance of ai.instanceTable) {
+                    let newInstance = {name: ai_name};
+                    // let budgetName = Object.keys(ri_instance.budget)[0]
+                    // newInstance["budget_"+budgetName] = ri_instance.budget[budgetName];
+                    console.log("ai_instance ", ai_instance)
+                    let c = ai_instance.cost
+                    let costName = Object.keys(c)[0]
+                    newInstance["cost_"+costName] = c[costName]
+                    newInstance["reward"] = ai_instance["reward"]
+                    console.log("newInstance ", newInstance)
+                    this.$emit('add-activity-instance', {instanceName: ai_name, newInstance: newInstance})
+                }
+            }
+
+            // console.log("...allocation instances...")
+            // console.log(inputJson.allocationInstances)
+            // // add allocation instances
+            // for (let ati of inputJson.allocationInstances) {
+            //     res_name = ati.resourceClassName;
+            //     act_name = ati.activityClassName;
+            //     ati_dm3k = dm3kgraph.getAllocatedToInstance(res_name, act_name);
+            //     ati_dm3k.clearInstanceTable();
+            //     for (let ati_instance of ati.instanceTable) {
+            //         ati_dm3k.addToInstanceTable(ati_instance.resourceInstanceName, ati_instance.activityInstanceName);
+            //     }
+            // }
+
+            // // add contains instances
+            // for (let ci of inputJson.containsInstances) {
+            //     parent_name = ci.parentClassName;
+            //     child_name = ci.childClassName;
+            //     ci_dm3k = dm3kgraph.getContainsInstance(parent_name, child_name);
+            //     ci_dm3k.clearInstanceTable();
+            //     for (let ci_instance of ci.instanceTable) {
+            //         ci_dm3k.addToInstanceTable(ci_instance.parentInstanceName, ci_instance.childInstanceName);
+            //     }
+            // }
         }
     },
     data() {

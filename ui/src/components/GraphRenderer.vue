@@ -7,7 +7,6 @@
 </template>
 
 <script>
-  import $ from 'jquery'
   import {Dm3kGraph} from '../js/dm3kgraph/dm3kGraph';
 
   export default {
@@ -22,23 +21,18 @@
     mounted() {
         this.loadDm3kGraph();
         this.addListener();
-        this.$root.$on('zoomIn', this.zoomIn)
-        this.$root.$on('zoomOut', this.zoomOut)
+        this.$root.$on('zoom-in', this.zoomIn)
+        this.$root.$on('zoom-out', this.zoomOut)
         this.$root.$on('clear-graph', this.clearGraph)
     },
     watch: {
         '$store.state.resources': {
             deep: true,
             handler(resources) {
-                // console.log("resources ", resources)
                 for (let latest of resources.filter(x=>x.drawn==false)){
                   let newResType = latest.resType
                   let newResName = latest.resName
                   let newBudgetNameList = latest.newBudgetNameList
-                  // console.log(">> graphRenderer: render ", newResName)
-                  // console.log("this.dm3kGraph ", this.dm3kGraph)
-                  // console.log("res length ", this.dm3kGraph.resources.length)
-                  // console.log(latest)
                   this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
                   latest.drawn = true
                 }
@@ -48,7 +42,6 @@
             deep: true,
             handler(activities) {
                 console.log("----> activities", activities)
-                console.log("activities.filter(x=>x.drawn==false) ", activities.filter(x=>x.drawn==false))
                 // let latest = activities[activities.length-1]
                 for (let latest of activities.filter(x=>x.drawn==false)){
                   let newActType = latest.newActType
@@ -78,7 +71,6 @@
             handler(links) {
                 // let latest = links[links.length-1]
                 for (let latest of links.filter(x=>x.drawn==false)){
-                  console.log("!!!Add contains ", latest)
                   this.dm3kGraph.addContains(latest.resName, latest.ccName);
                   latest.drawn = true
                 }
@@ -103,8 +95,6 @@
           this.$root.$emit('show-instance-modal', e)
         },
         clearGraph(){
-          // $('#graphContainer').empty()
-          console.log("--- !!!CLEAR GRAPH IN RENDERER")
           this.dm3kGraph.clearAll()
         }
     }

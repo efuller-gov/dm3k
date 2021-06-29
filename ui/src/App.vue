@@ -6,7 +6,8 @@
     <Modals />
     <WorksheetPane 
       @add-resource="addResource" 
-      @add-resource-instance="addResourceInstance" 
+      @add-resource-instance="addResourceInstance"
+      @add-activity-instance="addActivityInstance"
       @add-existing-allocation="addAllocation"  
       @add-new-allocation="addActivity"
       @add-contains="addContains"
@@ -18,7 +19,6 @@
 import WorksheetPane from './components/WorksheetPane.vue'
 import GraphRenderer from './components/GraphRenderer.vue'
 import Modals from './components/Modals.vue'
-import $ from 'jquery'
 
 export default {
   name: 'App',
@@ -41,14 +41,15 @@ export default {
         console.log("--add activity")
         this.$store.commit('addActivity', activityObj)
       },
+      addActivityInstance(activityObj){
+        this.$store.commit('addActivityInstance', activityObj)
+        console.log("---> addActivityInstnace ", activityObj)
+      },
       addContains(containsObj){
         this.$store.commit('addContainsLink', containsObj)
       },
       clearGraph(){
         this.$store.commit('clearGraph')
-        // $('#graphContainer').empty()
-        // const customEvent = new CustomEvent('clear-graph-render');
-        // document.dispatchEvent(customEvent);
       }
   }
 }
