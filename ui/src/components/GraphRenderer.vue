@@ -81,6 +81,7 @@
           this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
         zoomIn(){
+          console.log("ZOOOOOOM IN")
           this.dm3kGraph.graph.zoomIn()
         },
         zoomOut(){
