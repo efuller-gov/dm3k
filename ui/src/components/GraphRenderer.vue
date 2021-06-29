@@ -48,7 +48,7 @@
                   let newActName = latest.actName
                   let existingResName = latest.existingResName
                   let newRewardName = latest.newRewardName
-                  let costNum = 1 //REMOVE hardcoded workaround here??
+                  let costNum = 0 //REMOVE hardcoded workaround here??
                   console.log("---> In GraphRenderer: addCompleteActivity")
                   this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                   latest.drawn = true
