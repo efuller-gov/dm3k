@@ -3,26 +3,29 @@ version: "3.7"
 services:
   aw_api:
     build:
-      context: ./api
-      dockerfile: Dockerfile.dev
+      context: .
+      dockerfile: Dockerfile.api.dev
     container_name: api
     restart: always
     volumes:
-      - ./api/:/app
+      - ./api/:/app/api
+      - ./optimizer/:/app/optimizer
+      - ./tests/:/app/tests
+      - ./examples/:/app/examples
     ports:
       - 8000:5000
 
-  aw_ui:
-    build:
-      context: ./ui
-      dockerfile: Dockerfile.dev
-    container_name: ui
-    restart: always
-    volumes:
-      - ./ui/:/app
-    ports:
-      - 8001:8080
-    stdin_open: true
-    tty: true
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+  # aw_ui:
+  #   build:
+  #     context: ./ui
+  #     dockerfile: Dockerfile.dev
+  #   container_name: ui
+  #   restart: always
+  #   volumes:
+  #     - ./ui/:/app
+  #   ports:
+  #     - 8001:8080
+  #   stdin_open: true
+  #   tty: true
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true

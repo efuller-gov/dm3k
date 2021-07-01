@@ -1,0 +1,287 @@
+{
+    "datasetName": "fanOutKnapsack_ifNot",
+    "files": [
+        {
+            "fileName": "dm3k-viz.json",
+            "fileContents": {
+                "resourceClasses": [
+                    {
+                        "className": "Pickup Truck",
+                        "locX": 140,
+                        "locY": 220,
+                        "typeName": "container",
+                        "budgets": [
+                            "Load"
+                        ],
+                        "containsClasses": [],
+                        "canBeAllocatedToClasses": [
+                            "People",
+                            "Garbage",
+                            "Furniture"
+                        ]
+                    }
+                ],
+                "activityClasses": [
+                    {
+                        "className": "People",
+                        "locX": 550,
+                        "locY": 0,
+                        "typeName": "item",
+                        "rewards": [
+                            "money"
+                        ],
+                        "costs": [
+                            "Load"
+                        ],
+                        "containsClasses": [],
+                        "allocatedWhen": {}
+                    },
+                    {
+                        "className": "Garbage",
+                        "locX": 630,
+                        "locY": 290,
+                        "typeName": "item",
+                        "rewards": [
+                            "money"
+                        ],
+                        "costs": [
+                            "Load"
+                        ],
+                        "containsClasses": [],
+                        "allocatedWhen": {}
+                    },
+                    {
+                        "className": "Furniture",
+                        "locX": 280,
+                        "locY": 490,
+                        "typeName": "item",
+                        "rewards": [
+                            "money"
+                        ],
+                        "costs": [
+                            "Load"
+                        ],
+                        "containsClasses": [],
+                        "allocatedWhen": {}
+                    }
+                ],
+                "resourceInstances": [
+                    {
+                        "className": "Pickup Truck",
+                        "instanceTable": [
+                            {
+                                "instanceName": "Pickup Truck_Resource_instance_0",
+                                "budget": {
+                                    "Load": 5
+                                }
+                            },
+                            {
+                                "instanceName": "Pickup Truck_Resource_instance_1",
+                                "budget": {
+                                    "Load": 5
+                                }
+                            },
+                            {
+                                "instanceName": "Pickup Truck_Resource_instance_2",
+                                "budget": {
+                                    "Load": 4
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "activityInstances": [
+                    {
+                        "className": "People",
+                        "instanceTable": [
+                            {
+                                "instanceName": "People_Activity_instance_0",
+                                "cost": {
+                                    "Load": 1
+                                },
+                                "reward": 1
+                            },
+                            {
+                                "instanceName": "People_Activity_instance_1",
+                                "cost": {
+                                    "Load": 1
+                                },
+                                "reward": 2
+                            },
+                            {
+                                "instanceName": "People_Activity_instance_2",
+                                "cost": {
+                                    "Load": 1
+                                },
+                                "reward": 2
+                            },
+                            {
+                                "instanceName": "People_Activity_instance_3",
+                                "cost": {
+                                    "Load": 1
+                                },
+                                "reward": 2
+                            },
+                            {
+                                "instanceName": "People_Activity_instance_4",
+                                "cost": {
+                                    "Load": 1
+                                },
+                                "reward": 3
+                            }
+                        ]
+                    },
+                    {
+                        "className": "Garbage",
+                        "instanceTable": [
+                            {
+                                "instanceName": "Garbage_Activity_instance_0",
+                                "cost": {
+                                    "Load": 1
+                                },
+                                "reward": 2
+                            },
+                            {
+                                "instanceName": "Garbage_Activity_instance_1",
+                                "cost": {
+                                    "Load": 2
+                                },
+                                "reward": 2
+                            },
+                            {
+                                "instanceName": "Garbage_Activity_instance_2",
+                                "cost": {
+                                    "Load": 1
+                                },
+                                "reward": 3
+                            },
+                            {
+                                "instanceName": "Garbage_Activity_instance_3",
+                                "cost": {
+                                    "Load": 3
+                                },
+                                "reward": 4
+                            },
+                            {
+                                "instanceName": "Garbage_Activity_instance_4",
+                                "cost": {
+                                    "Load": 1
+                                },
+                                "reward": 3
+                            },
+                            {
+                                "instanceName": "Garbage_Activity_instance_5",
+                                "cost": {
+                                    "Load": 2
+                                },
+                                "reward": 3
+                            }
+                        ]
+                    },
+                    {
+                        "className": "Furniture",
+                        "instanceTable": [
+                            {
+                                "instanceName": "Furniture_Activity_instance_0",
+                                "cost": {
+                                    "Load": 4
+                                },
+                                "reward": 10
+                            },
+                            {
+                                "instanceName": "Furniture_Activity_instance_1",
+                                "cost": {
+                                    "Load": 5
+                                },
+                                "reward": 10
+                            },
+                            {
+                                "instanceName": "Furniture_Activity_instance_2",
+                                "cost": {
+                                    "Load": 3
+                                },
+                                "reward": 10
+                            },
+                            {
+                                "instanceName": "Furniture_Activity_instance_3",
+                                "cost": {
+                                    "Load": 4
+                                },
+                                "reward": 10
+                            }
+                        ]
+                    }
+                ],
+                "allocationInstances": [
+                    {
+                        "resourceClassName": "Pickup Truck",
+                        "activityClassName": "People",
+                        "instanceTable": [
+                            {
+                                "resourceInstanceName": "ALL",
+                                "activityInstanceName": "ALL"
+                            }
+                        ]
+                    },
+                    {
+                        "resourceClassName": "Pickup Truck",
+                        "activityClassName": "Garbage",
+                        "instanceTable": [
+                            {
+                                "resourceInstanceName": "ALL",
+                                "activityInstanceName": "ALL"
+                            }
+                        ]
+                    },
+                    {
+                        "resourceClassName": "Pickup Truck",
+                        "activityClassName": "Furniture",
+                        "instanceTable": [
+                            {
+                                "resourceInstanceName": "ALL",
+                                "activityInstanceName": "ALL"
+                            }
+                        ]
+                    }
+                ],
+                "containsInstances": [],
+                "allocationConstraints": [
+                    {
+                        "allocationStart": {
+                            "resourceClass": "Pickup Truck",
+                            "activityClass": "People"
+                        },
+                        "allocationEnd": {
+                            "resourceClass": "Pickup Truck",
+                            "activityClass": "Garbage"
+                        },
+                        "allocationConstraintType": "IF-NOT"
+                    },
+                    {
+                        "allocationStart": {
+                            "resourceClass": "Pickup Truck",
+                            "activityClass": "Garbage"
+                        },
+                        "allocationEnd": {
+                            "resourceClass": "Pickup Truck",
+                            "activityClass": "Furniture"
+                        },
+                        "allocationConstraintType": "IF-NOT"
+                    },
+                    {
+                        "allocationStart": {
+                            "resourceClass": "Pickup Truck",
+                            "activityClass": "People"
+                        },
+                        "allocationEnd": {
+                            "resourceClass": "Pickup Truck",
+                            "activityClass": "Furniture"
+                        },
+                        "allocationConstraintType": "IF-NOT"
+                    }
+                ]
+            }
+        }
+    ]
+
+}

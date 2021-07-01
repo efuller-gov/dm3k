@@ -1,0 +1,15 @@
+FROM python:3.7.2
+WORKDIR /app
+RUN mkdir api
+ADD ./api /app/api
+
+RUN mkdir examples
+ADD ./examples /app/examples
+RUN mkdir optimizer
+ADD ./optimizer /app/optimizer
+RUN mkdir tests
+ADD ./tests /app/tests
+
+WORKDIR /app/api
+RUN pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org cd -r requirements.txt
+CMD ["python", "run.py", "--debug"]
