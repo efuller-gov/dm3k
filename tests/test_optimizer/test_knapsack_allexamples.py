@@ -26,7 +26,7 @@ class TestKnapsackE2E(TestCase):
     # ---------------------------------------------
 
     def _step1_load(self, data_filename):
-        path_to_file = os.path.join(os.path.dirname(__file__), "data", data_filename)
+        path_to_file = os.path.join(os.path.dirname(__file__), "..", "..", "examples", data_filename)
         with open(path_to_file, "r") as f:
             json_body = json.load(f)
 

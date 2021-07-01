@@ -13,8 +13,6 @@ from datetime import datetime
 import pandas as pd
 import psutil
 from dm3k import LOG_DIR
-from dm3k.data_access_layer import db_helper
-from dm3k.slim_optimizer.util.command_pattern import CommandManager
 from dm3k.slim_optimizer.util.history_pattern import HistoryManager
 from dm3k.slim_optimizer.util.util import full_house_input_keys, remove_old_temp_files
 # from pyomo.common.tempfiles import TempfileManager
@@ -52,9 +50,8 @@ class OptimizerBase:
         self._input_class = input_class
         self._model_class = model_class
         self._output_class = output_class
-        self._cmd_mgr = CommandManager()
-        self._cmd_mgr.set_command_map(cmd_map)
-        self._hist_mgr = HistoryManager()
+
+        self._hist_mgr = HistoryManager()   # enables system to generate timings and memory usage
 
         self._input_instance = None
         self._constraints_dataset = ""
@@ -62,15 +59,22 @@ class OptimizerBase:
         self._model = None
         self._output = None
 
-    def ingest(self, constraints_path, activity_scores_names=None):
+    def update_rewards(self, reward_dict):
+        """
+        Update the reward values in the input
+
+        :param dict reward_dict: a dict of activity instance names as keys and assocaiated new reward values as the values
+        """
+        pass
+    
+    def ingest(self, input_dict):
         """
         Ingest a new input dataset
 
         NOTE - ingest effectively clears the class (model=None, output=None) to avoid weird states when user ingests
                and asks for output prior to solving
 
-        :param str constraints_path: string path to the folder which contains the constraints files
-        :param list activity_scores_names: list of string names of activities that have scores (allows for validation)
+        :param dict input_dict: a dict containing the name of the input and the files associated with this input
         :return list validation_errors: a list of errors where each error is a dict with the following attributes...
                     "err_code" : <a int where int is key in VALIDATE_ERROR_CODE>,
                     "err_txt" : <human readable text that describes the error
@@ -86,34 +90,21 @@ class OptimizerBase:
         """
         self._hist_mgr.start_tag("Ingest from input dictionary")
         self._input = self._input_class()
-        if activity_scores_names is None:
-            if not os.path.exists(constraints_path + "/scores.json"):
-                try:
-                    activity_scores_names = db_helper.get_list_of_ids("du")
-                except AttributeError as e:  # might need more refinement here
-                    raise UnboundLocalError("You must provide a list of decision unit names or load emu data into the system.") from e
-            else:
-                log.info("There is a scores.json file in this dataset")
-
-        fatal, validation_errors = self.get_input().ingest_validate(constraints_path, activity_scores_names)
+        fatal, validation_errors = self.get_input().ingest_validate(input_dict)
         if fatal:
             raise ValueError(validation_errors, "Input Data Failed Validation")
-        self._cmd_mgr.set_receiver(self.get_input())
+        
         self._model = None
         self._output = None
         self._hist_mgr.end_tag("Ingest from input dictionary")
-        self._constraints_dataset = os.path.basename(constraints_path)
-
+        
         return validation_errors
 
-    def build(self, activity_scores=None, dus_in_constraints_not_scores_check=False):
+    def build(self):
         """
         Build a new Optimizer Model
-
-        :param dict activity_scores: a dictionary of activity names as keys and activity scores as values
-        :param bool dus_in_constraints_not_scores_check: Set to True if it should be an error if dus in constraints are not in scores
+        
         :return: None
-
         """
         if self.get_input() is None:
             raise UnboundLocalError("You must ingest data prior to building the model")
@@ -124,7 +115,6 @@ class OptimizerBase:
                 self._model = mc()
                 if self._model.can_solve(self.get_input()):
                     break
-
         else:
             self._model = self._model_class()
 
@@ -132,14 +122,13 @@ class OptimizerBase:
         self._hist_mgr.end_tag("Finding Model to use")
 
         self._hist_mgr.start_tag("Building Model")
-
-        self.get_input().align_check_scores(activity_scores, dus_in_constraints_not_scores_check)
+        
         data = self.get_input().to_data()
 
         self._model.build(data)
         self.get_input()._needs_rebuild = False
         self._hist_mgr.end_tag("Building Model")
-        self.get_input()._needs_rebuild = False
+        
 
     def solve(self, solver="glpk", tee=False, timeout=None, retries=3, mipgap=None, keepfiles=True):
         """
@@ -207,50 +196,6 @@ class OptimizerBase:
 
         return self._output
 
-    def get_fh_model(self):
-        """
-        Get the full house model
-
-        :return model: the full house model
-        """
-        return self._model
-
-    def list_mod_cmds_avail(self):
-        """
-        Not implemented
-
-        :return: None
-        """
-        pass
-
-    # TODO - do I really need this
-    def accepts_mod_cmd(self, cmd_dict):
-        """
-        check to determine if command will be accepted
-
-        :param dict cmd_dict: a dict containing attributes of "cmd" and "args"
-                        where cmd = string name of the command, args = list of arguments
-                        ex- {"cmd": <cmd>, "args": [<arg1>,<arg2>,...]}
-        :return boolean: True = yes this command will be accepted, False = no, this command cannot be handled
-        """
-        avail, success_info = self._cmd_mgr.is_available_cmd(cmd_dict)
-        return avail
-
-    def execute_mod_cmd(self, cmd_dict):
-        """
-        Execute a modification command
-
-        :param dict cmd_dict: a dict containing attributes of "cmd" and "args"
-                        where cmd  = string name of the command, args = list of arguments
-                        ex- {"cmd": <cmd>, "args": [<arg1>,<arg2>,...]}
-        :return dict success_info: a dict containing indication of success, success code, user message, and internal message
-        """
-        if self.get_input() is None:
-            raise UnboundLocalError("You must ingest data prior to modifying the model")
-
-        success_info = self._cmd_mgr.execute(cmd_dict)
-        return success_info
-
     def get_history_df(self):
         """
         Get the history of operations and metrics on their runtime and memory usage
@@ -261,61 +206,6 @@ class OptimizerBase:
             self._hist_mgr.get_history(), columns=["datetime", "operation", "time_to_run_sec", "memory_gain_MB", "end_memory_MB"]
         )
 
-    def undo(self):
-        """
-        Undo the last modification command
-
-        :return: None
-
-        """
-        return self._cmd_mgr.undo()
-
-    def redo(self):
-        """
-        Redo the last modification command you undo'ed
-
-        :return: None
-
-        """
-        return self._cmd_mgr.redo()
-
-    def undo_all(self):
-        """
-        Undo all the previous modification commands
-
-        :return: None
-        """
-        return self._cmd_mgr.undo_all()
-
-    def get_undo_list(self):
-        """
-        Calls the get_undo_list method in the CommandManager
-
-        :return: List of commands in string format
-        """
-        return self._cmd_mgr.get_undo_list()
-
-    def get_redo_list(self):
-        """
-        Calls the get_redo_list method in the CommandManager
-
-        :return: List of commands in string format
-        """
-        return self._cmd_mgr.get_redo_list()
-
-    def clear_undo(self):
-        """
-        Calls the clear_undo method in the CommandManager
-        :return: None
-        """
-        self._cmd_mgr.clear_undo()
-
-    def clear_redo(self):
-        """
-        Calls the clear_redo method in the CommandManager
-        :return: None
-        """
-        self._cmd_mgr.clear_redo()
 
 
 class InputBase:
@@ -325,22 +215,19 @@ class InputBase:
         # this attribute needs to be a dict that can be dumped by json.dump
         self._data = {}
 
-    def ingest_validate(self, constraints_path, activity_scores_names):
+    def ingest_validate(self, input_dict):
         """
         Validate the constraints and activity scores to determine if following Errors are found
 
         ERROR_CODE DESCRIPTIONS
-
-
-        1. the necessary constraints files do not exist
-        2. the formats of the constraints files are incorrect
-        3. the data within the constraints files are not consistent with each other
-        4. the data within the constraints files and the activity names are not consistent
+            1. the necessary constraints files do not exist
+            2. the formats of the constraints files are incorrect
+            3. the data within the constraints files are not consistent with each other
+            4. the data within the constraints files and the activity names are not consistent
 
         And then Load the files in the constraints path into this input (capturing them in the self._data attribute)
 
-        :param str constraints_path: string path to the folder which contains the constraints files
-        :param list activity_scores_names:
+        :param dict input_dict: a dict containing the name of the input and the files associated with this input
         :return bool fatal: True=a fatal error has been found, the optimizer should not continue
         :return dict validation_errors: a list of errors where each error is a dict with the following attributes...
                     "err_code" : <a int where int is key in VALIDATE_ERROR_CODE>,
@@ -350,42 +237,6 @@ class InputBase:
                     "is_fatal_error": <boolean; True = error is fatal, False = error is fixable>
         """
         raise NotImplementedError("validate NOT implemented!  Subclasses must implement this function")
-
-    def add_scores(self, activity_scores):
-        """
-        Update this input (i.e. the self._data attribute) with the activity scores
-
-        NOTE - this function assumes that both 'validate' and 'ingest' have been already run
-
-        :param dict activity_scores: a dictionary of activity names as keys and activity scores as scores
-        :return: None (this function modifies the self._data attribute)
-        """
-        raise NotImplementedError("add_scores NOT implemented!  Subclasses must implement this function")
-
-    def align_check_scores(self, activity_scores, dus_in_constraints_not_scores_check=False):
-        """
-        Check to see if activity scores from data_access_layer and optimizer constraints align
-        Then Fix them if you can
-
-        :param dict activity_scores: a dictionary of activity names as keys and activity scores as values
-        :param bool dus_in_constraints_not_scores_check: Set to True if it should be an error if dus in constraints are not in scores
-        :return: None
-        """
-        raise NotImplementedError("align_check_scores NOT implemented!  Subclasses must implement this function")
-
-    def modify(self, cmd_dict, timestamp):
-        """
-        Apply the cmd to the input data, effectively modifying the input
-
-        :param dict cmd_dict: a dict containing attributes of "cmd" and "args"
-                        where cmd = string name of the command, args = list of arguments
-                        ex- {"cmd": <cmd>, "args": [<arg1>,<arg2>,...]}
-        :param DateTime timestamp: time in which the modify command was first run
-        :return: None
-        :raises: ValueError: if a fatal error is found in the arguments or in the command name
-        :raises: Exception: if the command cannot be executed
-        """
-        raise NotImplementedError("modify NOT implemented!  Subclasses must implement this function")
 
     def get_info(self, info_name):
         """
