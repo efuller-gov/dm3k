@@ -1,0 +1,5 @@
+numpy==1.19.4
+pandas==1.1.5
+Pyomo==5.7.1
+psutil==5.7.3
+PyUtilib==6.0.0

@@ -1,9 +1,11 @@
 version: "3.7"
 
 services:
-  aw_api:
-    build: ./api
-    container_name: api
+  api:
+    uild:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: dm3k_open_api
     restart: always
     volumes:
       - ./api/:/app

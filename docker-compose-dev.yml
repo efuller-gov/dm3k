@@ -1,11 +1,11 @@
 version: "3.7"
 
 services:
-  aw_api:
+  api:
     build:
       context: .
       dockerfile: Dockerfile.api.dev
-    container_name: api
+    container_name: dm3k_open_api
     restart: always
     volumes:
       - ./api/:/app/api
@@ -15,11 +15,11 @@ services:
     ports:
       - 8000:5000
 
-  # aw_ui:
+  # ui:
   #   build:
   #     context: ./ui
   #     dockerfile: Dockerfile.dev
-  #   container_name: ui
+  #   container_name: dm3k_open_ui
   #   restart: always
   #   volumes:
   #     - ./ui/:/app
