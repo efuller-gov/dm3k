@@ -280,8 +280,8 @@ export class Dm3kGraph {
     addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum, locX = null, locY = null) {
         let model = this.graph.getModel()
         if (model.getCell(newActName) != undefined){
-            alert('Cannot create duplicate allocation.')
-            return
+            // alert('Cannot create duplicate allocation.')
+            // return
         }
         let ans = {
             "success": true,

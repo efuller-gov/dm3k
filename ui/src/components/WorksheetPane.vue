@@ -482,108 +482,70 @@ export default {
             // this.dm3kConverter.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson);
             this.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson);
 
-            for (let rc of inputJson.resourceClasses) {
-                this.$store.state.resourceInstances.push(new ResourceInstance(rc.typeName, rc.className, rc.budgets))
-                this.$emit('add-resource', 
-                    {
-                        resType:  rc.typeName,
-                        resName: rc.className,
-                        budgetNameList: rc.budgets,
-                        newBudgetNameList: rc.budgets,
-                        drawn: false
-                    }
-                )
-            }
-            // Add resource instances
-            for (let ri of inputJson.resourceInstances) {
-                for (let ri_instance of ri.instanceTable) {
-                    // console.log("Adding res instances: ri_instance ", ri_instance)
-                    let newInstance = {name: ri_instance.instanceName};
-                    let budgetName = Object.keys(ri_instance.budget)[0]
-                    newInstance["budget_"+budgetName] = ri_instance.budget[budgetName];
-                    this.$store.commit('addResourceInstance', {instanceName : ri.className, newInstance: newInstance})
-                }
-            }
+            // for (let rc of inputJson.resourceClasses) {
+            //     this.$store.state.resourceInstances.push(new ResourceInstance(rc.typeName, rc.className, rc.budgets))
+            //     this.$emit('add-resource', 
+            //         {
+            //             resType:  rc.typeName,
+            //             resName: rc.className,
+            //             budgetNameList: rc.budgets,
+            //             newBudgetNameList: rc.budgets,
+            //             drawn: false
+            //         }
+            //     )
+            // }
+            // // Add resource instances
+            // for (let ri of inputJson.resourceInstances) {
+            //     for (let ri_instance of ri.instanceTable) {
+            //         // console.log("Adding res instances: ri_instance ", ri_instance)
+            //         let newInstance = {name: ri_instance.instanceName};
+            //         let budgetName = Object.keys(ri_instance.budget)[0]
+            //         newInstance["budget_"+budgetName] = ri_instance.budget[budgetName];
+            //         this.$store.commit('addResourceInstance', {instanceName : ri.className, newInstance: newInstance})
+            //     }
+            // }
             
-            console.log("ADDING ACTIVITIES FROM INPUT FILE: inputJson.activityClasses ", inputJson.activityClasses)
-            console.log("inputJson ", inputJson)        
-            for (let ac of inputJson.activityClasses) {
-                for (let rc of inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className)) {
-                    console.log("****** CLASS NAME ac.className: ", ac.className)
-                    if (this.$store.state.activities.map(x=>x.actName).includes(ac.className)){
-                        console.log("EMIT--> add-existing-allocation")
-                        this.$emit('add-existing-allocation', 
-                            {
-                                actName: ac.className,
-                                existingResName: rc.resourceClassName,
-                                newRewardName: ac.rewards,
-                                drawn: false
-                            }
-                        )
-                    } else {
-                        console.log("EMIT--> add-new-allocation")
-                        this.$emit('add-new-allocation', 
-                            {
-                                actName: ac.className,
-                                newActType: ac.typeName,
-                                existingResName: rc.resourceClassName,
-                                newRewardName: ac.rewards,
-                                drawn: false
-                            }
-                        )
-                    }
-                }
-            }
-            // add contains links - resources
-            for (let rc of inputJson.resourceClasses) {
-                let resName = rc.className;
-                // NOTE - resources should always exist...so no need to do check like contains links - activities below
-                for (let ccName of rc.containsClasses) {
-                    this.$emit('add-contains', 
-                        {
-                            resName: resName,
-                            ccName: ccName,
-                            drawn: false
-                        }
-                    )
-                }
-            }
-            // console.log("...activity instances...");
-            // console.log(inputJson.activityInstances);
-            // Add activity instances
-            // for (let ai of inputJson.activityInstances) {
-            //     let ai_name = ai.className;
-            //     for (let ai_instance of ai.instanceTable) {
-            //         let newInstance = {name: ai_name};
-            //         let c = ai_instance.cost
-            //         let costName = Object.keys(c)[0]
-            //         newInstance["cost_"+costName] = c[costName]
-            //         newInstance["reward"] = ai_instance["reward"]
-            //         this.$emit('add-activity-instance', {instanceName: ai_name, newInstance: newInstance})
+            // console.log("ADDING ACTIVITIES FROM INPUT FILE: inputJson.activityClasses ", inputJson.activityClasses)
+            // console.log("inputJson ", inputJson)        
+            // for (let ac of inputJson.activityClasses) {
+            //     for (let rc of inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className)) {
+            //         console.log("****** CLASS NAME ac.className: ", ac.className)
+            //         if (this.$store.state.activities.map(x=>x.actName).includes(ac.className)){
+            //             console.log("EMIT--> add-existing-allocation")
+            //             this.$emit('add-existing-allocation', 
+            //                 {
+            //                     actName: ac.className,
+            //                     existingResName: rc.resourceClassName,
+            //                     newRewardName: ac.rewards,
+            //                     drawn: false
+            //                 }
+            //             )
+            //         } else {
+            //             console.log("EMIT--> add-new-allocation")
+            //             this.$emit('add-new-allocation', 
+            //                 {
+            //                     actName: ac.className,
+            //                     newActType: ac.typeName,
+            //                     existingResName: rc.resourceClassName,
+            //                     newRewardName: ac.rewards,
+            //                     drawn: false
+            //                 }
+            //             )
+            //         }
             //     }
             // }
-
-            // console.log("...allocation instances...")
-            // console.log(inputJson.allocationInstances)
-            // // add allocation instances
-            // for (let ati of inputJson.allocationInstances) {
-            //     res_name = ati.resourceClassName;
-            //     act_name = ati.activityClassName;
-            //     ati_dm3k = dm3kgraph.getAllocatedToInstance(res_name, act_name);
-            //     ati_dm3k.clearInstanceTable();
-            //     for (let ati_instance of ati.instanceTable) {
-            //         ati_dm3k.addToInstanceTable(ati_instance.resourceInstanceName, ati_instance.activityInstanceName);
-            //     }
-            // }
-
-            // // add contains instances
-            // for (let ci of inputJson.containsInstances) {
-            //     parent_name = ci.parentClassName;
-            //     child_name = ci.childClassName;
-            //     ci_dm3k = dm3kgraph.getContainsInstance(parent_name, child_name);
-            //     ci_dm3k.clearInstanceTable();
-            //     for (let ci_instance of ci.instanceTable) {
-            //         ci_dm3k.addToInstanceTable(ci_instance.parentInstanceName, ci_instance.childInstanceName);
+            // // add contains links - resources
+            // for (let rc of inputJson.resourceClasses) {
+            //     let resName = rc.className;
+            //     // NOTE - resources should always exist...so no need to do check like contains links - activities below
+            //     for (let ccName of rc.containsClasses) {
+            //         this.$emit('add-contains', 
+            //             {
+            //                 resName: resName,
+            //                 ccName: ccName,
+            //                 drawn: false
+            //             }
+            //         )
             //     }
             // }
         },

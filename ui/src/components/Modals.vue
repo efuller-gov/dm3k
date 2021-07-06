@@ -66,7 +66,8 @@ export default {
     methods:{
         addRow(){
             if ($('#add-row').text().includes('resource')){
-                let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
+                // let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
+                let resourceInstance = this.$store.state.dm3kGraph.resourceInstances.filter(x=>x.label == this.instanceName)[0];
                 let newName = this.instanceName + "_Resource_instance_" + resourceInstance.instanceTableData.length;
                 let instanceExample = {name: newName};
                 let budgetNameList = resourceInstance.budgetNameList;
@@ -82,7 +83,7 @@ export default {
             //     tabledata.push({parentInstance: "ALL", childInstance: 'ALL'});
             // }
             if ($('#add-row').text().includes('activity')){
-                let activityInstance = this.$store.state.activityInstances.filter(x=>x.label == this.instanceName)[0];
+                let activityInstance = this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label == this.instanceName)[0];
                 let newName = this.instanceName + "_Activity_instance_" + activityInstance.instanceTableData.length;
                 let instanceExample = {name: newName, reward: 1};
                 for (const costName of activityInstance.costNameList) {
@@ -166,7 +167,8 @@ export default {
                 titleText = "<p>"+instanceName + ", " + instanceType+"</p>You can define any number of <b>" + instanceName + "'s</b>, a <b>"+instanceType+" activity</b>. " +
                 "You may also assign each instance with a <b>cost</b> and a <b>reward</b>."
                 $('#add-row').text('Add activity instance')
-                tabledata = this.$store.state.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                // tabledata = this.$store.state.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                tabledata = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [
                         {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                             function(e, cell){
@@ -189,7 +191,8 @@ export default {
                 $('#add-row').text('Add resource instance')
                 // Get tabledata for this resource from the graph
                 // console.log("SHOW res intance table data ", this.$store.state.resourceInstances)
-                tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                // tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                tabledata = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [
                     {title: "", formatter:"buttonCross", width:5, hozAlign:"center", 
                     cellClick: function(e, cell){
