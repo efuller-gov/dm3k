@@ -206,8 +206,10 @@ export class Dm3kConverter {
 		}
 		
 		console.log("...resource instances...");
+		console.log(inputJson.resourceInstances)
 		// Add resource instances
 		for (let ri of inputJson.resourceInstances) {
+			console.log(ri)
 			ri_name = ri.className;
 			ri_dm3k = dm3kgraph.getResourceInstance(ri_name);
 			ri_dm3k.clearInstanceTable();

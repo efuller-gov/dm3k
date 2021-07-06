@@ -559,12 +559,13 @@ export default {
             // let dm3kgraph = this.$store.state.dm3kGraph
             console.log("-----> IN dm3kconversion_reverse dm3kgraph", dm3kgraph)
             console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
+            console.log("-- inputJson ", inputJson)
             this.$store.state.dm3kGraph.clearAll();  // this should get rid of all boxes and lines on graph
             console.log("Loading...")
             
             // add resource class boxes to diagram
             for (let rc of inputJson.resourceClasses) {
-                
+
                 // add the resource to the graph
                 this.$store.state.dm3kGraph.addCompleteResource(
                     rc.typeName,
@@ -653,13 +654,16 @@ export default {
             }
             
             console.log("...resource instances...");
+            console.log(inputJson.resourceInstances)
+
             // Add resource instances
             for (let ri of inputJson.resourceInstances) {
-                ri_name = ri.className;
-                ri_dm3k = this.$store.state.dm3kGraph.getResourceInstance(ri_name);
+                console.log(ri)
+                let ri_name = ri.className;
+                let ri_dm3k = this.$store.state.dm3kGraph.getResourceInstance(ri_name);
                 ri_dm3k.clearInstanceTable();
                 for (let ri_instance of ri.instanceTable) {
-                ri_dm3k.addToInstanceTable(ri_instance.instanceName, ri_instance.budget);
+                    ri_dm3k.addToInstanceTable(ri_instance.instanceName, ri_instance.budget);
                 }
             }
 
@@ -668,13 +672,13 @@ export default {
             // Add activity instances
             for (let ai of inputJson.activityInstances) {
                 console.log(ai);
-                ai_name = ai.className;
+                let ai_name = ai.className;
                 console.log(ai_name);
                 console.log(this.$store.state.dm3kGraph.activityInstances)
-                ai_dm3k = this.$store.state.dm3kGraph.getActivityInstance(ai_name);
+                let ai_dm3k = this.$store.state.dm3kGraph.getActivityInstance(ai_name);
                 ai_dm3k.clearInstanceTable();
                 for (let ai_instance of ai.instanceTable) {
-                ai_dm3k.addToInstanceTable(ai_instance.instanceName, ai_instance.reward, ai_instance.cost);
+                    ai_dm3k.addToInstanceTable(ai_instance.instanceName, ai_instance.reward, ai_instance.cost);
                 }
             }
 
@@ -682,9 +686,9 @@ export default {
             console.log(inputJson.allocationInstances)
             // add allocation instances
             for (let ati of inputJson.allocationInstances) {
-                res_name = ati.resourceClassName;
-                act_name = ati.activityClassName;
-                ati_dm3k = this.$store.state.dm3kGraph.getAllocatedToInstance(res_name, act_name);
+                let res_name = ati.resourceClassName;
+                let act_name = ati.activityClassName;
+                let ati_dm3k = this.$store.state.dm3kGraph.getAllocatedToInstance(res_name, act_name);
                 ati_dm3k.clearInstanceTable();
                 for (let ati_instance of ati.instanceTable) {
                     ati_dm3k.addToInstanceTable(ati_instance.resourceInstanceName, ati_instance.activityInstanceName);
@@ -693,9 +697,9 @@ export default {
 
             // add contains instances
             for (let ci of inputJson.containsInstances) {
-                parent_name = ci.parentClassName;
-                child_name = ci.childClassName;
-                ci_dm3k = this.$store.state.dm3kGraph.getContainsInstance(parent_name, child_name);
+                let parent_name = ci.parentClassName;
+                let child_name = ci.childClassName;
+                let ci_dm3k = this.$store.state.dm3kGraph.getContainsInstance(parent_name, child_name);
                 ci_dm3k.clearInstanceTable();
                 for (let ci_instance of ci.instanceTable) {
                     ci_dm3k.addToInstanceTable(ci_instance.parentInstanceName, ci_instance.childInstanceName);
@@ -704,11 +708,11 @@ export default {
 
             // add allocation contraints
             for (let allc of inputJson.allocationConstraints) {
-                a1FromName = allc.allocationStart.resourceClass;
-                a1ToName = allc.allocationStart.activityClass;
-                a2FromName = allc.allocationEnd.resourceClass;
-                a2ToName = allc.allocationEnd.activityClass;
-                aType = allc.allocationConstraintType;
+                let a1FromName = allc.allocationStart.resourceClass;
+                let a1ToName = allc.allocationStart.activityClass;
+                let a2FromName = allc.allocationEnd.resourceClass;
+                let a2ToName = allc.allocationEnd.activityClass;
+                let aType = allc.allocationConstraintType;
                 this.$store.state.dm3kGraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
             }
         }
