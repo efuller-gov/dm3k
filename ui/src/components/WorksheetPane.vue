@@ -642,6 +642,64 @@ export default {
             console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
             console.log("---> outputJson ", outputJson)
+
+            // get url URL from textbox
+            var url = $("#serverLoc").val();
+
+            // get dataset name from textbox
+            var dsName = $("#diagramName").val();
+
+            let alg = $("#algType option:selected").val();
+
+            console.log("Algorithm: "+alg);
+
+            var data_to_send = {
+                    "datasetName": dsName,
+                    "url": url,
+                    "algorithm": alg,
+                        "files": [
+                        {
+                            "fileName": "dm3k-viz.json",
+                            "fileContents": outputJson
+                        }
+                    ]
+            }
+            var json_body = JSON.stringify(data_to_send);
+
+
+            // make a file in Dm3K backend and solve it
+            var post_request = $.ajax({
+                type: "POST",
+                url: "/api/vizdata",
+                contentType: "application/json; charset=utf-8",
+                data: json_body
+            });
+
+            post_request.done(function(msg) {
+                var jsonMsg = msg;  // its already an object...no need for $.parseJSON(msg)
+                let statusCode = jsonMsg["statusCode"];
+                
+                if (statusCode != 200) {
+                    alert("Failed Attempt to Submit to DM3K: " +
+                            jsonMsg + "\n" +
+                            jsonMsg["body"] /*+ "\n" +
+                            body["internal_message"]*/ );
+                    console.log(jsonMsg)
+                    console.log(statusCode)
+                    // console.log(body)
+                }
+                else {
+                    let body = $.parseJSON(jsonMsg["body"]);
+                    // showSolutionModal(body)
+                    showSolutionModal(body, outputJson)
+                }
+            });
+
+            post_request.fail(function(jqXHR, textStatus, errorThrown) {
+                console.log("Request to vizdata failed: "+textStatus);
+                console.log(errorThrown)
+                alert("Failed Attempt to Submit to DM3K");
+            });
         }
     },
     data() {
