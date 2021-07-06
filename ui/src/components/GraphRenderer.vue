@@ -100,7 +100,7 @@
           console.log("----> CLEAR GRAPH")
           // this.dm3kGraph.clearAll()
           this.$store.state.dm3kGraph.clearAll()
-        }
+        },
     }
   };
 </script>

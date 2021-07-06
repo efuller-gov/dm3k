@@ -478,6 +478,10 @@ export default {
             );
         },
         readFromJson(inputJson){
+
+            // this.dm3kConverter.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson);
+            this.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson);
+
             for (let rc of inputJson.resourceClasses) {
                 this.$store.state.resourceInstances.push(new ResourceInstance(rc.typeName, rc.className, rc.budgets))
                 this.$emit('add-resource', 
@@ -588,6 +592,163 @@ export default {
             console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
             console.log("---> outputJson ", outputJson)
+        },
+        dm3kconversion_reverse(dm3kgraph, inputJson) {
+            // let dm3kgraph = this.$store.state.dm3kGraph
+            console.log("-----> IN dm3kconversion_reverse dm3kgraph", dm3kgraph)
+            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
+            this.$store.state.dm3kGraph.clearAll();  // this should get rid of all boxes and lines on graph
+            console.log("Loading...")
+            
+            // add resource class boxes to diagram
+            for (let rc of inputJson.resourceClasses) {
+                
+                // add the resource to the graph
+                this.$store.state.dm3kGraph.addCompleteResource(
+                    rc.typeName,
+                    rc.className,
+                    rc.budgets,
+                    rc.locX,
+                    rc.locY);
+            }
+
+            // add activity class boxes and canBeAllocated to links
+            console.log("...activity classes...")
+            console.log(inputJson.activityClasses)
+            for (let ac of inputJson.activityClasses) {
+                
+                let actName = ac.className;
+                console.log(actName)
+
+                // determine which resources are allocated to this activity
+                
+                let resAllocList = []
+                for (let rc of inputJson.resourceClasses) {
+                var resName = rc.className;
+                for (let cbat of rc.canBeAllocatedToClasses) {
+                    if (cbat == actName) {
+                    resAllocList.push(resName)
+                    }
+                }
+                }
+                console.log(resAllocList)
+
+                // add the activity and add any allocated to links
+                for (let [i, ra] of resAllocList.entries()) {
+                
+                this.$store.state.dm3kGraph.addCompleteActivity(
+                    ac.typeName,
+                    ac.className,
+                    ra,
+                    ac.rewards[0], // TODO - need to make it work for mulitple rewards
+                    i,
+                    ac.locX,
+                    ac.locY,
+                )
+                }
+            }
+
+            console.log("...contains links - resources....");
+            // add contains links - resources
+            for (let rc of inputJson.resourceClasses) {
+                let resName = rc.className;
+
+                // NOTE - resources should always exist...so no need to do check like contains links - activities below
+
+                for (let ccName of rc.containsClasses) {
+                    this.$store.state.dm3kGraph.addContains(resName, ccName);
+                }
+            }
+
+            console.log("...contains links - activities...");
+            // add contains links - activities
+            for (let ac of inputJson.activityClasses) {
+                let actName = ac.className;
+
+                // check to see if actName exists, if it doesnt...its a container activity
+                let ai_dm3k = this.$store.state.dm3kGraph.getActivityInstance(actName);
+                if (ai_dm3k == undefined) {
+                this.$store.state.dm3kGraph.addNewActContains(
+                    ac.typeName, 
+                    actName, 
+                    ac.containsClasses[0],  // do the first one this way, then do rest in loop below
+                    ac.rewards[0]) // TODO - need to make it work for mulitple rewards)
+                for (let ccName of ac.containsClasses.slice(1)) {
+                    console.log('Attempting to make a constains link between: '+actName+' and '+ccName);
+                    this.$store.state.dm3kGraph.addContains(actName, ccName);
+                    console.log(this.$store.state.dm3kGraph.containsLinks)
+                }
+                }
+                // else it is defined and therefore already available to add contains links to
+                else {   
+                for (let ccName of ac.containsClasses) {
+                    console.log('Attempting to make a constains link between: '+actName+' and '+ccName);
+                    this.$store.state.dm3kGraph.addContains(actName, ccName);
+                    console.log(this.$store.state.dm3kGraph.containsLinks)
+                }
+                }
+                
+            }
+            
+            console.log("...resource instances...");
+            // Add resource instances
+            for (let ri of inputJson.resourceInstances) {
+                ri_name = ri.className;
+                ri_dm3k = this.$store.state.dm3kGraph.getResourceInstance(ri_name);
+                ri_dm3k.clearInstanceTable();
+                for (let ri_instance of ri.instanceTable) {
+                ri_dm3k.addToInstanceTable(ri_instance.instanceName, ri_instance.budget);
+                }
+            }
+
+            console.log("...activity instances...");
+            console.log(inputJson.activityInstances);
+            // Add activity instances
+            for (let ai of inputJson.activityInstances) {
+                console.log(ai);
+                ai_name = ai.className;
+                console.log(ai_name);
+                console.log(this.$store.state.dm3kGraph.activityInstances)
+                ai_dm3k = this.$store.state.dm3kGraph.getActivityInstance(ai_name);
+                ai_dm3k.clearInstanceTable();
+                for (let ai_instance of ai.instanceTable) {
+                ai_dm3k.addToInstanceTable(ai_instance.instanceName, ai_instance.reward, ai_instance.cost);
+                }
+            }
+
+            console.log("...allocation instances...")
+            console.log(inputJson.allocationInstances)
+            // add allocation instances
+            for (let ati of inputJson.allocationInstances) {
+                res_name = ati.resourceClassName;
+                act_name = ati.activityClassName;
+                ati_dm3k = this.$store.state.dm3kGraph.getAllocatedToInstance(res_name, act_name);
+                ati_dm3k.clearInstanceTable();
+                for (let ati_instance of ati.instanceTable) {
+                    ati_dm3k.addToInstanceTable(ati_instance.resourceInstanceName, ati_instance.activityInstanceName);
+                }
+            }
+
+            // add contains instances
+            for (let ci of inputJson.containsInstances) {
+                parent_name = ci.parentClassName;
+                child_name = ci.childClassName;
+                ci_dm3k = this.$store.state.dm3kGraph.getContainsInstance(parent_name, child_name);
+                ci_dm3k.clearInstanceTable();
+                for (let ci_instance of ci.instanceTable) {
+                    ci_dm3k.addToInstanceTable(ci_instance.parentInstanceName, ci_instance.childInstanceName);
+                }
+            }
+
+            // add allocation contraints
+            for (let allc of inputJson.allocationConstraints) {
+                a1FromName = allc.allocationStart.resourceClass;
+                a1ToName = allc.allocationStart.activityClass;
+                a2FromName = allc.allocationEnd.resourceClass;
+                a2ToName = allc.allocationEnd.activityClass;
+                aType = allc.allocationConstraintType;
+                this.$store.state.dm3kGraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
+            }
         }
     },
     data() {
