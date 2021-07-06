@@ -9,10 +9,10 @@ from collections import defaultdict
 from copy import copy
 
 import pandas as pd
-from dm3k.dm3k_utils.data_utils import reverse_dict_of_lists
-from dm3k.slim_optimizer.full_house.full_house_input import FullHouseInput
-from dm3k.slim_optimizer.slim_optimizer_base import ModelBase, OutputBase
-from dm3k.slim_optimizer.util.util import full_house_full_trace_keys
+# from dm3k.dm3k_utils.data_utils import reverse_dict_of_lists
+from optimizer.full_house.full_house_input import FullHouseInput
+from optimizer.slim_optimizer_base import ModelBase, OutputBase
+from optimizer.util.util import full_house_full_trace_keys
 
 
 class GreedyOutput(OutputBase):

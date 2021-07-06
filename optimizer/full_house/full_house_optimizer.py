@@ -1,15 +1,15 @@
 """
 Extension of optimizer base...just need to do the init to localize it
 """
-from dm3k.slim_optimizer.full_house.full_house_awd_lasers_model import FullHouseAWDLasersModel
-from dm3k.slim_optimizer.full_house.full_house_awd_missiles_model import FullHouseAWDMissilesModel
-from dm3k.slim_optimizer.full_house.full_house_commands import COMMAND_CLASS_MAP
-from dm3k.slim_optimizer.full_house.full_house_input import FullHouseInput
-from dm3k.slim_optimizer.full_house.full_house_input_json import FullHouseInputJson
-from dm3k.slim_optimizer.full_house.full_house_input_viz import FullHouseInputViz
-from dm3k.slim_optimizer.full_house.full_house_model import FullHouseModel
-from dm3k.slim_optimizer.full_house.full_house_model_greedy import FullHouseModelGreedy, GreedyOutput
-from dm3k.slim_optimizer.slim_optimizer_base import OptimizerBase, OutputBase
+from optimizer.full_house.full_house_awd_lasers_model import FullHouseAWDLasersModel
+from optimizer.full_house.full_house_awd_missiles_model import FullHouseAWDMissilesModel
+from optimizer.full_house.full_house_commands import COMMAND_CLASS_MAP
+from optimizer.full_house.full_house_input import FullHouseInput
+from optimizer.full_house.full_house_input_json import FullHouseInputJson
+from optimizer.full_house.full_house_input_viz import FullHouseInputViz
+from optimizer.full_house.full_house_model import FullHouseModel
+from optimizer.full_house.full_house_model_greedy import FullHouseModelGreedy, GreedyOutput
+from optimizer.slim_optimizer_base import OptimizerBase, OutputBase
 
 
 class FullHouseOptimizer(OptimizerBase):

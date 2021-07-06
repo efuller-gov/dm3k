@@ -14,9 +14,9 @@ o = orientation = parent activity
 import logging
 from collections import defaultdict
 
-from dm3k.data_access_layer import db_helper
-from dm3k.slim_optimizer.full_house.full_house_input import FullHouseInput
-from dm3k.slim_optimizer.slim_optimizer_base import ModelBase
+#from dm3k.data_access_layer import db_helper
+from optimizer.full_house.full_house_input import FullHouseInput
+from optimizer.slim_optimizer_base import ModelBase
 from pyomo.environ import Any, Binary, ConcreteModel, Constraint, NonNegativeReals, Objective, Param, Set, Var, maximize
 
 log = logging.getLogger(__name__)

@@ -14,10 +14,10 @@ from collections import defaultdict
 from pprint import pformat
 from typing import Any, AnyStr, Dict, List, Union
 
-import dm3k.slim_optimizer.util.util
+import optimizer.util.util
 import pandas as pd
-from dm3k.slim_optimizer.slim_optimizer_base import InputBase
-from dm3k.slim_optimizer.util.util import fh_append, fh_extend, full_house_input_keys
+from optimizer.slim_optimizer_base import InputBase
+from optimizer.util.util import fh_append, fh_extend, full_house_input_keys
 
 log = logging.getLogger(__name__)
 

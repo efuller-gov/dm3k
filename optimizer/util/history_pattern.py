@@ -6,7 +6,7 @@ This provides a common framework to track the history of steps within an optimiz
 import logging
 from datetime import datetime
 
-from dm3k.slim_optimizer.util.util import time_mem_stamp
+from optimizer.util.util import time_mem_stamp
 
 log = logging.getLogger(__name__)
 

@@ -5,7 +5,7 @@ import json
 import logging
 import os
 
-from dm3k.slim_optimizer.full_house.full_house_input import FullHouseInput
+from optimizer.full_house.full_house_input import FullHouseInput
 
 log = logging.getLogger(__name__)
 

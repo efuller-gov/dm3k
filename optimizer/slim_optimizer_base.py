@@ -12,9 +12,9 @@ from datetime import datetime
 
 import pandas as pd
 import psutil
-from dm3k import LOG_DIR
-from dm3k.slim_optimizer.util.history_pattern import HistoryManager
-from dm3k.slim_optimizer.util.util import full_house_input_keys, remove_old_temp_files
+
+from optimizer.util.history_pattern import HistoryManager
+from optimizer.util.util import full_house_input_keys, remove_old_temp_files
 # from pyomo.common.tempfiles import TempfileManager
 from pyomo.opt import SolverFactory, SolverStatus, TerminationCondition
 from pyutilib.common._exceptions import ApplicationError
@@ -22,6 +22,12 @@ from pyutilib.services import TempfileManager
 
 log = logging.getLogger(__name__)
 
+# set up logging
+app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
+LOG_DIR = os.path.join(app_directory, 'logs')
+if not os.path.exists(LOG_DIR):
+    log.debug("Creating LOG_DIR="+str(LOG_DIR))
+    os.makedirs(LOG_DIR)
 
 class OptimizerBase:
     def __init__(self, input_class, model_class, output_class, cmd_map):
@@ -129,7 +135,6 @@ class OptimizerBase:
         self.get_input()._needs_rebuild = False
         self._hist_mgr.end_tag("Building Model")
         
-
     def solve(self, solver="glpk", tee=False, timeout=None, retries=3, mipgap=None, keepfiles=True):
         """
         Solve the optimizer Model and gather input into the output class
@@ -227,7 +232,7 @@ class InputBase:
 
         And then Load the files in the constraints path into this input (capturing them in the self._data attribute)
 
-        :param dict input_dict: a dict containing the name of the input and the files associated with this input
+        :param dict input_dict: a dict containing the name of the input and the data from files associated with this input
         :return bool fatal: True=a fatal error has been found, the optimizer should not continue
         :return dict validation_errors: a list of errors where each error is a dict with the following attributes...
                     "err_code" : <a int where int is key in VALIDATE_ERROR_CODE>,

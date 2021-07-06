@@ -5,7 +5,7 @@ import json
 import logging
 import os
 
-from dm3k.slim_optimizer.slim_optimizer_base import InputBase
+from optimizer.slim_optimizer_base import InputBase
 
 log = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ class KnapsackInputViz(InputBase):
     def __init__(self):
         super().__init__()
 
-    def ingest_validate(self, constraints_path, activity_scores_names=None):
+    def ingest_validate(self, input_dict):
         """
         Validate the constraints and activity scores to determine if following Errors are found
 
@@ -26,8 +26,7 @@ class KnapsackInputViz(InputBase):
 
         And then Load the files in the constraints path into this input (capturing them in the self._data attribute)
 
-        :param str constraints_path: string path to the folder which contains the constraints files
-        :param list activity_scores_names:
+        :param dict input_dict: a dict containing the name of the input and the data from files associated with this input
         :return bool fatal: True=a fatal error has been found, the optimizer should not continue
         :return list validation_errors: a list of errors where each error is a dict with the following attributes...
                     "err_code" : <a int where int is key in ERROR_CODE above>,
@@ -36,14 +35,11 @@ class KnapsackInputViz(InputBase):
                     "fix": <string name of process performed to fix the error  or None>,
                     "is_fatal_error": <boolean; True = error is fatal, False = error is fixable>
         """
-        log.debug("Looking in path: " + constraints_path)
+        log.debug("Opening Dataset: " + input_dict["datasetName"])
 
         # determine if correct files exist
-        filepath = os.path.join(constraints_path, "dm3k-viz.json")
-        if os.path.exists(filepath):
-            with open(filepath) as openfile:
-                json_data = json.loads(openfile.read())
-        else:
+        file_data = input_dict["files"]
+        if len(file_data) != 1:
             return (
                 True,
                 [
@@ -58,6 +54,7 @@ class KnapsackInputViz(InputBase):
             )
 
         # --- INGEST ---
+        json_data = file_data[0]["fileContents"]   # this type of input only has one file type
         log.debug("Incoming constraints keys: " + str(list(json_data.keys())))
         self._data = json_data
 

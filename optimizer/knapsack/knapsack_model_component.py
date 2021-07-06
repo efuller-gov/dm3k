@@ -90,8 +90,8 @@ Model description:
 import logging
 from collections import deque
 
-from dm3k.slim_optimizer.knapsack.knapsack_input_viz import KnapsackInputViz
-from dm3k.slim_optimizer.slim_optimizer_base import ModelBase
+from optimizer.knapsack.knapsack_input_viz import KnapsackInputViz
+from optimizer.slim_optimizer_base import ModelBase
 from pyomo.environ import Any, Binary, ConcreteModel, Constraint, NonNegativeReals, Objective, Param, Set, Var, maximize
 
 log = logging.getLogger(__name__)

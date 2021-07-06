@@ -5,18 +5,23 @@ import json
 import pandas
 import logging
 import os
+import sys
 import unittest
 from unittest import TestCase
 
-from dm3k.dm3k_system.managers import slimmanager
+# ensure that optimizer directory is in path
+app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..')
+if app_directory not in sys.path:
+    sys.path.append(app_directory)
+
+from optimizer.slim_optimizer_main import create_opt
 
 log = logging.getLogger(__name__)
-
 
 class TestKnapsackE2E(TestCase):
     def setUp(self):
         log.info("Testing: " + self.__class__.__name__ + " " + self._testMethodName + "----------")
-        self.slim_manager = slimmanager.SlimManager()
+        self._opt = None
 
     def tearDown(self):
         pass
@@ -26,45 +31,30 @@ class TestKnapsackE2E(TestCase):
     # ---------------------------------------------
 
     def _step1_load(self, data_filename):
-        path_to_file = os.path.join(os.path.dirname(__file__), "..", "..", "examples", data_filename)
+        path_to_file = os.path.join(app_directory, "examples", data_filename)
         with open(path_to_file, "r") as f:
-            json_body = json.load(f)
+            input_dict = json.load(f)
 
-        dataset_name = json_body["datasetName"]
-        files = json_body["files"]
+        config = {"optimizer": "KnapsackViz"}
 
-        num_files = 0
-        for file_def in files:
-            file_name = file_def["fileName"]
-            file_contents = file_def["fileContents"]
+        log.debug("WORKING ON DATASET=" + input_dict["datasetName"])
 
-            # assuming file_contents is a dict that we save as json
-            self.slim_manager.save_dataset_jsonfile(dataset_name, file_name, file_contents)
-            num_files += 1
+        opt, validation_errors = create_opt(input_dict, config)
+        self._opt = opt
 
-        return dataset_name, files
-
-    def _step2_constraints(self, dataset_name, algorithm="KnapsackViz"):
-        validation_errors = self.slim_manager.ingest_constraints(dataset=dataset_name, algorithm=algorithm, activity_scores_names=[])
-        return validation_errors
-
+        return input_dict, validation_errors
+    
+    def _step2_build(self):
+        self._opt.build()
+    
     def _step3_solve(self):
-        self.slim_manager.optimize()
-        results = self.slim_manager.get_current_optimizer().get_output()
+        self._opt.solve()
+        results = self._opt.get_output()
         return results
 
     def _all_steps(self, data_filename):
         # ### STEP 1  - load data into system
-        #   for DM3K-viz this is a POST to /api/loadviz/ with datasetName and files
-        #   for this test this is a load of json file
-        dataset_name, files = self._step1_load(data_filename)
-
-        log.debug("WORKING ON DATASET=" + dataset_name)
-
-        # ### STEP 2  - setting constraints
-        #   for DM3K-viz this is a POST to /api/constraints/ with datasetName and algorithm
-        #   for this test this has slim manager ingest constraints
-        validation_errors = self._step2_constraints(dataset_name)
+        input_dict, validation_errors = self._step1_load(data_filename)
 
         if len(validation_errors) > 0:
             log.warning("VALIDATION ERRORS...")
@@ -73,9 +63,10 @@ class TestKnapsackE2E(TestCase):
         else:
             log.debug("No Validation errors")
 
+        # ### STEP 2 - build the model
+        self._step2_build()
+       
         # ### STEP 3 / 4  - solving and output
-        #   for DM3K-viz this is a POST to /api/solve/
-        #   for this test this has slim manager solve and get results
         results = self._step3_solve()
 
         # check results
@@ -94,7 +85,7 @@ class TestKnapsackE2E(TestCase):
         log.debug(results.get_trace_df())
         pandas.reset_option('display.max_rows')
 
-        return files, results
+        return input_dict, results
 
     def _find_instance(self, name, input_json, which="activityInstances"):
         ret_inst = None
@@ -161,30 +152,34 @@ class TestKnapsackE2E(TestCase):
                 budget_used = total_res_budget_used[res_name][budget_name]
                 self.assertLessEqual(budget_used, input_budgets[res_name][budget_name])
 
-    def _check_all(self, results, input_json, predicted_obj_value):
+    def _check_all(self, results, input_dict, predicted_obj_value):
+
+        # this type of input only has one file type
+        input_data = input_dict["files"][0]["fileContents"]
+
         self._check_objective(results, predicted_obj_value)
-        self._check_selected_and_filled(results, input_json)
-        self._check_budget_used(results, input_json)
+        self._check_selected_and_filled(results, input_data)
+        self._check_budget_used(results, input_data)
 
     # ---------------------------------------------
     #  TESTS AGAINST INPUT FILES
     # ---------------------------------------------
 
     def test_end2end_simpleKnapsack(self):
-        files, results = self._all_steps("simpleKnapsack.json")
-        self._check_all(results, files[0]["fileContents"], 1)
+        input_dict, results = self._all_steps("simpleKnapsack.json")
+        self._check_all(results, input_dict, 1)
 
         self.assertEqual(results.to_dict()["per_resource_score"]["backpack_Resource_instance_0"], 1)
         self.assertEqual(results.get_trace_df().iloc[0]["activity"], "item_Activity_instance_0")
         self.assertTrue(results.get_trace_df().iloc[0]["selected"])
 
     def test_end2end_simpleKnapsack_contains_reward(self):
-        files, results = self._all_steps("simpleKnapsack_containsReward.json")
-        self._check_all(results, files[0]["fileContents"], 7)
+        input_dict, results = self._all_steps("simpleKnapsack_containsReward.json")
+        self._check_all(results, input_dict, 7)
 
     def test_end2end_multiBudgetKnapsack(self):
-        files, results = self._all_steps("multiBudgetKnapsack.json")
-        self._check_all(results, files[0]["fileContents"], 4)
+        input_dict, results = self._all_steps("multiBudgetKnapsack.json")
+        self._check_all(results, input_dict, 4)
 
         self.assertEqual(results.to_dict()["per_resource_score"]["node_Resource_instance_0"], 2)
         self.assertEqual(results.to_dict()["per_resource_score"]["node_Resource_instance_1"], 2)
@@ -196,8 +191,8 @@ class TestKnapsackE2E(TestCase):
         self.assertTrue(results.get_trace_df().iloc[2]["selected"])
 
     def test_end2end_fanOutKnapsack(self):
-        files, results = self._all_steps("fanOutKnapsack.json")
-        self._check_all(results, files[0]["fileContents"], 6)
+        input_dict, results = self._all_steps("fanOutKnapsack.json")
+        self._check_all(results, input_dict, 6)
 
         self.assertEqual(results.to_dict()["per_resource_score"]["bag_Resource_instance_0"], 3)
         self.assertEqual(results.to_dict()["per_resource_score"]["bag_Resource_instance_1"], 3)
@@ -215,8 +210,8 @@ class TestKnapsackE2E(TestCase):
         self.assertTrue(results.get_trace_df().iloc[3]["selected"])
 
     def test_end2end_fanInKnapsack(self):
-        files, results = self._all_steps("fanInKnapsack.json")
-        self._check_all(results, files[0]["fileContents"], 6)
+        input_dict, results = self._all_steps("fanInKnapsack.json")
+        self._check_all(results, input_dict, 6)
 
         self.assertEqual(results.to_dict()["per_resource_score"]["funding_Resource_instance_0"], 2)
         self.assertEqual(results.to_dict()["per_resource_score"]["funding_Resource_instance_1"], 4)
@@ -252,8 +247,8 @@ class TestKnapsackE2E(TestCase):
         self.assertTrue(results.get_trace_df().iloc[7]["selected"])
 
     def test_end2end_multiProblemKnapsack(self):
-        files, results = self._all_steps("multiProblemKnapsack.json")
-        self._check_all(results, files[0]["fileContents"], 12)
+        input_dict, results = self._all_steps("multiProblemKnapsack.json")
+        self._check_all(results, input_dict, 12)
 
         self.assertEqual(results.to_dict()["per_resource_score"]["funding_Resource_instance_0"], 2)
         self.assertEqual(results.to_dict()["per_resource_score"]["funding_Resource_instance_1"], 4)
@@ -264,38 +259,36 @@ class TestKnapsackE2E(TestCase):
         self.assertEqual(results.to_dict()["per_resource_score"]["bag_Resource_instance_1"], 3)
 
     def test_end2end_comboProblemKnapsack(self):
-        files, results = self._all_steps("comboProblemKnapsack.json")
-        self._check_all(results, files[0]["fileContents"], 13)
+        input_dict, results = self._all_steps("comboProblemKnapsack.json")
+        self._check_all(results, input_dict, 13)
 
     def test_end2end_fanOutKnapsack_ifNot(self):
-        files, results = self._all_steps("fanOutKnapsack_ifNot.json")
-        self._check_all(results, files[0]["fileContents"], 11)
+        input_dict, results = self._all_steps("fanOutKnapsack_ifNot.json")
+        self._check_all(results, input_dict, 11)
 
     def test_end2end_fanOutKnapsack_ifNot_multi(self):
-        files, results = self._all_steps("fanOutKnapsack_ifNot_multi.json")
-        self._check_all(results, files[0]["fileContents"], 32)
+        input_dict, results = self._all_steps("fanOutKnapsack_ifNot_multi.json")
+        self._check_all(results, input_dict, 32)
 
     def test_end2end_fanOutKnapsack_ifNot_multi_combo(self):
-        files, results = self._all_steps("fanOutKnapsack_ifNot_multi_combo.json")
-        self._check_all(results, files[0]["fileContents"], 31)
+        input_dict, results = self._all_steps("fanOutKnapsack_ifNot_multi_combo.json")
+        self._check_all(results, input_dict, 31)
 
     def test_end2end_simple_AWD(self):
-        files, results = self._all_steps("SimpleAlienWorldDomination.json")
-        self._check_all(results, files[0]["fileContents"], 6)
+        input_dict, results = self._all_steps("SimpleAlienWorldDomination.json")
+        self._check_all(results, input_dict, 6)
 
     def test_end2end_AWD_with_ship(self):
-        files, results = self._all_steps("AlienWorldDomination_wShip.json")
-        self._check_all(results, files[0]["fileContents"], 6)
+        input_dict, results = self._all_steps("AlienWorldDomination_wShip.json")
+        self._check_all(results, input_dict, 6)
 
     def test_end2end_AWD_with_ship_no_connections(self):
-        files, results = self._all_steps("AWD_wShip_wNoConnections.json")
-        self._check_all(results, files[0]["fileContents"], 0)
+        input_dict, results = self._all_steps("AWD_wShip_wNoConnections.json")
+        self._check_all(results, input_dict, 0)
 
 
 if __name__ == "__main__":
     # FOR DEBUGGING USE...
-    import sys
-
     log = logging.getLogger()
     log.level = logging.DEBUG
     stream_handler = logging.StreamHandler(sys.stdout)

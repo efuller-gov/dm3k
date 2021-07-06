@@ -7,15 +7,14 @@ import glob
 import logging
 import os
 
-import optimizer.full_house.full_house_optimizer as fh_optimizer
+#import optimizer.full_house.full_house_optimizer as fh_optimizer
 import optimizer.knapsack.knapsack_optimizer as ks_optimizer
 
 log = logging.getLogger(__name__)
 
 algorithm_dict = {
-    # Make sure that any optimizer classes that use FullHouseInputJson as input have 'Json' in the keys below
     "default": ks_optimizer.KnapsackOptimizerViz,
-    "FullHouseViz": fh_optimizer.FullHouseOptimizerViz,
+    #"FullHouseViz": fh_optimizer.FullHouseOptimizerViz,
     "KnapsackViz": ks_optimizer.KnapsackOptimizerViz
 }
 
@@ -24,7 +23,7 @@ def create_opt(input_dict, config={}):
     """
     Create an optimizer that has already been loaded, model built, and solved
 
-    :param dict input_dict: a dict containing the name of the input and the files associated with this input
+    :param dict input_dict: a dict containing the name of the input and the data from files associated with this input
     :param dict config: a dict containing the parameters that are needed to create the optimizer.  At least this must be..
                         'optimizer':  name of opt algorithm; see algorithm_dict above (e.g. 'default'}
     :return optimizer: an optimizer class; subclass of dm3k.slim_optimizer.slim_optimizer_base.OptimizerBase
