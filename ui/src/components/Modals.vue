@@ -237,12 +237,14 @@ export default {
 
             //Columns are Instances of resources | Dropdowns for all available instances of activities
             titleText = "Allocated individual resource instances of <b> " + resourceName + " </b>to activity instances of <b>" + activityName + "</b>."
-            let resource_instances = this.$store.state.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData.map(x => x.name)
-            let activity_instances = this.$store.state.activityInstances.filter(x => x.label == activityName)[0].instanceTableData.map(x => x.name)
+            // let resource_instances = this.$store.state.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData.map(x => x.name)
+            // let activity_instances = this.$store.state.activityInstances.filter(x => x.label == activityName)[0].instanceTableData.map(x => x.name)
+            let resource_instances = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData.map(x => x.name)
+            let activity_instances = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == activityName)[0].instanceTableData.map(x => x.name)
             resource_instances.push('ALL')
             activity_instances.push('ALL')
         
-            tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
+            tabledata = this.$store.state.dm3kGraph.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
 
             tablecols = [
                 {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
