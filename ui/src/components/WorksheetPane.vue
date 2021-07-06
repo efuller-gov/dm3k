@@ -478,88 +478,9 @@ export default {
             );
         },
         readFromJson(inputJson){
-
-            // this.dm3kConverter.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson);
             this.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson);
-
-            // for (let rc of inputJson.resourceClasses) {
-            //     this.$store.state.resourceInstances.push(new ResourceInstance(rc.typeName, rc.className, rc.budgets))
-            //     this.$emit('add-resource', 
-            //         {
-            //             resType:  rc.typeName,
-            //             resName: rc.className,
-            //             budgetNameList: rc.budgets,
-            //             newBudgetNameList: rc.budgets,
-            //             drawn: false
-            //         }
-            //     )
-            // }
-            // // Add resource instances
-            // for (let ri of inputJson.resourceInstances) {
-            //     for (let ri_instance of ri.instanceTable) {
-            //         // console.log("Adding res instances: ri_instance ", ri_instance)
-            //         let newInstance = {name: ri_instance.instanceName};
-            //         let budgetName = Object.keys(ri_instance.budget)[0]
-            //         newInstance["budget_"+budgetName] = ri_instance.budget[budgetName];
-            //         this.$store.commit('addResourceInstance', {instanceName : ri.className, newInstance: newInstance})
-            //     }
-            // }
-            
-            // console.log("ADDING ACTIVITIES FROM INPUT FILE: inputJson.activityClasses ", inputJson.activityClasses)
-            // console.log("inputJson ", inputJson)        
-            // for (let ac of inputJson.activityClasses) {
-            //     for (let rc of inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className)) {
-            //         console.log("****** CLASS NAME ac.className: ", ac.className)
-            //         if (this.$store.state.activities.map(x=>x.actName).includes(ac.className)){
-            //             console.log("EMIT--> add-existing-allocation")
-            //             this.$emit('add-existing-allocation', 
-            //                 {
-            //                     actName: ac.className,
-            //                     existingResName: rc.resourceClassName,
-            //                     newRewardName: ac.rewards,
-            //                     drawn: false
-            //                 }
-            //             )
-            //         } else {
-            //             console.log("EMIT--> add-new-allocation")
-            //             this.$emit('add-new-allocation', 
-            //                 {
-            //                     actName: ac.className,
-            //                     newActType: ac.typeName,
-            //                     existingResName: rc.resourceClassName,
-            //                     newRewardName: ac.rewards,
-            //                     drawn: false
-            //                 }
-            //             )
-            //         }
-            //     }
-            // }
-            // // add contains links - resources
-            // for (let rc of inputJson.resourceClasses) {
-            //     let resName = rc.className;
-            //     // NOTE - resources should always exist...so no need to do check like contains links - activities below
-            //     for (let ccName of rc.containsClasses) {
-            //         this.$emit('add-contains', 
-            //             {
-            //                 resName: resName,
-            //                 ccName: ccName,
-            //                 drawn: false
-            //             }
-            //         )
-            //     }
-            // }
-        },
-        submitDM3K(){
-            console.log('------- SUBMIT ------')
-            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
-            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
-            console.log("---> outputJson ", outputJson)
         },
         dm3kconversion_reverse(dm3kgraph, inputJson) {
-            // let dm3kgraph = this.$store.state.dm3kGraph
-            console.log("-----> IN dm3kconversion_reverse dm3kgraph", dm3kgraph)
-            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
-            console.log("-- inputJson ", inputJson)
             this.$store.state.dm3kGraph.clearAll();  // this should get rid of all boxes and lines on graph
             console.log("Loading...")
             
@@ -715,6 +636,12 @@ export default {
                 let aType = allc.allocationConstraintType;
                 this.$store.state.dm3kGraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
             }
+        },
+        submitDM3K(){
+            console.log('------- SUBMIT ------')
+            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
+            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
+            console.log("---> outputJson ", outputJson)
         }
     },
     data() {

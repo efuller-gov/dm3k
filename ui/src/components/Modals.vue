@@ -65,6 +65,7 @@ export default {
     },
     methods:{
         addRow(){
+            console.log("-- ADD ROW clicked")
             if ($('#add-row').text().includes('resource')){
                 // let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
                 let resourceInstance = this.$store.state.dm3kGraph.resourceInstances.filter(x=>x.label == this.instanceName)[0];
