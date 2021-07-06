@@ -875,8 +875,6 @@ function addDM3KBudget(graph, budgetName, res, budgetNum) {
  *  @return (mxCell) block: a vertex in the mxGraph representing a cost
  */
 function addDM3KCost(graph, costName, act, costNum) {
-    console.log("----> addDM3KCost ")
-    console.log("---> costNum ", costNum)
     const width = 65;
     const height = 40;
     const space = 20; // space between cost and activity

@@ -47,6 +47,7 @@ export default {
         this.$store.commit('addContainsLink', containsObj)
       },
       clearGraph(){
+        console.log("---> CLEAR STORE")
         this.$store.commit('clearGraph')
       }
   }

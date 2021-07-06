@@ -19,10 +19,28 @@ export default new Vuex.Store({
       allocatedToInstances : [],
       rewards : {},
       budgets : {},
-      costs : {}
+      costs : {},
+      dm3kGraph: [],
 },
   getters: {},
   mutations: {
+    clearGraph(state){
+      console.log("--- CLEAR STORE IN STORE")
+      state.resources = []
+      state.resources = []
+      state.activities = []
+      state.allocatedLinks = []
+      state.containsLinks = []
+      state.constraints = []
+      state.resourceInstances = []
+      state.activityInstances = []
+      state.containsInstances = []
+      state.allocatedToInstances = []
+      state.rewards = {}
+      state.budgets = {}
+      state.costs = {}
+      state.dm3kGraph = []
+    },
     addResource(state, resourceObj) {
       state.resources.push(resourceObj)
     },
@@ -32,14 +50,11 @@ export default new Vuex.Store({
       state.resourceInstances.filter(x=>x.label==resName)[0].instanceTableData.push(resourceInstanceObj)
     },
     addActivity(state, activityObj) {
-      console.log("----> IN STORE, addActivity ", activityObj)
       state.activities.push(activityObj);
       // Add AllocationInstance when first create
       let ai = new AllocationInstance(activityObj['existingResName'], activityObj['actName']);
-      // console.log("ai ", ai)
       let costNameList = state.resources.filter(x=>x.resName == activityObj['existingResName'])[0].budgetNameList
       state.activityInstances.push(new ActivityInstance(activityObj['newActType'], activityObj['actName'], costNameList))
-      console.log("AFTER pushing new instance ", state.activityInstances)
       state.allocatedToInstances.push(ai);
     },
     addActivityInstance(state, actPayload){
@@ -51,7 +66,6 @@ export default new Vuex.Store({
       state.containsLinks.push(containsObj);
     },
     addAllocation(state, allocObj) {
-      console.log("---> addAllocation")
       state.allocatedLinks.push(allocObj);
       let ai = new AllocationInstance(allocObj['existingResName'], allocObj['actName']);
       state.allocatedToInstances.push(ai);

@@ -13,7 +13,7 @@
     name: 'GraphRenderer',
     data() {
       return {
-        dm3kGraph: {},
+        // dm3kGraph: {},
         infoIcon: require('../assets/info-icon.png'),
         solnExplainer: require("../assets/output-explainer.png")
       }
@@ -33,7 +33,8 @@
                   let newResType = latest.resType
                   let newResName = latest.resName
                   let newBudgetNameList = latest.newBudgetNameList
-                  this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+                  // this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+                  this.$store.state.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
                   latest.drawn = true
                 }
             }
@@ -41,16 +42,14 @@
          '$store.state.activities': {
             deep: true,
             handler(activities) {
-                console.log("----> activities", activities)
-                // let latest = activities[activities.length-1]
                 for (let latest of activities.filter(x=>x.drawn==false)){
                   let newActType = latest.newActType
                   let newActName = latest.actName
                   let existingResName = latest.existingResName
                   let newRewardName = latest.newRewardName
                   let costNum = 0 //REMOVE hardcoded workaround here??
-                  console.log("---> In GraphRenderer: addCompleteActivity")
-                  this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
+                  // this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
+                  this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                   latest.drawn = true
                 }
             }
@@ -62,15 +61,16 @@
                 let actName = latest.actName
                 let existingResName = latest.existingResName
                 let newRewardName = latest.newRewardName
-                this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
+                // this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
+                this.$store.state.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
             }
         },
         '$store.state.containsLinks': {
             deep: true,
             handler(links) {
-                // let latest = links[links.length-1]
                 for (let latest of links.filter(x=>x.drawn==false)){
-                  this.dm3kGraph.addContains(latest.resName, latest.ccName);
+                  // this.dm3kGraph.addContains(latest.resName, latest.ccName);
+                  this.$store.state.dm3kGraph.addContains(latest.resName, latest.ccName);
                   latest.drawn = true
                 }
             }
@@ -78,14 +78,16 @@
     },
     methods: {
         loadDm3kGraph() {
-          this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
+          // this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
+          this.$store.state.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
         zoomIn(){
-          console.log("ZOOOOOOM IN")
-          this.dm3kGraph.graph.zoomIn()
+          // this.dm3kGraph.graph.zoomIn()
+           this.$store.state.dm3kGraph.graph.zoomIn()
         },
         zoomOut(){
-          this.dm3kGraph.graph.zoomOut()
+          // this.dm3kGraph.graph.zoomOut()
+          this.$store.state.dm3kGraph.graph.zoomOut()
         },
         addListener(){
           let container = document.getElementById('graphContainer')
@@ -95,7 +97,9 @@
           this.$root.$emit('show-instance-modal', e)
         },
         clearGraph(){
-          this.dm3kGraph.clearAll()
+          console.log("----> CLEAR GRAPH")
+          // this.dm3kGraph.clearAll()
+          this.$store.state.dm3kGraph.clearAll()
         }
     }
   };

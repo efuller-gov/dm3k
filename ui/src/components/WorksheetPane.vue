@@ -170,7 +170,7 @@
 				</select><br>
 				<label for="serverLoc">DM3K backend </label>
 				<input type="text" class="long-input" id="serverLoc" value="https://10.109.11.239:8050"><br>
-                <input style="margin-top: 10px;" type="button" class="done-button" value="Submit to DM3K" id="submitDM3K">
+                <input @click="submitDM3K()" style="margin-top: 10px;" type="button" class="done-button" value="Submit to DM3K" id="submitDM3K">
             </div>
         </div>  
     </div>
@@ -180,6 +180,7 @@
 import $ from 'jquery'
 import {ResourceInstance} from '../js/dm3kgraph/dataClasses';
 import {ActivityInstance} from '../js/dm3kgraph/dataClasses';
+import {Dm3kConverter} from '../js/dm3kconversion/dm3kconversion';
 
 export default {
     name: 'WorksheetPane',
@@ -446,7 +447,6 @@ export default {
 
                 // Load a file from local storage
                 $("#loadLocally").change(function(e) {
-                    console.log("Loading a file from local...")
                     const file = e.target.files[0];
                     if (!file) {
                         return;
@@ -478,7 +478,6 @@ export default {
             );
         },
         readFromJson(inputJson){
-            console.log(">> readFromJson: inputJson ", inputJson)
             for (let rc of inputJson.resourceClasses) {
                 this.$store.state.resourceInstances.push(new ResourceInstance(rc.typeName, rc.className, rc.budgets))
                 this.$emit('add-resource', 
@@ -501,11 +500,12 @@ export default {
                     this.$store.commit('addResourceInstance', {instanceName : ri.className, newInstance: newInstance})
                 }
             }
+            
+            console.log("ADDING ACTIVITIES FROM INPUT FILE: inputJson.activityClasses ", inputJson.activityClasses)
+            console.log("inputJson ", inputJson)        
             for (let ac of inputJson.activityClasses) {
                 for (let rc of inputJson.allocationInstances.filter(x=>x.activityClassName==ac.className)) {
-                    console.log("this.$store.state.activities ", this.$store.state.activities)
-                    console.log("this.$store.state.activities.map(x=>x.actName) ", this.$store.state.activities.map(x=>x.actName))
-                    console.log("ac.className ", ac.className)
+                    console.log("****** CLASS NAME ac.className: ", ac.className)
                     if (this.$store.state.activities.map(x=>x.actName).includes(ac.className)){
                         console.log("EMIT--> add-existing-allocation")
                         this.$emit('add-existing-allocation', 
@@ -544,20 +544,20 @@ export default {
                     )
                 }
             }
-            console.log("...activity instances...");
-            console.log(inputJson.activityInstances);
+            // console.log("...activity instances...");
+            // console.log(inputJson.activityInstances);
             // Add activity instances
-            for (let ai of inputJson.activityInstances) {
-                let ai_name = ai.className;
-                for (let ai_instance of ai.instanceTable) {
-                    let newInstance = {name: ai_name};
-                    let c = ai_instance.cost
-                    let costName = Object.keys(c)[0]
-                    newInstance["cost_"+costName] = c[costName]
-                    newInstance["reward"] = ai_instance["reward"]
-                    this.$emit('add-activity-instance', {instanceName: ai_name, newInstance: newInstance})
-                }
-            }
+            // for (let ai of inputJson.activityInstances) {
+            //     let ai_name = ai.className;
+            //     for (let ai_instance of ai.instanceTable) {
+            //         let newInstance = {name: ai_name};
+            //         let c = ai_instance.cost
+            //         let costName = Object.keys(c)[0]
+            //         newInstance["cost_"+costName] = c[costName]
+            //         newInstance["reward"] = ai_instance["reward"]
+            //         this.$emit('add-activity-instance', {instanceName: ai_name, newInstance: newInstance})
+            //     }
+            // }
 
             // console.log("...allocation instances...")
             // console.log(inputJson.allocationInstances)
@@ -582,10 +582,17 @@ export default {
             //         ci_dm3k.addToInstanceTable(ci_instance.parentInstanceName, ci_instance.childInstanceName);
             //     }
             // }
+        },
+        submitDM3K(){
+            console.log('------- SUBMIT ------')
+            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
+            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
+            console.log("---> outputJson ", outputJson)
         }
     },
     data() {
         return{
+            dm3kConverter: {},
             inputJson: [],
             helper_images_info: [
                 {
@@ -691,11 +698,11 @@ export default {
         }
     },
     mounted(){
+        this.dm3kConverter = new Dm3kConverter();
         this.changeHelperText('create-resources')
         this.changeHelperImg('create-resources')
         this.populateResourcesFromWB()
         this.populateActivitiesFromWB()
-        // this.dm3kgraph = new Dm3kGraph(document.getElementById('graphContainer'), '../assets/rounded-info-icon-gray.png')
     }
 }
 </script>
