@@ -1,5 +1,5 @@
 """
-Tests knapsack as if system was being used by dm3k-viz
+Tests knapsack from internal interface
 """
 import json
 import pandas
