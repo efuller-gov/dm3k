@@ -44,27 +44,44 @@
 <script>
 import $ from 'jquery'
 import Tabulator from "tabulator-tables"
-import generateSolnMatrix from '../js/dm3ksolution/dm3kSolutionVis';
+import {Dm3kSolutionVis} from '../js/dm3ksolution/dm3kSolutionVis';
 
 export default {
     name: 'Modals',
     mounted(){
+        this.solnVis = new Dm3kSolutionVis()
         this.$root.$on('show-instance-modal', e => {
             this.showInstanceModal(e)
-        }),
+        })
+
         this.$root.$on('show-solution-modal', e => {
             console.log("SHOW SOLN MODAL e: ", e)
-            this.showSolutionModal(e)
+            this.showSolutionModal(e.body, e.outputJson)
         })
+
+        let d3Script = document.createElement('script')
+        d3Script.setAttribute('src', 'http://d3js.org/d3.v4.js')
+
+        let lodashScript = document.createElement('script')
+        lodashScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min.js')
+
+
+        let jqScript = document.createElement('script')
+        jqScript.setAttribute('src', 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+
+        document.head.appendChild(d3Script)
+        document.head.appendChild(lodashScript)
+        document.head.appendChild(jqScript)
     },
     data(){
         return{
-           TABLEHEIGHT :  "300px",
-           TABLELAYOUT : "fitColumns",
-           instanceName : [],
-           resourceName : [],
-           activityName : [],
-           xIcon: require("../assets/x-icon.svg"),
+            solnVis : {},
+            TABLEHEIGHT :  "300px",
+            TABLELAYOUT : "fitColumns",
+            instanceName : [],
+            resourceName : [],
+            activityName : [],
+            xIcon: require("../assets/x-icon.svg"),
         }
     },
     methods:{
@@ -297,12 +314,12 @@ export default {
 			modal.style.display = "block"
 		  	modal.style.display = "block"
 
-			generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
-			generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+			this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+			this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
 
 			$("#widthFunctionToggle").change(
 				function(){
-					generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+					this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
 				}
 			)
 		}
