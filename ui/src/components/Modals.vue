@@ -1,4 +1,3 @@
-
 <template>
     <div>
         <link href="https://unpkg.com/tabulator-tables@4.4.1/dist/css/tabulator.min.css" rel="stylesheet">
@@ -21,7 +20,7 @@
         </div>
 			</div>
 			<div id="soln-modal" class="soln-modal">
-				<span class="close-btn" onclick="closeSolnModal()">&times;</span>
+				<span class="close-btn" @click="closeSolnModal()">&times;</span>
 				<div class="modal-content">
 					<img id='soln-explainer-graphic' onclick="location.href='./'" src="../assets/output-explainer.png">
 					<p id="soln-title">Optimal Allocation Plan</p>
@@ -45,12 +44,17 @@
 <script>
 import $ from 'jquery'
 import Tabulator from "tabulator-tables"
+import generateSolnMatrix from '../js/dm3ksolution/dm3kSolutionVis';
 
 export default {
     name: 'Modals',
     mounted(){
         this.$root.$on('show-instance-modal', e => {
             this.showInstanceModal(e)
+        }),
+        this.$root.$on('show-solution-modal', e => {
+            console.log("SHOW SOLN MODAL e: ", e)
+            this.showSolutionModal(e)
         })
     },
     data(){
@@ -60,7 +64,7 @@ export default {
            instanceName : [],
            resourceName : [],
            activityName : [],
-           xIcon: require("../assets/x-icon.svg")
+           xIcon: require("../assets/x-icon.svg"),
         }
     },
     methods:{
@@ -96,6 +100,16 @@ export default {
         closeModal(){
 			let modal = document.querySelector(".modal")
 			modal.style.display = "none"
+        },
+        closeSolnModal(){
+			let modal = document.querySelector(".soln-modal")
+			modal.style.display = "none"
+			$('#menu').toggleClass('shrink')
+            if( $('#menu').hasClass('shrink') ){
+                $('#hide-worksheet-button').html('Expand worksheet')
+            } else{
+                $('#hide-worksheet-button').html('Hide worksheet')
+            }
 		},
         showInstanceModal(event){
             let cellId = event.detail.id;
@@ -276,7 +290,23 @@ export default {
                 columns:tablecols,
             });
             $('#table-title').html(titleText)
-        }
+        },
+        showSolutionModal(data, problemData){
+			let modal = document.querySelector(".soln-modal")
+            $('#alloc-selector').hide()
+			modal.style.display = "block"
+		  	modal.style.display = "block"
+
+			generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+			generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+
+			$("#widthFunctionToggle").change(
+				function(){
+					generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+				}
+			)
+		}
+
     }
 }
 </script>
