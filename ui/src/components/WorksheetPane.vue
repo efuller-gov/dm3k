@@ -413,7 +413,7 @@ export default {
                     var ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
                     if (ans.success) {
                         console.log('AddActivityComplete success!')
-                        // updateAllDropDowns(dm3kgraph);
+                        this.updateAllDropDowns();
                         // var layout = new mxGraphLayout(dm3kgraph.graph);
                         // executeLayout(dm3kgraph.graph, layout);
                         // resetActivityPrompt();
@@ -464,7 +464,7 @@ export default {
             var child = $('#res-childName').val();
             var parentType = $('#resType2').val();
              this.$store.state.dm3kGraph.addNewResContains(parentType, parent, child);
-            // updateAllDropDowns(dm3kgraph);
+            this.updateAllDropDowns();
         },
         addNewActContains(){
             var parent = $('#act-parentName').val();
@@ -472,7 +472,7 @@ export default {
             var reward = $('#act-parentRewardName').val();
             var parentType = $('#actType2').val();
             this.$store.state.dm3kGraph.addNewActContains(parentType, parent, child, reward);
-            // updateAllDropDowns(dm3kgraph);
+            this.updateAllDropDowns();
         },
         addConstraint(){
             let fromName1 = $("#startName1").val();
@@ -644,7 +644,7 @@ export default {
                         resolve(inputJson)
                         // dm3kconversion_reverse(dm3kgraph, inputJson);
                         // // update the worksheets and make sure all worksheets are enabled
-                        // updateAllDropDowns(dm3kgraph);
+                        // this.updateAllDropDowns();
                         $('#allocate-resources-button').removeClass('disabled')
                         $('#contains-button').removeClass('disabled')
                         $('#constrain-allocations-button').removeClass('disabled')
