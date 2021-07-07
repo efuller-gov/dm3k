@@ -10,7 +10,7 @@
                 <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
                 <button @click="allocateResourcesTab()" id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
                 <button @click="containsTab()" id="contains-button" type="button" class="menu-button disabled">Make contains relationship</button>
-                <button id="constrain-allocations-button" type="button" class="menu-button disabled">Constrain allocations</button>
+                <button @click="constrainAllocationsTab()" id="constrain-allocations-button" type="button" class="menu-button disabled">Constrain allocations</button>
             </div>
             <div id="create-resource-column" class="left_column responsive-column-text">
                 <p class="title-text"><b>Create a resource.</b></p>
@@ -432,6 +432,16 @@ export default {
             this.changeHelperText('contains')
             this.changeHelperImg('contains')
             this.resetActivityPrompt()
+        },
+        constrainAllocationsTab(){
+            $(".menu-button").removeClass('enabled')
+            $(".left_column").addClass('hide')
+            $("#make-allocation-constraint-column").removeClass('hide')
+			$("#constrain-allocations-button").addClass('enabled')
+            this.changeHelperImg('constrain-allocations')
+            this.changeHelperText('constrain-allocations')
+			this.resetActivityPrompt()
+			this.resetContainsPrompt()
         },
         existingContains(){
             $('#contains-existing-submenu').removeClass('hide')
