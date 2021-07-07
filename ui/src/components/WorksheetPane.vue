@@ -77,7 +77,7 @@
                 </div>
                 <div id="contains-new-act-submenu" class="hide">
                     <label for="actType2"> I want </label>
-                    <select class="chosen-select activity-select" id="actType2" style="margin-left: 0px;" onchange="worksheetUtils_newActivityActivated()">
+                    <select class="chosen-select activity-select" id="actType2" style="margin-left: 0px;" @change="worksheetUtils_newActivityActivated">
                         <option selected style="font-weight: bold;">a new activity</option>
                         <option value="custom input">custom input</option>
                     </select>
@@ -90,11 +90,11 @@
                     <input type="text" id="act-parentName"><br><br>
                     <label id ="activity-reward-label" for="act-parentRewardName">Label the reward of the instance </label>
                     <input type="text" id="act-parentRewardName"><br><br>
-                    <input type="button" class="done-button" value="Contains Done" id="addNewActContains">
+                    <input @click="addNewActContains" type="button" class="done-button" value="Contains Done" id="addNewActContains">
                 </div>
                 <div id="contains-new-res-submenu" class="hide">
                     <label for="resType2"> I want </label>
-                    <select class="chosen-select activity-select" id="resType2" style="margin-left: 0px;" onchange="worksheetUtils_newActivityActivated()">
+                    <select class="chosen-select activity-select" id="resType2" style="margin-left: 0px;" @change="worksheetUtils_newResourceActivated">
                         <option selected style="font-weight: bold;">a new resource</option>
                         <option value="custom input">custom input</option>
                     </select>
@@ -105,7 +105,7 @@
                     <br><br>
                     <label id="parent-label" for="res-parentName">Label the parent </label>
                     <input type="text" id="res-parentName"><br><br>
-                    <input type="button" class="done-button" value="Contains Done" id="addNewResContains">
+                    <input @click="addNewResContains" type="button" class="done-button" value="Contains Done" id="addNewResContains">
                 </div>
             </div>
             <div id="make-allocation-constraint-column" class="left_column hide">
@@ -334,7 +334,6 @@ export default {
             $('#addActivity').removeClass('hide')
         },
         addActivity(){
-            console.log("----> dm3kgraph.allocatedLinks", this.$store.state.dm3kGraph.allocatedLinks)
             $('#constrain-allocations-button').removeClass('disabled')
             $('#actTypeExisting').removeClass('disabled')
 
@@ -417,63 +416,6 @@ export default {
                 }
             }
         },
-        // addActivity(){
-        //     $('#constrain-allocations-button').removeClass('disabled')
-        //     $('#actTypeExisting').removeClass('disabled')
-
-        //     let newActType = $("#actType").val();
-        //     let newActName = $("#actName").val();
-        //     let existingResName = $("#resName2").val();
-        //     let newRewardName = $("#rewardName").val();
-
-        //     if ($('#new-allocation').hasClass('enabled') & ( (newActType=='none') | (newActName=='') ) ){
-        //         alert('Please fill all fields required to create an activity.')
-        //         return
-        //     }
-        //     if( $('#existing-allocation').hasClass('enabled') & $('#actTypeExisting').val() == 'an existing activity'){
-        //         alert('You must select an existing activity from the dropdown menu.')
-        //         return
-        //     }
-        //     if( $('#new-allocation').hasClass('enabled') & $('#actType').val() == 'a new activity'){
-        //         alert('You must select a new activity type from the dropdown menu.')
-        //         return
-        //     }
-        //     // Allocate to existing activity
-        //     if ($("#existing-allocation").hasClass("enabled")){
-        //         let actName = $("#actTypeExisting").val();
-        //         this.$emit('add-existing-allocation', 
-        //             {
-        //                 actName: actName,
-        //                 existingResName: existingResName,
-        //                 newRewardName: newRewardName,
-        //                 drawn: false
-        //             }
-        //         )
-        //     }
-        //     // Allocate to new activity, and create new activity
-        //     else{
-        //         if (newActType.includes('[')){
-        //             let tmp = newActType.split('[')
-        //             tmp = newActType.split(']',2)
-
-        //             newActType = tmp[0].split('[')[1];
-        //             newActName = tmp[1]
-        //         }
-        //         let costNameList = this.$store.state.resources.filter(x=>x.resName == existingResName)[0].budgetNameList
-        //         this.$store.state.activityInstances.push(new ActivityInstance(newActType, newActName, costNameList))
-        //         this.$emit('add-new-allocation', 
-        //             {
-        //                 actName: newActName,
-        //                 newActType: newActType,
-        //                 existingResName: existingResName,
-        //                 newRewardName: newRewardName,
-        //                 drawn: false
-        //             }
-        //         )
-        //     }
-        //     this.resetResourcePrompt()
-        //     // this.resetActivityPrompt()
-        // },
         containsTab(){
             $(".menu-button").removeClass('enabled')
             $(".left_column").addClass('hide')
@@ -488,19 +430,56 @@ export default {
 			$('#contains-new-act-submenu').addClass('hide')
 			$('#contains-new-res-submenu').addClass('hide')
         },
-        newResContainer(){
+        newActContainer(){
             $('#contains-existing-submenu').addClass('hide')
 			$('#contains-new-act-submenu').removeClass('hide')
 			$('#contains-new-res-submenu').addClass('hide')
         },
-        newActContainer(){
+        newResContainer(){
             $('#contains-existing-submenu').addClass('hide')
 			$('#contains-new-act-submenu').addClass('hide')
 			$('#contains-new-res-submenu').removeClass('hide')
         },
+        addNewResContains(){
+            var parent = $('#res-parentName').val();
+            var child = $('#res-childName').val();
+            var parentType = $('#resType2').val();
+             this.$store.state.dm3kGraph.addNewResContains(parentType, parent, child);
+            // updateAllDropDowns(dm3kgraph);
+        },
+        addNewActContains(){
+            var parent = $('#act-parentName').val();
+            var child = $('#act-childName').val();
+            var reward = $('#act-parentRewardName').val();
+            var parentType = $('#actType2').val();
+            this.$store.state.dm3kGraph.addNewActContains(parentType, parent, child, reward);
+            // updateAllDropDowns(dm3kgraph);
+        },
         updateDropDown(resList, jQuerySelector) {
             jQuerySelector.empty();
             return resList.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
+        },
+        worksheetUtil_updateDropDown(graph, typeList, jQuerySelector, excludeNamesList) {
+            //console.log('worksheetUtil_updateDropDown on '+jQuerySelector.attr('id'));
+
+            jQuerySelector.empty();
+            let updatedOptions = []
+            typeList.forEach(function(typeName, index) {
+                //console.log('Looking for: '+typeName)
+                let options = graph.getAllNamesOfType(typeName);
+                //console.log('Options: ', options)
+                updatedOptions = updatedOptions.concat(options);
+            });
+            
+            excludeNamesList.forEach(function(excludeName, index) {
+                const i = updatedOptions.indexOf(excludeName);
+                if (i > -1) {
+                    updatedOptions.splice(i, 1);
+                }
+            });
+
+            //console.log('updatedOptions',updatedOptions)
+            return updatedOptions.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
         },
         worksheetUtils_newActivityActivated(){
             if ($('#actType').val() != 'a new activity'){
@@ -508,6 +487,12 @@ export default {
                 $('#actName').removeAttr('disabled');
                 $('#rewardName').removeAttr('disabled');
             }
+            this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#act-childName'), [])
+			// worksheetUtil_updateDropDown(g, ['resource'], $('#res-childName'), [])
+        },
+        worksheetUtils_newResourceActivated(){
+            $('#res-childName').removeAttr('disabled');
+            this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#res-childName'), [])
         },
         worksheetUtils_existingActivityActivated(){
             if ($('#actTypeExisting').val() != 'an existing activity'){
@@ -520,11 +505,24 @@ export default {
                 $('#actName').removeAttr('disabled');
                 $('#rewardName').removeAttr('disabled');
             }
+            this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#act-childName'), [])
+			// worksheetUtil_updateDropDown(g, ['resource'], $('#res-childName'), [])
+        },
+        resetDropdowns(){
+            $('#resName2').empty()
+            $('#actName').empty()
+            $('#rewardName').empty()
+            $('#actTypeExisting').empty()
+            $('#parentName2').empty()
+            $('#childName2').empty()
+            $('#res-ChildName').empty()
+            $('#act-ChildName').empty()
         },
         getConfigFile(){
             
             this.$emit('clear-graph')
-            this.$root.$emit('clear-graph')  
+            this.$root.$emit('clear-graph')
+            this.resetDropdowns()
             
             let promise = new Promise(function(resolve) {
                 $('#loadLocally').trigger('click')
