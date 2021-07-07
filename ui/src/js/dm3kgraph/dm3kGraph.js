@@ -477,6 +477,7 @@ export class Dm3kGraph {
     }
 
     getContainsInstance(parentName, childName) {
+        console.log("----> getContainsInstance. parentName: ", parentName, " childName: ", childName)
         return this.containsInstances.filter(x => (x.parentName == parentName) && (x.childName == childName))[0]
     }
 

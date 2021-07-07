@@ -156,6 +156,8 @@ export default {
                 resOrAct = 'contains'
                 let parentName = cellName.split('_')[0]
                 let childName = cellName.split('_')[1]
+                console.log("SENDING PARENT NAME: ", parentName)
+                console.log("SENDING CHILD NAME: ", childName)
                 this.showContainsModal(
                     instanceType,
                     instanceName,
@@ -269,8 +271,6 @@ export default {
 
             //Columns are Instances of resources | Dropdowns for all available instances of activities
             titleText = "Allocated individual resource instances of <b> " + resourceName + " </b>to activity instances of <b>" + activityName + "</b>."
-            // let resource_instances = this.$store.state.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData.map(x => x.name)
-            // let activity_instances = this.$store.state.activityInstances.filter(x => x.label == activityName)[0].instanceTableData.map(x => x.name)
             let resource_instances = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData.map(x => x.name)
             let activity_instances = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == activityName)[0].instanceTableData.map(x => x.name)
             resource_instances.push('ALL')
@@ -308,6 +308,68 @@ export default {
             });
             $('#table-title').html(titleText)
         },
+        showContainsModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, parentName, childName){
+		    //get data table for the selected res or act type
+            $('#add-row').text('Specify contains between instances')
+			let modal = document.querySelector(".modal")
+            $('#alloc-selector').hide()
+			modal.style.display = "block"
+		  	modal.style.display = "block"
+            let titleText = ''
+            let parent_tabledata = []
+            let child_instances = []
+            //Columns are Instances of Dropdowns for all available instances | Dropdowns for all available instances
+            titleText = "Contains relationship between instances of <b> " + parentName + " </b>and<b> " +  childName + "</b>."
+
+            let parent_is_resource = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == parentName)[0] != undefined
+            let parent_is_activity = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == parentName)[0] != undefined
+            let child_is_resource = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == childName)[0] != undefined
+            let child_is_activity = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == childName)[0] != undefined
+
+            if (parent_is_resource && child_is_resource){
+                child_instances = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == childName)[0].instanceTableData.map(x => x.name)
+                parent_tabledata = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == parentName)[0].instanceTableData;
+            }
+            if (parent_is_activity && child_is_activity){
+                child_instances = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == childName)[0].instanceTableData.map(x => x.name)
+                parent_tabledata = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == parentName)[0].instanceTableData;
+            }
+
+            let parent_instances = parent_tabledata.map(x => x.name)
+			parent_instances.push('ALL')
+			child_instances.push('ALL')
+            
+            let containsInstance = this.$store.state.dm3kGraph.getContainsInstance(parentName, childName)
+			let tabledata = containsInstance.instanceTableData;
+
+            let tablecols = [
+                    {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
+                        function(e, cell){
+                            removeRow(cell.getRow().getData())
+                        }
+                    },
+                    {title: "parent instance", field:"parentInstance", width:200, editor:"select",
+                        editorParams: {
+                            values: parent_instances,
+                            defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
+                            verticalNavigation:"hybrid"}},
+                    {title: "child instance", field:"childInstance", width:200, editor:"select",
+                        editorParams: {
+                            values: child_instances,
+                            defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
+                            verticalNavigation:"hybrid"}}
+                ]
+		  	 new Tabulator(this.$refs.table, {
+                height:this.TABLEHEIGHT,
+                addRowPos:"bottom",
+                reactiveData: true,
+                data: tabledata,
+                layout:this.TABLELAYOUT,
+                columns:tablecols,
+            });
+		  	$('#table-title').html(titleText)
+		  	return table
+		},
         showSolutionModal(data, problemData){
 			let modal = document.querySelector(".soln-modal")
             $('#alloc-selector').hide()
