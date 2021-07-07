@@ -819,6 +819,8 @@ export default {
                 let aType = allc.allocationConstraintType;
                 this.$store.state.dm3kGraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
             }
+
+            this.updateAllDropDowns()
         },
         emitSolnModal(e){
             this.worksheetUtil_hideShowWorksheet()
