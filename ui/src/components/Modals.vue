@@ -368,7 +368,6 @@ export default {
                 columns:tablecols,
             });
 		  	$('#table-title').html(titleText)
-		  	return table
 		},
         showSolutionModal(data, problemData){
 			let modal = document.querySelector(".soln-modal")
