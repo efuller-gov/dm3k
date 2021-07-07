@@ -16,7 +16,7 @@ export class Dm3kGraph {
      *  @param (div) container: the div that acts as the container for all DM3K graph objects
      */
     constructor(container) {
-
+        
         let infoIcon = require('../../assets/rounded-info-icon-gray.png')
         // Disables the built-in context menu
         mxEvent.disableContextMenu(container);
@@ -280,8 +280,8 @@ export class Dm3kGraph {
     addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum, locX = null, locY = null) {
         let model = this.graph.getModel()
         if (model.getCell(newActName) != undefined){
-            alert('Cannot create duplicate allocation.')
-            return
+            // alert('Cannot create duplicate allocation.')
+            // return
         }
         let ans = {
             "success": true,
@@ -424,7 +424,7 @@ export class Dm3kGraph {
     // TODO remove this as cost won't directly be set anymore?
     addCost(costName, actName, costNum) {
         // find the activity
-        console.log('------> addCost for ', costName)
+        // console.log('------> addCost for ', costName)
         let act = this.getActivity(actName);
         let newCost = addDM3KCost(this.graph, costName, act, costNum);
         this.costs[(actName + '_' + costName)] = newCost;
@@ -477,6 +477,7 @@ export class Dm3kGraph {
     }
 
     getContainsInstance(parentName, childName) {
+        console.log("----> getContainsInstance. parentName: ", parentName, " childName: ", childName)
         return this.containsInstances.filter(x => (x.parentName == parentName) && (x.childName == childName))[0]
     }
 
@@ -875,8 +876,6 @@ function addDM3KBudget(graph, budgetName, res, budgetNum) {
  *  @return (mxCell) block: a vertex in the mxGraph representing a cost
  */
 function addDM3KCost(graph, costName, act, costNum) {
-    console.log("----> addDM3KCost ")
-    console.log("---> costNum ", costNum)
     const width = 65;
     const height = 40;
     const space = 20; // space between cost and activity
@@ -1268,7 +1267,7 @@ class ContainsInstance {
          this.allocated_to = 'ALL';
          let sample_name = ""+label+"_Resource_instance_0";
          this.addDefaultRow(sample_name)
-         console.log("Resource Instance TableData: %O", this.instanceTableData)   
+        //  console.log("Resource Instance TableData: %O", this.instanceTableData)   
      }
 
     addDefaultRow(sample_name) {

@@ -1,11 +1,16 @@
 <template>
   <div id="app">
-    <GraphRenderer />
+    <GraphRenderer 
+     @clear-graph="clearGraph"    
+    />
     <Modals />
     <WorksheetPane 
       @add-resource="addResource" 
+      @add-resource-instance="addResourceInstance"
+      @add-activity-instance="addActivityInstance"
       @add-existing-allocation="addAllocation"  
       @add-new-allocation="addActivity"
+      @add-contains="addContains"
     />
   </div>
 </template>
@@ -26,12 +31,25 @@ export default {
       addResource(resourceObj){
         this.$store.commit('addResource', resourceObj)
       },
+      addResourceInstance(resourceObj){
+        this.$store.commit('addResourceInstance', resourceObj)
+      },
       addAllocation(activityObj){
         this.$store.commit('addAllocation', activityObj)
       },
       addActivity(activityObj){
         this.$store.commit('addActivity', activityObj)
       },
+      addActivityInstance(activityObj){
+        this.$store.commit('addActivityInstance', activityObj)
+      },
+      addContains(containsObj){
+        this.$store.commit('addContainsLink', containsObj)
+      },
+      clearGraph(){
+        console.log("---> CLEAR STORE")
+        this.$store.commit('clearGraph')
+      }
   }
 }
 </script>

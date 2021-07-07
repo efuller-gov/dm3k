@@ -7,14 +7,13 @@
 </template>
 
 <script>
-
   import {Dm3kGraph} from '../js/dm3kgraph/dm3kGraph';
 
   export default {
     name: 'GraphRenderer',
     data() {
       return {
-        dm3kGraph: {},
+        // dm3kGraph: {},
         infoIcon: require('../assets/info-icon.png'),
         solnExplainer: require("../assets/output-explainer.png")
       }
@@ -22,28 +21,37 @@
     mounted() {
         this.loadDm3kGraph();
         this.addListener();
+        this.$root.$on('zoom-in', this.zoomIn)
+        this.$root.$on('zoom-out', this.zoomOut)
+        this.$root.$on('clear-graph', this.clearGraph)
     },
     watch: {
         '$store.state.resources': {
             deep: true,
             handler(resources) {
-                let latest = resources[resources.length-1]
-                let newResType = latest.resType
-                let newResName = latest.resName
-                let newBudgetNameList = latest.newBudgetNameList
-                this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+                for (let latest of resources.filter(x=>x.drawn==false)){
+                  let newResType = latest.resType
+                  let newResName = latest.resName
+                  let newBudgetNameList = latest.newBudgetNameList
+                  // this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+                  this.$store.state.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
+                  latest.drawn = true
+                }
             }
         },
          '$store.state.activities': {
             deep: true,
             handler(activities) {
-                let latest = activities[activities.length-1]
-                let newActType = latest.newActType
-                let newActName = latest.actName
-                let existingResName = latest.existingResName
-                let newRewardName = latest.newRewardName
-                let costNum = 1 //REMOVE hardcoded workaround here??
-                this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
+                for (let latest of activities.filter(x=>x.drawn==false)){
+                  let newActType = latest.newActType
+                  let newActName = latest.actName
+                  let existingResName = latest.existingResName
+                  let newRewardName = latest.newRewardName
+                  let costNum = 0 //REMOVE hardcoded workaround here??
+                  // this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
+                  this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
+                  latest.drawn = true
+                }
             }
         },
         '$store.state.allocatedLinks': {
@@ -53,14 +61,33 @@
                 let actName = latest.actName
                 let existingResName = latest.existingResName
                 let newRewardName = latest.newRewardName
-                this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
+                // this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
+                this.$store.state.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
+            }
+        },
+        '$store.state.containsLinks': {
+            deep: true,
+            handler(links) {
+                for (let latest of links.filter(x=>x.drawn==false)){
+                  // this.dm3kGraph.addContains(latest.resName, latest.ccName);
+                  this.$store.state.dm3kGraph.addContains(latest.resName, latest.ccName);
+                  latest.drawn = true
+                }
             }
         }
-
     },
     methods: {
         loadDm3kGraph() {
-            this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
+          // this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
+          this.$store.state.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
+        },
+        zoomIn(){
+          // this.dm3kGraph.graph.zoomIn()
+           this.$store.state.dm3kGraph.graph.zoomIn()
+        },
+        zoomOut(){
+          // this.dm3kGraph.graph.zoomOut()
+          this.$store.state.dm3kGraph.graph.zoomOut()
         },
         addListener(){
           let container = document.getElementById('graphContainer')
@@ -68,7 +95,12 @@
         },
         emitModal(e){
           this.$root.$emit('show-instance-modal', e)
-        }
+        },
+        clearGraph(){
+          console.log("----> CLEAR GRAPH")
+          // this.dm3kGraph.clearAll()
+          this.$store.state.dm3kGraph.clearAll()
+        },
     }
   };
 </script>

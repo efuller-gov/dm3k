@@ -3,8 +3,8 @@
         <div id="menu">
             <div id="worksheet_menu_column">
                 <div id='zoom-buttons'>
-					<button id="zoomIn" class='zoom-button'>+</button>
-					<button id="zoomOut" class='zoom-button'>-</button>
+					<button @click="zoomIn" id="zoomIn" class='zoom-button'>+</button>
+					<button @click="zoomOut" id="zoomOut" class='zoom-button'>-</button>
 					<!-- <b class="title-text">Version name</b> -->
 				</div>
                 <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
@@ -155,7 +155,7 @@
 				<button @click="worksheetUtil_hideShowWorksheet()" id="hide-worksheet-button" class='zoom-button'>Hide worksheet</button>
 				<p class="title-text"><b>Load, save, and submit diagrams.</b></p>
 				<!-- <p>Load diagram from local machine</p> -->
-				<input type="button" class="done-button" value="Load existing diagram" onclick="getFile()"><br><br><br>
+				<input @click.self="getConfigFile" type="button" class="done-button" value="Load existing diagram"><br><br><br>
 				<div style='height: 0px;width: 0px;overflow: hidden;'><input type="file" id="loadLocally" accept="application/json"></div>
 				<!-- <p>Save diagram to work on later</p> -->
 				<label for="diagramName">Save current diagram as </label>
@@ -170,7 +170,7 @@
 				</select><br>
 				<label for="serverLoc">DM3K backend </label>
 				<input type="text" class="long-input" id="serverLoc" value="https://10.109.11.239:8050"><br>
-                <input style="margin-top: 10px;" type="button" class="done-button" value="Submit to DM3K" id="submitDM3K">
+                <input @click="submitDM3K()" style="margin-top: 10px;" type="button" class="done-button" value="Submit to DM3K" id="submitDM3K">
             </div>
         </div>  
     </div>
@@ -180,10 +180,17 @@
 import $ from 'jquery'
 import {ResourceInstance} from '../js/dm3kgraph/dataClasses';
 import {ActivityInstance} from '../js/dm3kgraph/dataClasses';
+import {Dm3kConverter} from '../js/dm3kconversion/dm3kconversion';
 
 export default {
     name: 'WorksheetPane',
     methods: {
+        zoomIn(){
+            this.$root.$emit('zoom-in')            
+		},
+        zoomOut(){
+            this.$root.$emit('zoom-out')            
+		},
         populateResourcesFromWB() {
             $.each(this.RESOURCE_WORD_BANK, function (i, item) {
                 $('#resType').append($('<option>', {
@@ -291,7 +298,8 @@ export default {
                     resType: newResType,
                     resName: newResName,
                     budgetNameList: budgetNameList,
-                    newBudgetNameList: newBudgetNameList
+                    newBudgetNameList: newBudgetNameList,
+                    drawn: false
                 }
             )
 
@@ -347,15 +355,14 @@ export default {
                 return
             }
             // Allocate to existing activity
-            // if ($("#actType").val() == 'a new activity'){
             if ($("#existing-allocation").hasClass("enabled")){
                 let actName = $("#actTypeExisting").val();
-                // TODO: push to store's allocationLinks
                 this.$emit('add-existing-allocation', 
                     {
                         actName: actName,
                         existingResName: existingResName,
                         newRewardName: newRewardName,
+                        drawn: false
                     }
                 )
             }
@@ -376,11 +383,12 @@ export default {
                         newActType: newActType,
                         existingResName: existingResName,
                         newRewardName: newRewardName,
+                        drawn: false
                     }
                 )
             }
-        this.resetResourcePrompt()
-        // this.resetActivityPrompt()
+            this.resetResourcePrompt()
+            // this.resetActivityPrompt()
         },
         containsTab(){
             $(".menu-button").removeClass('enabled')
@@ -428,10 +436,1076 @@ export default {
                 $('#actName').removeAttr('disabled');
                 $('#rewardName').removeAttr('disabled');
             }
+        },
+        getConfigFile(){
+            
+            this.$emit('clear-graph')
+            this.$root.$emit('clear-graph')  
+            
+            let promise = new Promise(function(resolve) {
+                $('#loadLocally').trigger('click')
+
+                // Load a file from local storage
+                $("#loadLocally").change(function(e) {
+                    const file = e.target.files[0];
+                    if (!file) {
+                        return;
+                    }
+
+                    var reader = new FileReader()
+                    reader.onload = function(e) {
+                        var inputJsonString = e.target.result;
+                        
+                        var inputJson = JSON.parse(inputJsonString);
+                        this.inputJson = inputJson;
+                        resolve(inputJson)
+                        // dm3kconversion_reverse(dm3kgraph, inputJson);
+                        // // update the worksheets and make sure all worksheets are enabled
+                        // updateAllDropDowns(dm3kgraph);
+                        $('#allocate-resources-button').removeClass('disabled')
+                        $('#contains-button').removeClass('disabled')
+                        $('#constrain-allocations-button').removeClass('disabled')
+                        $('#actTypeExisting').removeClass('disabled')
+                    }
+                    reader.readAsText(file);
+                })
+            });
+
+            // resolve runs the first function in .then
+            promise.then(
+                result => this.readFromJson(result),
+                error => alert(error)
+            );
+        },
+        readFromJson(inputJson){
+            this.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson);
+        },
+        dm3kconversion_reverse(dm3kgraph, inputJson) {
+            this.$store.state.dm3kGraph.clearAll();  // this should get rid of all boxes and lines on graph
+            console.log("Loading...")
+            
+            // add resource class boxes to diagram
+            for (let rc of inputJson.resourceClasses) {
+
+                // add the resource to the graph
+                this.$store.state.dm3kGraph.addCompleteResource(
+                    rc.typeName,
+                    rc.className,
+                    rc.budgets,
+                    rc.locX,
+                    rc.locY);
+            }
+
+            // add activity class boxes and canBeAllocated to links
+            console.log("...activity classes...")
+            console.log(inputJson.activityClasses)
+            for (let ac of inputJson.activityClasses) {
+                
+                let actName = ac.className;
+                console.log(actName)
+
+                // determine which resources are allocated to this activity
+                
+                let resAllocList = []
+                for (let rc of inputJson.resourceClasses) {
+                var resName = rc.className;
+                for (let cbat of rc.canBeAllocatedToClasses) {
+                    if (cbat == actName) {
+                    resAllocList.push(resName)
+                    }
+                }
+                }
+                console.log(resAllocList)
+
+                // add the activity and add any allocated to links
+                for (let [i, ra] of resAllocList.entries()) {
+                
+                this.$store.state.dm3kGraph.addCompleteActivity(
+                    ac.typeName,
+                    ac.className,
+                    ra,
+                    ac.rewards[0], // TODO - need to make it work for mulitple rewards
+                    i,
+                    ac.locX,
+                    ac.locY,
+                )
+                }
+            }
+
+            console.log("...contains links - resources....");
+            // add contains links - resources
+            for (let rc of inputJson.resourceClasses) {
+                let resName = rc.className;
+
+                // NOTE - resources should always exist...so no need to do check like contains links - activities below
+
+                for (let ccName of rc.containsClasses) {
+                    this.$store.state.dm3kGraph.addContains(resName, ccName);
+                }
+            }
+
+            console.log("...contains links - activities...");
+            // add contains links - activities
+            for (let ac of inputJson.activityClasses) {
+                let actName = ac.className;
+
+                // check to see if actName exists, if it doesnt...its a container activity
+                let ai_dm3k = this.$store.state.dm3kGraph.getActivityInstance(actName);
+                if (ai_dm3k == undefined) {
+                this.$store.state.dm3kGraph.addNewActContains(
+                    ac.typeName, 
+                    actName, 
+                    ac.containsClasses[0],  // do the first one this way, then do rest in loop below
+                    ac.rewards[0]) // TODO - need to make it work for mulitple rewards)
+                for (let ccName of ac.containsClasses.slice(1)) {
+                    console.log('Attempting to make a constains link between: '+actName+' and '+ccName);
+                    this.$store.state.dm3kGraph.addContains(actName, ccName);
+                    console.log(this.$store.state.dm3kGraph.containsLinks)
+                }
+                }
+                // else it is defined and therefore already available to add contains links to
+                else {   
+                for (let ccName of ac.containsClasses) {
+                    console.log('Attempting to make a constains link between: '+actName+' and '+ccName);
+                    this.$store.state.dm3kGraph.addContains(actName, ccName);
+                    console.log(this.$store.state.dm3kGraph.containsLinks)
+                }
+                }
+                
+            }
+            
+            console.log("...resource instances...");
+            console.log(inputJson.resourceInstances)
+
+            // Add resource instances
+            for (let ri of inputJson.resourceInstances) {
+                console.log(ri)
+                let ri_name = ri.className;
+                let ri_dm3k = this.$store.state.dm3kGraph.getResourceInstance(ri_name);
+                ri_dm3k.clearInstanceTable();
+                for (let ri_instance of ri.instanceTable) {
+                    ri_dm3k.addToInstanceTable(ri_instance.instanceName, ri_instance.budget);
+                }
+            }
+
+            console.log("...activity instances...");
+            console.log(inputJson.activityInstances);
+            // Add activity instances
+            for (let ai of inputJson.activityInstances) {
+                console.log(ai);
+                let ai_name = ai.className;
+                console.log(ai_name);
+                console.log(this.$store.state.dm3kGraph.activityInstances)
+                let ai_dm3k = this.$store.state.dm3kGraph.getActivityInstance(ai_name);
+                ai_dm3k.clearInstanceTable();
+                for (let ai_instance of ai.instanceTable) {
+                    ai_dm3k.addToInstanceTable(ai_instance.instanceName, ai_instance.reward, ai_instance.cost);
+                }
+            }
+
+            console.log("...allocation instances...")
+            console.log(inputJson.allocationInstances)
+            // add allocation instances
+            for (let ati of inputJson.allocationInstances) {
+                let res_name = ati.resourceClassName;
+                let act_name = ati.activityClassName;
+                let ati_dm3k = this.$store.state.dm3kGraph.getAllocatedToInstance(res_name, act_name);
+                ati_dm3k.clearInstanceTable();
+                for (let ati_instance of ati.instanceTable) {
+                    ati_dm3k.addToInstanceTable(ati_instance.resourceInstanceName, ati_instance.activityInstanceName);
+                }
+            }
+
+            // add contains instances
+            for (let ci of inputJson.containsInstances) {
+                let parent_name = ci.parentClassName;
+                let child_name = ci.childClassName;
+                let ci_dm3k = this.$store.state.dm3kGraph.getContainsInstance(parent_name, child_name);
+                ci_dm3k.clearInstanceTable();
+                for (let ci_instance of ci.instanceTable) {
+                    ci_dm3k.addToInstanceTable(ci_instance.parentInstanceName, ci_instance.childInstanceName);
+                }
+            }
+
+            // add allocation contraints
+            for (let allc of inputJson.allocationConstraints) {
+                let a1FromName = allc.allocationStart.resourceClass;
+                let a1ToName = allc.allocationStart.activityClass;
+                let a2FromName = allc.allocationEnd.resourceClass;
+                let a2ToName = allc.allocationEnd.activityClass;
+                let aType = allc.allocationConstraintType;
+                this.$store.state.dm3kGraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
+            }
+        },
+        emitSolnModal(e){
+            this.worksheetUtil_hideShowWorksheet()
+            this.$root.$emit('show-solution-modal', e)
+        },
+        submitDM3K(){
+            console.log('------- SUBMIT ------')
+            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
+            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
+            console.log("---> outputJson ", outputJson)
+
+            // get url URL from textbox
+            var url = $("#serverLoc").val();
+
+            // get dataset name from textbox
+            var dsName = $("#diagramName").val();
+
+            let alg = $("#algType option:selected").val();
+
+            console.log("Algorithm: "+alg);
+
+            var data_to_send = {
+                    "datasetName": dsName,
+                    "url": url,
+                    "algorithm": alg,
+                        "files": [
+                        {
+                            "fileName": "dm3k-viz.json",
+                            "fileContents": outputJson
+                        }
+                    ]
+            }
+            var json_body = JSON.stringify(data_to_send);
+
+
+            // make a file in Dm3K backend and solve it
+            var post_request = $.ajax({
+                type: "POST",
+                url: "/api/vizdata",
+                contentType: "application/json; charset=utf-8",
+                data: json_body
+            });
+
+            post_request.done(function(msg) {
+                var jsonMsg = msg;  // its already an object...no need for $.parseJSON(msg)
+                let statusCode = jsonMsg["statusCode"];
+                
+                if (statusCode != 200) {
+                    alert("Failed Attempt to Submit to DM3K: " +
+                            jsonMsg + "\n" +
+                            jsonMsg["body"] /*+ "\n" +
+                            body["internal_message"]*/ );
+                    console.log(jsonMsg)
+                    console.log(statusCode)
+                    // console.log(body)
+                }
+                else {
+                    let body = $.parseJSON(jsonMsg["body"]);
+                    // showSolutionModal(body)
+                    // showSolutionModal(body, outputJson)
+                    // TODO: REMOVE EXAMPLE OUTPUT
+                    this.$root.$emit('show-solution-modal', {body: this.exampleOutput, outputJson: outputJson})
+                }
+            });
+            
+            // TODO: REMOVE HARDCODED CALL HERE TO OUTPUT
+            this.emitSolnModal({body: this.exampleOutput, outputJson: outputJson})
+
+            post_request.fail(function(jqXHR, textStatus, errorThrown) {
+                console.log("Request to vizdata failed: "+textStatus);
+                console.log(errorThrown)
+                alert("Failed Attempt to Submit to DM3K");
+            });
         }
     },
     data() {
         return{
+               exampleOutput : {
+                "full_trace": {
+                    "resource": [
+                        "Turret_Resource_instance_0",
+                        "Turret_Resource_instance_0",
+                        "Turret_Resource_instance_0",
+                        "Turret_Resource_instance_0",
+                        "Turret_Resource_instance_0",
+                        "Turret_Resource_instance_1",
+                        "Turret_Resource_instance_1",
+                        "Turret_Resource_instance_1",
+                        "Turret_Resource_instance_1",
+                        "Turret_Resource_instance_1",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_0",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_1",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_2",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3",
+                        "Missiles_Resource_instance_3"
+                    ],
+                    "activity": [
+                        "City_Activity_instance_0",
+                        "City_Activity_instance_1",
+                        "City_Activity_instance_2",
+                        "City_Activity_instance_3",
+                        "City_Activity_instance_4",
+                        "City_Activity_instance_0",
+                        "City_Activity_instance_1",
+                        "City_Activity_instance_2",
+                        "City_Activity_instance_3",
+                        "City_Activity_instance_4",
+                        "VIP_Activity_instance_0",
+                        "VIP_Activity_instance_1",
+                        "VIP_Activity_instance_2",
+                        "VIP_Activity_instance_3",
+                        "VIP_Activity_instance_4",
+                        "VIP_Activity_instance_5",
+                        "VIP_Activity_instance_6",
+                        "VIP_Activity_instance_7",
+                        "VIP_Activity_instance_8",
+                        "VIP_Activity_instance_9",
+                        "VIP_Activity_instance_10",
+                        "VIP_Activity_instance_11",
+                        "VIP_Activity_instance_12",
+                        "VIP_Activity_instance_13",
+                        "VIP_Activity_instance_14",
+                        "VIP_Activity_instance_0",
+                        "VIP_Activity_instance_1",
+                        "VIP_Activity_instance_2",
+                        "VIP_Activity_instance_3",
+                        "VIP_Activity_instance_4",
+                        "VIP_Activity_instance_5",
+                        "VIP_Activity_instance_6",
+                        "VIP_Activity_instance_7",
+                        "VIP_Activity_instance_8",
+                        "VIP_Activity_instance_9",
+                        "VIP_Activity_instance_10",
+                        "VIP_Activity_instance_11",
+                        "VIP_Activity_instance_12",
+                        "VIP_Activity_instance_13",
+                        "VIP_Activity_instance_14",
+                        "VIP_Activity_instance_0",
+                        "VIP_Activity_instance_1",
+                        "VIP_Activity_instance_2",
+                        "VIP_Activity_instance_3",
+                        "VIP_Activity_instance_4",
+                        "VIP_Activity_instance_5",
+                        "VIP_Activity_instance_6",
+                        "VIP_Activity_instance_7",
+                        "VIP_Activity_instance_8",
+                        "VIP_Activity_instance_9",
+                        "VIP_Activity_instance_10",
+                        "VIP_Activity_instance_11",
+                        "VIP_Activity_instance_12",
+                        "VIP_Activity_instance_13",
+                        "VIP_Activity_instance_14",
+                        "VIP_Activity_instance_0",
+                        "VIP_Activity_instance_1",
+                        "VIP_Activity_instance_2",
+                        "VIP_Activity_instance_3",
+                        "VIP_Activity_instance_4",
+                        "VIP_Activity_instance_5",
+                        "VIP_Activity_instance_6",
+                        "VIP_Activity_instance_7",
+                        "VIP_Activity_instance_8",
+                        "VIP_Activity_instance_9",
+                        "VIP_Activity_instance_10",
+                        "VIP_Activity_instance_11",
+                        "VIP_Activity_instance_12",
+                        "VIP_Activity_instance_13",
+                        "VIP_Activity_instance_14"
+                    ],
+                    "budget_used": [
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            1,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            1,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            0,
+                            0
+                        ]
+                    ],
+                    "value": [
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1,
+                        1
+                    ],
+                    "selected": [
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "picked": [
+                        0,
+                        1,
+                        0,
+                        1,
+                        0,
+                        0,
+                        1,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0
+                    ],
+                    "allocated": [
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        1,
+                        1,
+                        0,
+                        0,
+                        0
+                    ]
+                },
+                "allocated_amt": {
+                    "Turret_Resource_instance_0": {
+                        "City_Activity_instance_1": {
+                            "Direction": 1
+                        }
+                    },
+                    "Turret_Resource_instance_1": {
+                        "City_Activity_instance_3": {
+                            "Direction": 1
+                        }
+                    },
+                    "Missiles_Resource_instance_1": {
+                        "VIP_Activity_instance_3": {
+                            "Shots": 1
+                        },
+                        "VIP_Activity_instance_4": {
+                            "Shots": 1
+                        },
+                        "VIP_Activity_instance_5": {
+                            "Shots": 1
+                        }
+                    },
+                    "Missiles_Resource_instance_3": {
+                        "VIP_Activity_instance_9": {
+                            "Shots": 1
+                        },
+                        "VIP_Activity_instance_10": {
+                            "Shots": 1
+                        },
+                        "VIP_Activity_instance_11": {
+                            "Shots": 1
+                        }
+                    }
+                },
+                "per_resource_score": {
+                    "Turret_Resource_instance_0": 0,
+                    "Turret_Resource_instance_1": 0,
+                    "Missiles_Resource_instance_1": 3,
+                    "Missiles_Resource_instance_3": 3
+                },
+                "per_resource_budget_used": {
+                    "Turret_Resource_instance_0": {
+                        "Direction": 1
+                    },
+                    "Turret_Resource_instance_1": {
+                        "Direction": 1
+                    },
+                    "Missiles_Resource_instance_1": {
+                        "Shots": 3
+                    },
+                    "Missiles_Resource_instance_3": {
+                        "Shots": 3
+                    }
+                },
+                "allocations": {
+                    "Turret_Resource_instance_0": [
+                        "City_Activity_instance_1"
+                    ],
+                    "Turret_Resource_instance_1": [
+                        "City_Activity_instance_3"
+                    ],
+                    "Missiles_Resource_instance_1": [
+                        "VIP_Activity_instance_3",
+                        "VIP_Activity_instance_4",
+                        "VIP_Activity_instance_5"
+                    ],
+                    "Missiles_Resource_instance_3": [
+                        "VIP_Activity_instance_9",
+                        "VIP_Activity_instance_10",
+                        "VIP_Activity_instance_11"
+                    ]
+                },
+                "objective_value": 6
+            },
+            dm3kConverter: {},
+            inputJson: [],
             helper_images_info: [
                 {
                     'worksheet': 'create-resources',
@@ -518,7 +1592,7 @@ export default {
             ],
         }
     },
-    emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation'],
+    emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation', 'clear-graph'],
     watch: {
         '$store.state.resources': {
             deep: true,
@@ -536,11 +1610,11 @@ export default {
         }
     },
     mounted(){
+        this.dm3kConverter = new Dm3kConverter();
         this.changeHelperText('create-resources')
         this.changeHelperImg('create-resources')
         this.populateResourcesFromWB()
         this.populateActivitiesFromWB()
-        // this.dm3kgraph = new Dm3kGraph(document.getElementById('graphContainer'), '../assets/rounded-info-icon-gray.png')
     }
 }
 </script>

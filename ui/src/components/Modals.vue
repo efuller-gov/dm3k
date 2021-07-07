@@ -1,4 +1,3 @@
-
 <template>
     <div>
         <link href="https://unpkg.com/tabulator-tables@4.4.1/dist/css/tabulator.min.css" rel="stylesheet">
@@ -21,7 +20,7 @@
         </div>
 			</div>
 			<div id="soln-modal" class="soln-modal">
-				<span class="close-btn" onclick="closeSolnModal()">&times;</span>
+				<span class="close-btn" @click="closeSolnModal()">&times;</span>
 				<div class="modal-content">
 					<img id='soln-explainer-graphic' onclick="location.href='./'" src="../assets/output-explainer.png">
 					<p id="soln-title">Optimal Allocation Plan</p>
@@ -44,30 +43,53 @@
 
 <script>
 import $ from 'jquery'
-// var Tabulator = require("tabulator-tables"); //import Tabulator library
 import Tabulator from "tabulator-tables"
+import {Dm3kSolutionVis} from '../js/dm3ksolution/dm3kSolutionVis';
 
 export default {
     name: 'Modals',
     mounted(){
+        this.solnVis = new Dm3kSolutionVis()
         this.$root.$on('show-instance-modal', e => {
             this.showInstanceModal(e)
         })
+
+        this.$root.$on('show-solution-modal', e => {
+            console.log("SHOW SOLN MODAL e: ", e)
+            this.showSolutionModal(e.body, e.outputJson)
+        })
+
+        let d3Script = document.createElement('script')
+        d3Script.setAttribute('src', 'http://d3js.org/d3.v4.js')
+
+        let lodashScript = document.createElement('script')
+        lodashScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min.js')
+
+
+        let jqScript = document.createElement('script')
+        jqScript.setAttribute('src', 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+
+        document.head.appendChild(d3Script)
+        document.head.appendChild(lodashScript)
+        document.head.appendChild(jqScript)
     },
     data(){
         return{
-           TABLEHEIGHT :  "300px",
-           TABLELAYOUT : "fitColumns",
-           instanceName : [],
-           resourceName : [],
-           activityName : [],
-           xIcon: require("../assets/x-icon.svg")
+            solnVis : {},
+            TABLEHEIGHT :  "300px",
+            TABLELAYOUT : "fitColumns",
+            instanceName : [],
+            resourceName : [],
+            activityName : [],
+            xIcon: require("../assets/x-icon.svg"),
         }
     },
     methods:{
         addRow(){
+            console.log("-- ADD ROW clicked")
             if ($('#add-row').text().includes('resource')){
-                let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
+                // let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
+                let resourceInstance = this.$store.state.dm3kGraph.resourceInstances.filter(x=>x.label == this.instanceName)[0];
                 let newName = this.instanceName + "_Resource_instance_" + resourceInstance.instanceTableData.length;
                 let instanceExample = {name: newName};
                 let budgetNameList = resourceInstance.budgetNameList;
@@ -83,7 +105,7 @@ export default {
             //     tabledata.push({parentInstance: "ALL", childInstance: 'ALL'});
             // }
             if ($('#add-row').text().includes('activity')){
-                let activityInstance = this.$store.state.activityInstances.filter(x=>x.label == this.instanceName)[0];
+                let activityInstance = this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label == this.instanceName)[0];
                 let newName = this.instanceName + "_Activity_instance_" + activityInstance.instanceTableData.length;
                 let instanceExample = {name: newName, reward: 1};
                 for (const costName of activityInstance.costNameList) {
@@ -95,6 +117,16 @@ export default {
         closeModal(){
 			let modal = document.querySelector(".modal")
 			modal.style.display = "none"
+        },
+        closeSolnModal(){
+			let modal = document.querySelector(".soln-modal")
+			modal.style.display = "none"
+			$('#menu').toggleClass('shrink')
+            if( $('#menu').hasClass('shrink') ){
+                $('#hide-worksheet-button').html('Expand worksheet')
+            } else{
+                $('#hide-worksheet-button').html('Hide worksheet')
+            }
 		},
         showInstanceModal(event){
             let cellId = event.detail.id;
@@ -124,6 +156,8 @@ export default {
                 resOrAct = 'contains'
                 let parentName = cellName.split('_')[0]
                 let childName = cellName.split('_')[1]
+                console.log("SENDING PARENT NAME: ", parentName)
+                console.log("SENDING CHILD NAME: ", childName)
                 this.showContainsModal(
                     instanceType,
                     instanceName,
@@ -167,7 +201,8 @@ export default {
                 titleText = "<p>"+instanceName + ", " + instanceType+"</p>You can define any number of <b>" + instanceName + "'s</b>, a <b>"+instanceType+" activity</b>. " +
                 "You may also assign each instance with a <b>cost</b> and a <b>reward</b>."
                 $('#add-row').text('Add activity instance')
-                tabledata = this.$store.state.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                // tabledata = this.$store.state.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                tabledata = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [
                         {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
                             function(e, cell){
@@ -189,7 +224,9 @@ export default {
                 titleText = "<p>"+instanceName + ", " + instanceType+"</p>You can define any number of <b>" + instanceName + "'s</b>, a <b>"+instanceType+" resource</b>. You may also assign each instance with a <b>budget</b> amount."
                 $('#add-row').text('Add resource instance')
                 // Get tabledata for this resource from the graph
-                tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                // console.log("SHOW res intance table data ", this.$store.state.resourceInstances)
+                // tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
+                tabledata = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [
                     {title: "", formatter:"buttonCross", width:5, hozAlign:"center", 
                     cellClick: function(e, cell){
@@ -234,12 +271,12 @@ export default {
 
             //Columns are Instances of resources | Dropdowns for all available instances of activities
             titleText = "Allocated individual resource instances of <b> " + resourceName + " </b>to activity instances of <b>" + activityName + "</b>."
-            let resource_instances = this.$store.state.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData.map(x => x.name)
-            let activity_instances = this.$store.state.activityInstances.filter(x => x.label == activityName)[0].instanceTableData.map(x => x.name)
+            let resource_instances = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == resourceName)[0].instanceTableData.map(x => x.name)
+            let activity_instances = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == activityName)[0].instanceTableData.map(x => x.name)
             resource_instances.push('ALL')
             activity_instances.push('ALL')
         
-            tabledata = this.$store.state.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
+            tabledata = this.$store.state.dm3kGraph.allocatedToInstances.filter(x=>(x.actName==activityName && x.resName==resourceName))[0].instanceTableData;
 
             tablecols = [
                 {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
@@ -270,7 +307,84 @@ export default {
                 columns:tablecols,
             });
             $('#table-title').html(titleText)
-        }
+        },
+        showContainsModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, parentName, childName){
+		    //get data table for the selected res or act type
+            $('#add-row').text('Specify contains between instances')
+			let modal = document.querySelector(".modal")
+            $('#alloc-selector').hide()
+			modal.style.display = "block"
+		  	modal.style.display = "block"
+            let titleText = ''
+            let parent_tabledata = []
+            let child_instances = []
+            //Columns are Instances of Dropdowns for all available instances | Dropdowns for all available instances
+            titleText = "Contains relationship between instances of <b> " + parentName + " </b>and<b> " +  childName + "</b>."
+
+            let parent_is_resource = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == parentName)[0] != undefined
+            let parent_is_activity = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == parentName)[0] != undefined
+            let child_is_resource = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == childName)[0] != undefined
+            let child_is_activity = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == childName)[0] != undefined
+
+            if (parent_is_resource && child_is_resource){
+                child_instances = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == childName)[0].instanceTableData.map(x => x.name)
+                parent_tabledata = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == parentName)[0].instanceTableData;
+            }
+            if (parent_is_activity && child_is_activity){
+                child_instances = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == childName)[0].instanceTableData.map(x => x.name)
+                parent_tabledata = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == parentName)[0].instanceTableData;
+            }
+
+            let parent_instances = parent_tabledata.map(x => x.name)
+			parent_instances.push('ALL')
+			child_instances.push('ALL')
+            
+            let containsInstance = this.$store.state.dm3kGraph.getContainsInstance(parentName, childName)
+			let tabledata = containsInstance.instanceTableData;
+
+            let tablecols = [
+                    {title: "", formatter:"buttonCross", width:5, hozAlign:"center", cellClick:
+                        function(e, cell){
+                            removeRow(cell.getRow().getData())
+                        }
+                    },
+                    {title: "parent instance", field:"parentInstance", width:200, editor:"select",
+                        editorParams: {
+                            values: parent_instances,
+                            defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
+                            verticalNavigation:"hybrid"}},
+                    {title: "child instance", field:"childInstance", width:200, editor:"select",
+                        editorParams: {
+                            values: child_instances,
+                            defaultValue:"ALL", //set the value that should be selected by default if the cells value is undefined
+                            verticalNavigation:"hybrid"}}
+                ]
+		  	 new Tabulator(this.$refs.table, {
+                height:this.TABLEHEIGHT,
+                addRowPos:"bottom",
+                reactiveData: true,
+                data: tabledata,
+                layout:this.TABLELAYOUT,
+                columns:tablecols,
+            });
+		  	$('#table-title').html(titleText)
+		},
+        showSolutionModal(data, problemData){
+			let modal = document.querySelector(".soln-modal")
+            $('#alloc-selector').hide()
+			modal.style.display = "block"
+		  	modal.style.display = "block"
+
+			this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+			this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+
+			$("#widthFunctionToggle").change(
+				function(){
+					this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+				}
+			)
+		}
+
     }
 }
 </script>
