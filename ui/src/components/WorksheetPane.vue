@@ -280,31 +280,64 @@ export default {
 			this.resetContainsPrompt()
         },
         addResource(){        
+            // $('#allocate-resources-button').removeClass('disabled')
+            // $('#contains-button').removeClass('disabled')
+            // let newResType = $("#resType").val();
+            // if ( (newResType=='none') | (newResName=='')){
+            //     alert('Please provide a label to create a new resource.')
+            //     return
+            // }
+            // let newBudgetName = $("#budgetName").val();
+            // let budgetNameList = newBudgetName.split(",");
+            // let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
+
+            // let newResName = $("#resName").val();
+            // this.$store.state.resourceInstances.push(new ResourceInstance(newResType, newResName, budgetNameList))
+            // this.$emit('add-resource', 
+            //     {
+            //         resType: newResType,
+            //         resName: newResName,
+            //         budgetNameList: budgetNameList,
+            //         newBudgetNameList: newBudgetNameList,
+            //         drawn: false
+            //     }
+            // )
+
+            // // Send completed resource input to graph
+            // this.resetResourcePrompt();
+
             $('#allocate-resources-button').removeClass('disabled')
             $('#contains-button').removeClass('disabled')
-            let newResType = $("#resType").val();
+
+            var newResType = $("#resType").val();
             if ( (newResType=='none') | (newResName=='')){
                 alert('Please provide a label to create a new resource.')
                 return
             }
-            let newBudgetName = $("#budgetName").val();
+            
+            var newBudgetName = $("#budgetName").val();
             let budgetNameList = newBudgetName.split(",");
             let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
+            var newResName = $("#resName").val();
 
-            let newResName = $("#resName").val();
-            this.$store.state.resourceInstances.push(new ResourceInstance(newResType, newResName, budgetNameList))
-            this.$emit('add-resource', 
-                {
-                    resType: newResType,
-                    resName: newResName,
-                    budgetNameList: budgetNameList,
-                    newBudgetNameList: newBudgetNameList,
-                    drawn: false
+            let model = this.$store.state.dm3kGraph.graph.getModel()
+            if (model.getCell(newResName) != undefined){
+                alert('Cannot create duplicate node. Please choose a new instance name.')
+
+            } else{
+                var ans = this.$store.state.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList);
+
+                if (ans.success) {
+                    console.log('AddResourceComplete success!')
+                    // updateAllDropDowns(dm3kgraph);
+                    // var layout = new mxGraphLayout(dm3kgraph.graph);
+                    // executeLayout(dm3kgraph.graph, layout);
+                    this.resetResourcePrompt();
                 }
-            )
-
-            // Send completed resource input to graph
-            this.resetResourcePrompt();
+                else {
+                    alert(ans.details);
+                }
+            }
         },
         allocateResourcesTab(){
             $(".menu-button").removeClass('enabled')
@@ -1676,17 +1709,16 @@ export default {
     },
     emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation', 'clear-graph'],
     watch: {
-        '$store.state.resources': {
+        '$store.state.dm3kGraph.resources': {
             deep: true,
             handler(resources) {
-                resources = resources.map(x=>x.resName)
+                resources = resources.map(x=>x.value)
                 this.updateDropDown(resources, $('#resName2'));
             }
         },
         '$store.state.dm3kGraph.activities': {
             deep: true,
             handler(activities) {
-                console.log("updated activiites ", activities)
                 activities = activities.map(x=>x.value)
                 this.updateDropDown(activities, $('#actTypeExisting'));
             }
