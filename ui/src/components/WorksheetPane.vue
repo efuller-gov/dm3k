@@ -279,33 +279,8 @@ export default {
 			this.resetActivityPrompt()
 			this.resetContainsPrompt()
         },
-        addResource(){        
-            // $('#allocate-resources-button').removeClass('disabled')
-            // $('#contains-button').removeClass('disabled')
-            // let newResType = $("#resType").val();
-            // if ( (newResType=='none') | (newResName=='')){
-            //     alert('Please provide a label to create a new resource.')
-            //     return
-            // }
-            // let newBudgetName = $("#budgetName").val();
-            // let budgetNameList = newBudgetName.split(",");
-            // let newBudgetNameList = budgetNameList.map(s => s.trim())  // trim in case user but in a space with comma
-
-            // let newResName = $("#resName").val();
-            // this.$store.state.resourceInstances.push(new ResourceInstance(newResType, newResName, budgetNameList))
-            // this.$emit('add-resource', 
-            //     {
-            //         resType: newResType,
-            //         resName: newResName,
-            //         budgetNameList: budgetNameList,
-            //         newBudgetNameList: newBudgetNameList,
-            //         drawn: false
-            //     }
-            // )
-
-            // // Send completed resource input to graph
-            // this.resetResourcePrompt();
-
+        addResource(){
+            
             $('#allocate-resources-button').removeClass('disabled')
             $('#contains-button').removeClass('disabled')
 
