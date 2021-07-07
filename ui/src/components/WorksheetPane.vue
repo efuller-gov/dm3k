@@ -135,7 +135,7 @@
                     <option value="ifOnly">IF-ONLY</option>
                 </select>
                 <br><br>
-                <input type="button" class="done-button" value="Done" id="addConstraint">
+                <input @click="addConstraint" type="button" class="done-button" value="Done" id="addConstraint">
             </div>
             <div id="explanatory-info-column" class="persistent_left_column">
 				<p id="pane-level-explanatory-title" class="title-text">Pane-level explanatory text</p>
@@ -304,7 +304,7 @@ export default {
 
                 if (ans.success) {
                     console.log('AddResourceComplete success!')
-                    // updateAllDropDowns(dm3kgraph);
+                    this.updateAllDropDowns();
                     // var layout = new mxGraphLayout(dm3kgraph.graph);
                     // executeLayout(dm3kgraph.graph, layout);
                     this.resetResourcePrompt();
@@ -389,7 +389,7 @@ export default {
                 var ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
                 if (ans.success) {
                         console.log('AddActivityComplete success!')
-                        // updateAllDropDowns(dm3kgraph);
+                        this.updateAllDropDowns();
                         // var layout = new mxGraphLayout(this.$store.state.dm3kGraph.graph);
                         // executeLayout(this.$store.state.dm3kGraph.graph, layout);
                         // resetActivityPrompt();
@@ -441,7 +441,8 @@ export default {
             this.changeHelperImg('constrain-allocations')
             this.changeHelperText('constrain-allocations')
 			this.resetActivityPrompt()
-			this.resetContainsPrompt()
+            this.resetContainsPrompt()
+            this.updateAllDropDowns()
         },
         existingContains(){
             $('#contains-existing-submenu').removeClass('hide')
@@ -472,6 +473,56 @@ export default {
             var parentType = $('#actType2').val();
             this.$store.state.dm3kGraph.addNewActContains(parentType, parent, child, reward);
             // updateAllDropDowns(dm3kgraph);
+        },
+        addConstraint(){
+            let fromName1 = $("#startName1").val();
+            let toName1 = $("#stopName1").val();
+            let fromName2 = $("#startName2").val();
+            let toName2 = $("#stopName2").val();
+            let constraintType = $("#constraintType").find(":selected").text()
+
+            this.$store.state.dm3kGraph.addConstraint(fromName1, toName1, fromName2, toName2, constraintType);
+        },
+        updateAllDropDowns() {
+			// update the "Allocate resources to activities" worksheet
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#resName2'),[]);
+
+			// update the "Make contains relationship" worksheet
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource', 'activity'], $('#parentName2'), []);
+			this.worksheetUtil_updateContainsDropDown(this.$store.state.dm3kGraph, $('#childName2'), $('#parentName2'), []);
+
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#act-childName'), [])
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#res-childName'), [])
+
+			// update the "Constrain allocations" worksheet
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName1'), []);
+			this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName1'), $('#startName1'), []);
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName2'), []);
+			this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName2'), $('#startName2'), [$('#stopName1').children("option:selected").val()]);
+
+			// this.worksheetUtil_populateExistingActivitiesFromGraph(g)
+
+        },
+        worksheetUtil_updateAllocatedDropDown(graph, jQSelectorTarget, jQSelectorSource, excludeNamesList) {
+            // console.log('worksheetUtil_updateAllocatedDropDown on '+jQSelectorTarget.attr('id'));
+            jQSelectorTarget.empty();
+            let resName = jQSelectorSource.children("option:selected").val();
+            // console.log('Looking for options based on resource name: '+resName);
+            
+            // want to look for allocations available to the resName
+            let updatedOptions = graph.getAllNamesOfAllocatedFrom(resName);
+
+            // get rid of the exclude list
+            //console.log('Options: ', updatedOptions)
+            excludeNamesList.forEach(function(excludeName, index) {
+                const i = updatedOptions.indexOf(excludeName);
+                if (i > -1) {
+                    updatedOptions.splice(i, 1);
+                }
+            });
+
+            //console.log('updatedOptions',updatedOptions)
+            return updatedOptions.forEach(x => jQSelectorTarget.append('<option value="'+x+'">'+x+'</option>'))
         },
         updateDropDown(resList, jQuerySelector) {
             jQuerySelector.empty();
