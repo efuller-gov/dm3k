@@ -20,7 +20,7 @@ export default new Vuex.Store({
       rewards : {},
       budgets : {},
       costs : {},
-      dm3kGraph: [],
+      dm3kGraph: [], //this is the only thing you need...
 },
   getters: {},
   mutations: {
@@ -39,7 +39,7 @@ export default new Vuex.Store({
       state.rewards = {}
       state.budgets = {}
       state.costs = {}
-      state.dm3kGraph = []
+      state.dm3kGraph = [] //this is the only thing you need...
     },
     addResource(state, resourceObj) {
       state.resources.push(resourceObj)
@@ -54,8 +54,6 @@ export default new Vuex.Store({
       state.dm3kGraph.activities.push(activityObj);
       // Add AllocationInstance when first create
       let ai = new AllocationInstance(activityObj['existingResName'], activityObj['actName']);
-      console.log("state.dm3kGraph.resources ", state.dm3kGraph.resources)
-      console.log("---> state.dm3kGraph.resources.filter(x=>x.resName == activityObj['existingResName']) ", state.dm3kGraph.resources.filter(x=>x.value == activityObj['existingResName']))
       let costNameList = state.dm3kGraph.resources.filter(x=>x.value == activityObj['existingResName'])[0].budgetNameList
       state.dm3kGraph.activityInstances.push(new ActivityInstance(activityObj['newActType'], activityObj['actName'], costNameList))
       state.dm3kGraph.allocatedToInstances.push(ai);
@@ -82,6 +80,5 @@ export default new Vuex.Store({
     removeResourceInstance(state, resObj){
       state.dm3kGraph.resourceInstances.filter(x=>x.label==resObj['name'])[0]
     }
-  },
-  actions: {}
+  }
 });

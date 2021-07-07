@@ -13,7 +13,6 @@
     name: 'GraphRenderer',
     data() {
       return {
-        // dm3kGraph: {},
         infoIcon: require('../assets/info-icon.png'),
         solnExplainer: require("../assets/output-explainer.png")
       }

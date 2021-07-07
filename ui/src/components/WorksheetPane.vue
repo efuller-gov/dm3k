@@ -334,14 +334,14 @@ export default {
             $('#addActivity').removeClass('hide')
         },
         addActivity(){
+            console.log("----> dm3kgraph.allocatedLinks", this.$store.state.dm3kGraph.allocatedLinks)
             $('#constrain-allocations-button').removeClass('disabled')
             $('#actTypeExisting').removeClass('disabled')
 
-            let newActType = $("#actType").val();
-            let newActName = $("#actName").val();
-            let existingResName = $("#resName2").val();
-            let newRewardName = $("#rewardName").val();
-
+            var newActType = $("#actType").val();
+            var newActName = $("#actName").val();
+            var existingResName = $("#resName2").val();
+            var newRewardName = $("#rewardName").val();
             if ($('#new-allocation').hasClass('enabled') & ( (newActType=='none') | (newActName=='') ) ){
                 alert('Please fill all fields required to create an activity.')
                 return
@@ -354,42 +354,126 @@ export default {
                 alert('You must select a new activity type from the dropdown menu.')
                 return
             }
-            // Allocate to existing activity
-            if ($("#existing-allocation").hasClass("enabled")){
-                let actName = $("#actTypeExisting").val();
-                this.$emit('add-existing-allocation', 
-                    {
-                        actName: actName,
-                        existingResName: existingResName,
-                        newRewardName: newRewardName,
-                        drawn: false
-                    }
-                )
-            }
-            // Allocate to new activity, and create new activity
-            else{
-                if (newActType.includes('[')){
-                    let tmp = newActType.split('[')
-                    tmp = newActType.split(']',2)
+            let model = this.$store.state.dm3kGraph.graph.getModel()
+            // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
+            // if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
+            //     // resetActivityPrompt();
+            //     alert('Choose either a new activity or an existing activity to allocate to. Do not select both.')
+            // }
 
-                    newActType = tmp[0].split('[')[1];
-                    newActName = tmp[1]
-                }
-                let costNameList = this.$store.state.resources.filter(x=>x.resName == existingResName)[0].budgetNameList
-                this.$store.state.activityInstances.push(new ActivityInstance(newActType, newActName, costNameList))
-                this.$emit('add-new-allocation', 
-                    {
-                        actName: newActName,
-                        newActType: newActType,
-                        existingResName: existingResName,
-                        newRewardName: newRewardName,
-                        drawn: false
+            // Allocate to existing activity
+            if ($("#actType").val() == 'a new activity'){
+                let actName = $("#actTypeExisting").val();
+                let actCell = this.$store.state.dm3kGraph.getActivity(actName)
+                let actType = actCell.getId()
+                let duplicateAlloc = 0
+                // check if allocation b/w this res and act already exists
+                this.$store.state.dm3kGraph.allocatedLinks.forEach(function(link, i){
+                    if (link.source.getValue()==existingResName & link.target.getValue()==actName){
+                        alert('Allocation between '+existingResName+' and '+actName+' already exists.')
+                        console.log('SUPPOSED TO RETURN HERE!!!!')
+                        duplicateAlloc = 1
                     }
-                )
+                })
+                if (duplicateAlloc) {
+                    return
+                }
+                var costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
+                var ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
+                if (ans.success) {
+                        console.log('AddActivityComplete success!')
+                        // updateAllDropDowns(dm3kgraph);
+                        // var layout = new mxGraphLayout(this.$store.state.dm3kGraph.graph);
+                        // executeLayout(this.$store.state.dm3kGraph.graph, layout);
+                        // resetActivityPrompt();
+                    }
+                    else {
+                        alert(ans.details);
+                    }
+            } else{
+            // Allocate to new activity, and create new activity
+                if (model.getCell(newActName) != undefined){
+                    alert('Cannot create duplicate node. Please choose a new instance name.')
+                } else{
+                    if (newActType.includes('[')){
+                        let tmp = newActType.split('[')
+                        tmp = newActType.split(']',2)
+
+                        newActType = tmp[0].split('[')[1];
+                        newActName = tmp[1]
+                    }
+                    var costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
+                    var ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
+                    if (ans.success) {
+                        console.log('AddActivityComplete success!')
+                        // updateAllDropDowns(dm3kgraph);
+                        // var layout = new mxGraphLayout(dm3kgraph.graph);
+                        // executeLayout(dm3kgraph.graph, layout);
+                        // resetActivityPrompt();
+                    }
+                    else {
+                        alert(ans.details);
+                    }
+                }
             }
-            this.resetResourcePrompt()
-            // this.resetActivityPrompt()
         },
+        // addActivity(){
+        //     $('#constrain-allocations-button').removeClass('disabled')
+        //     $('#actTypeExisting').removeClass('disabled')
+
+        //     let newActType = $("#actType").val();
+        //     let newActName = $("#actName").val();
+        //     let existingResName = $("#resName2").val();
+        //     let newRewardName = $("#rewardName").val();
+
+        //     if ($('#new-allocation').hasClass('enabled') & ( (newActType=='none') | (newActName=='') ) ){
+        //         alert('Please fill all fields required to create an activity.')
+        //         return
+        //     }
+        //     if( $('#existing-allocation').hasClass('enabled') & $('#actTypeExisting').val() == 'an existing activity'){
+        //         alert('You must select an existing activity from the dropdown menu.')
+        //         return
+        //     }
+        //     if( $('#new-allocation').hasClass('enabled') & $('#actType').val() == 'a new activity'){
+        //         alert('You must select a new activity type from the dropdown menu.')
+        //         return
+        //     }
+        //     // Allocate to existing activity
+        //     if ($("#existing-allocation").hasClass("enabled")){
+        //         let actName = $("#actTypeExisting").val();
+        //         this.$emit('add-existing-allocation', 
+        //             {
+        //                 actName: actName,
+        //                 existingResName: existingResName,
+        //                 newRewardName: newRewardName,
+        //                 drawn: false
+        //             }
+        //         )
+        //     }
+        //     // Allocate to new activity, and create new activity
+        //     else{
+        //         if (newActType.includes('[')){
+        //             let tmp = newActType.split('[')
+        //             tmp = newActType.split(']',2)
+
+        //             newActType = tmp[0].split('[')[1];
+        //             newActName = tmp[1]
+        //         }
+        //         let costNameList = this.$store.state.resources.filter(x=>x.resName == existingResName)[0].budgetNameList
+        //         this.$store.state.activityInstances.push(new ActivityInstance(newActType, newActName, costNameList))
+        //         this.$emit('add-new-allocation', 
+        //             {
+        //                 actName: newActName,
+        //                 newActType: newActType,
+        //                 existingResName: existingResName,
+        //                 newRewardName: newRewardName,
+        //                 drawn: false
+        //             }
+        //         )
+        //     }
+        //     this.resetResourcePrompt()
+        //     // this.resetActivityPrompt()
+        // },
         containsTab(){
             $(".menu-button").removeClass('enabled')
             $(".left_column").addClass('hide')
@@ -1601,10 +1685,11 @@ export default {
                 this.updateDropDown(resources, $('#resName2'));
             }
         },
-        '$store.state.activities': {
+        '$store.state.dm3kGraph.activities': {
             deep: true,
             handler(activities) {
-                activities = activities.map(x=>x.actName)
+                console.log("updated activiites ", activities)
+                activities = activities.map(x=>x.value)
                 this.updateDropDown(activities, $('#actTypeExisting'));
             }
         }
