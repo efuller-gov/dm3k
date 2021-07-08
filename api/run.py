@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-api.add_resource(VizInput, '/api/vizdata')
+api.add_resource(VizInput, '/api/loadviz')
 api.add_resource(Version, '/api/version')
 
 # logging

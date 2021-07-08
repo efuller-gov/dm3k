@@ -2,26 +2,29 @@ version: "3.7"
 
 services:
   api:
-    uild:
+    build:
       context: .
       dockerfile: Dockerfile.api
     container_name: dm3k_open_api
     restart: always
     volumes:
-      - ./api/:/app
+      - ./api/:/app/api
+      - ./optimizer/:/app/optimizer
+      - ./tests/:/app/tests
+      - ./examples/:/app/examples
     expose:
       - 9000
-
-  aw_ui:
+    
+  ui:
     build: ./ui
-    container_name: ui
+    container_name: dm3k_open_ui
     restart: always
     expose:
       - 80
 
-  aw_nginx:
+  nginx:
     build: ./nginx
-    container_name: nginx
+    container_name: dm3k_open_nginx
     restart: always
     ports:
       - "8000:8000"

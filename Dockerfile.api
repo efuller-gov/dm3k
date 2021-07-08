@@ -11,6 +11,7 @@ WORKDIR /app
 ADD ./api /app/api
 ADD ./examples /app/examples
 ADD ./optimizer /app/optimizer
+ADD ./tests /app/tests
 
 # get all optimizer python packages
 WORKDIR /app/optimizer
@@ -21,4 +22,4 @@ WORKDIR /app/api
 RUN pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org cd -r requirements.txt
 
 # run
-CMD [ "uwsgi", "app.ini" ]
+CMD [ "uwsgi", "/app/api/app.ini" ]
