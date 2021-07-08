@@ -20,6 +20,10 @@ from pyomo.opt import SolverFactory, SolverStatus, TerminationCondition
 from pyutilib.common._exceptions import ApplicationError
 from pyutilib.services import TempfileManager
 
+# See https://github.com/PyUtilib/pyutilib/issues/31  - getting ValueError: signal only works in main thread
+import pyutilib.subprocess.GlobalData
+pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
+
 log = logging.getLogger(__name__)
 
 # set up logging
