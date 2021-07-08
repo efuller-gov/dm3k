@@ -39,9 +39,15 @@ class VizInput(Resource):
             app.logger.warning("VALIDATION ERRORS...")
             for e in validation_errors:
                 app.logger.warning(e)
-            err_response = make_response(jsonify(validation_errors), 400)
-            err_response.headers["Content-Type"] = "application/json"
-            return err_response
+            
+            # TODO - we should update this
+            err_response = {
+                "body": validation_errors,
+                "reason": "Validation Errors in input data",
+                "statusCode": 400
+            }
+
+            return jsonify(err_response)
         else:
             app.logger.debug("No Validation errors")
 
@@ -53,6 +59,13 @@ class VizInput(Resource):
         all_results["allocations"] = results.get_allocations()
         all_results["objective_value"] = results.get_objective_value()
 
-        return jsonify(all_results)
+        # TODO - we should update this 
+        response = {
+            "body": all_results,
+            "reason": "OK",
+            "statusCode": 200
+        }
+
+        return jsonify(response)
 
 
