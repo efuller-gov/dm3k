@@ -27,6 +27,5 @@ services:
     container_name: dm3k_open_nginx
     restart: always
     ports:
-      - "8000:8000"
-      - "8001:80"
+      - "80:80"
 

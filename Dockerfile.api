@@ -15,11 +15,11 @@ ADD ./tests /app/tests
 
 # get all optimizer python packages
 WORKDIR /app/optimizer
-RUN pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org cd -r requirements.txt
+RUN pip install --default-timeout=1000 --trusted-host pypi.org --trusted-host files.pythonhosted.org cd -r requirements.txt
 
 # get all api python packages
 WORKDIR /app/api
-RUN pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org cd -r requirements.txt
+RUN pip install --default-timeout=1000 --trusted-host pypi.org --trusted-host files.pythonhosted.org cd -r requirements.txt
 
 # run
 CMD [ "uwsgi", "/app/api/app.ini" ]
