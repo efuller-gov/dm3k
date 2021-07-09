@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile.api
+      dockerfile: Dockerfile.api.dev
     container_name: dm3k_open_api
     restart: always
     volumes:
@@ -13,7 +13,7 @@ services:
       - ./tests/:/app/tests
       - ./examples/:/app/examples
     expose:
-      - 9000
+      - 5000
     
   nginx:
     build: 
