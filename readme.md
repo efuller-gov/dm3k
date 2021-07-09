@@ -44,3 +44,11 @@ Stop instances :: docker-compose down
 Stop and Delete all containers :: `docker container stop $(docker container ls -aq) && docker container rm $(docker container ls -aq)`
 
 _Cheers!_
+
+
+FOR API CONTAINER
+sudo docker exec -ti dm3k_open_api bash
+
+
+FOR UI CONTAINER
+sudo docker exec -ti dm3k_open_ui /bin/sh

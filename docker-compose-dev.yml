@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: Dockerfile.api.dev
+      dockerfile: Dockerfile.api
     container_name: dm3k_open_api
     restart: always
     volumes:
@@ -12,20 +12,29 @@ services:
       - ./optimizer/:/app/optimizer
       - ./tests/:/app/tests
       - ./examples/:/app/examples
+    expose:
+      - 9000
+    
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    container_name: dm3k_open_nginx
+    restart: always
     ports:
-      - 8000:5000
+      - "80:80"
 
-  # ui:
-  #   build:
-  #     context: ./ui
-  #     dockerfile: Dockerfile.dev
-  #   container_name: dm3k_open_ui
-  #   restart: always
-  #   volumes:
-  #     - ./ui/:/app
-  #   ports:
-  #     - 8001:8080
-  #   stdin_open: true
-  #   tty: true
-  #   environment:
-  #     - CHOKIDAR_USEPOLLING=true
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile.dev
+    container_name: dm3k_open_ui
+    restart: always
+    volumes:
+      - ./ui/:/app
+    expose:
+      - 8080
+    stdin_open: true
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
