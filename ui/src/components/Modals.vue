@@ -24,7 +24,7 @@
             <div class="modal-content">
                 <img id='soln-explainer-graphic' onclick="location.href='./'" src="../assets/output-explainer.png">
                 <p id="soln-title">Optimal Allocation Plan</p>
-                <button id="soln-explainer-btn" onclick="toggleSolnGraphicExplainer()">Show me how to read this</button>
+                <button @click="toggleSolnGraphicExplainer()" id="soln-explainer-btn">Show me how to read this</button>
                 <div id="soln-table-top-aligned-content">
                     Size and sort activity instance columns by
                     <select class="chosen-select" id="widthFunctionToggle">
@@ -86,6 +86,17 @@ export default {
         }
     },
     methods: {
+        toggleSolnGraphicExplainer(){
+            $('#soln-explainer-graphic').toggle()
+            $('#soln-visualization').toggle()
+            if ($('#soln-explainer-btn').hasClass('enabled')){
+                $('#soln-explainer-btn').removeClass('enabled')
+                $('#soln-explainer-btn').html('Show me how to read this')
+            } else{
+                $('#soln-explainer-btn').addClass('enabled')
+                $('#soln-explainer-btn').html('Hide')
+            }
+        },
         addRow() {
             if ($('#add-row').text().includes('resource')) {
                 // let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
