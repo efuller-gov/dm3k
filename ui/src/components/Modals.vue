@@ -59,20 +59,6 @@ export default {
         this.$root.$on('show-solution-modal', e => {
             this.showSolutionModal(e.body, e.outputJson)
         })
-
-        let d3Script = document.createElement('script')
-        d3Script.setAttribute('src', 'http://d3js.org/d3.v4.js')
-
-        let lodashScript = document.createElement('script')
-        lodashScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.1/underscore-min.js')
-
-
-        let jqScript = document.createElement('script')
-        jqScript.setAttribute('src', 'https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
-
-        document.head.appendChild(d3Script)
-        document.head.appendChild(lodashScript)
-        document.head.appendChild(jqScript)
     },
     data() {
         return {
@@ -466,7 +452,8 @@ export default {
                 width: $('#widthFunctionToggle').val()
             }
             this.solnVis.generateSolnMatrix(solnMatrixObj)
-            // this.solnVis.generateSolnMatrix(solnMatrixObj) //don't remember why I was calling this twice
+            this.solnVis.generateSolnMatrix(solnMatrixObj) //don't remember why I was calling this twice
+
             $("#widthFunctionToggle").on('change', () => {
                 solnMatrixObj = {
                     data: data, 

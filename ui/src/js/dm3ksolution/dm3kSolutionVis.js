@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import lodash from 'lodash'
-import d3 from 'd3'
+import * as d3 from 'd3'
 
 export class Dm3kSolutionVis{
     constructor() {
