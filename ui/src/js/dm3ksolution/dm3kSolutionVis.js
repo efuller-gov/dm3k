@@ -640,7 +640,7 @@ export class Dm3kSolutionVis{
         let classLabelFontSize = "0.55vw";
         let instanceLabelFontSize = "0.55vw";
         let containerLabelFontSize = "0.55vw";
-        if (activity_dict.length > 10){
+        if (activity_dict.length > 15){
             classLabelFontSize = "0.4vw";
             instanceLabelFontSize = "0.3vw";
             containerLabelFontSize = "0.4vw";
