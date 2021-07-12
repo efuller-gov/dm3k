@@ -4,7 +4,7 @@ UI for the Eng Alg
 ## For Production
 ```
 $ cd ui
-$ sudo docker compose --build -d 
+$ sudo docker-compose build
 ```   
 
 ## For development

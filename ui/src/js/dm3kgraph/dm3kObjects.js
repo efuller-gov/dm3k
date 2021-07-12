@@ -313,7 +313,6 @@ function addDM3KAllocatedEdge(container, graph, res, act, infoIcon) {
 		iCircle.addListener(mxEvent.CLICK, function(sender, evt)
 		{
 			var cell = evt.getProperty('cell');
-			// console.log("Circle-I of 'can be allocated to' link from: "+cell.source.value+" to "+cell.target.value);
 			
 			var event = new CustomEvent(
 				'CircleIClicked',
@@ -381,7 +380,6 @@ function addDM3KContainsEdge(container, graph, parentBlock, childBlock, infoIcon
 		iCircle.addListener(mxEvent.CLICK, function(sender, evt)
 		{
 			var cell = evt.getProperty('cell');
-			console.log("Circle-I of 'contains' link from: "+cell.source.value+" to "+cell.target.value);
 			
 			var event = new CustomEvent(
 				'CircleIClicked',

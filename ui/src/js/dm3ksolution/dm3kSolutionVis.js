@@ -1032,18 +1032,18 @@ export class Dm3kSolutionVis{
                 placeholder_w = (total_width/_.uniq(ac.instanceTable.map(x=>x.parentInstanceName)).length) - x_pad;
             } else {
                 // if it's a multi level container
-                let num_levels = i-1;
-                let lc = act_containers.filter(x=>x.parentClassLabel == ac.childClassLabel)[0]
+                var num_levels = i-1;
+                var lc = act_containers.filter(x=>x.parentClassLabel == ac.childClassLabel)[0]
                 while(num_levels){
                     lc = getChild(act_containers, lc.childClassLabel)
                     num_levels--;
                 }
                 let parentInstanceTable = ac.instanceTable;
-                childContainerWidth = lc.total_width + (lc.num_contained_instances-1)*x_pad;
+                let childContainerWidth = lc.total_width + (lc.num_contained_instances-1)*x_pad;
                 let num_contained_instances = _.uniq(parentInstanceTable.map(x=>x.childInstanceName)).length
                 let total_num_instances = outline.activityInstances.filter(x=>x.classLabel==ac.childClassLabel)[0].instanceTable.length
                 let percent_instances_contained = num_contained_instances/total_num_instances
-                total_width = childContainerWidth * percent_instances_contained;
+                let total_width = childContainerWidth * percent_instances_contained;
                 placeholder_w = (total_width/_.uniq(ac.instanceTable.map(x=>x.parentInstanceName)).length) - x_pad;
 
             }

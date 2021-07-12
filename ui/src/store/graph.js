@@ -25,7 +25,6 @@ export default new Vuex.Store({
   getters: {},
   mutations: {
     clearGraph(state){
-      console.log("--- CLEAR STORE IN STORE")
       state.resources = []
       state.resources = []
       state.activities = []

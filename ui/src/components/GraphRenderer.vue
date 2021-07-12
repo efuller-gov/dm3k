@@ -96,8 +96,6 @@
           this.$root.$emit('show-instance-modal', e)
         },
         clearGraph(){
-          console.log("----> CLEAR GRAPH")
-          // this.dm3kGraph.clearAll()
           this.$store.state.dm3kGraph.clearAll()
         },
     }

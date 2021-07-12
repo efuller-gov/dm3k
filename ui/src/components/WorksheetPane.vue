@@ -178,8 +178,8 @@
 
 <script>
 import $ from 'jquery'
-import {ResourceInstance} from '../js/dm3kgraph/dataClasses';
-import {ActivityInstance} from '../js/dm3kgraph/dataClasses';
+// import {ResourceInstance} from '../js/dm3kgraph/dataClasses';
+// import {ActivityInstance} from '../js/dm3kgraph/dataClasses';
 import {Dm3kConverter} from '../js/dm3kconversion/dm3kconversion';
 
 export default {
@@ -375,7 +375,7 @@ export default {
                 let actType = actCell.getId()
                 let duplicateAlloc = 0
                 // check if allocation b/w this res and act already exists
-                this.$store.state.dm3kGraph.allocatedLinks.forEach(function(link, i){
+                this.$store.state.dm3kGraph.allocatedLinks.forEach(function(link){
                     if (link.source.getValue()==existingResName & link.target.getValue()==actName){
                         alert('Allocation between '+existingResName+' and '+actName+' already exists.')
                         console.log('SUPPOSED TO RETURN HERE!!!!')
@@ -385,8 +385,8 @@ export default {
                 if (duplicateAlloc) {
                     return
                 }
-                var costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
-                var ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
+                let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
+                let  ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
                 if (ans.success) {
                         console.log('AddActivityComplete success!')
                         this.updateAllDropDowns();
@@ -409,8 +409,8 @@ export default {
                         newActType = tmp[0].split('[')[1];
                         newActName = tmp[1]
                     }
-                    var costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
-                    var ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
+                    let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
+                    let ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
                     if (ans.success) {
                         console.log('AddActivityComplete success!')
                         this.updateAllDropDowns();
@@ -505,7 +505,7 @@ export default {
 
             // get rid of the rest of the exclude list
             //console.log('Options: ', updatedOptions)
-            excludeNamesList.forEach(function(excludeName, index) {
+            excludeNamesList.forEach(function(excludeName) {
                 const i = updatedOptions.indexOf(excludeName);
                 if (i > -1) {
                     updatedOptions.splice(i, 1);
@@ -546,7 +546,7 @@ export default {
 
             // get rid of the exclude list
             //console.log('Options: ', updatedOptions)
-            excludeNamesList.forEach(function(excludeName, index) {
+            excludeNamesList.forEach(function(excludeName) {
                 const i = updatedOptions.indexOf(excludeName);
                 if (i > -1) {
                     updatedOptions.splice(i, 1);
@@ -565,14 +565,14 @@ export default {
 
             jQuerySelector.empty();
             let updatedOptions = []
-            typeList.forEach(function(typeName, index) {
+            typeList.forEach(function(typeName) {
                 //console.log('Looking for: '+typeName)
                 let options = graph.getAllNamesOfType(typeName);
                 //console.log('Options: ', options)
                 updatedOptions = updatedOptions.concat(options);
             });
             
-            excludeNamesList.forEach(function(excludeName, index) {
+            excludeNamesList.forEach(function(excludeName) {
                 const i = updatedOptions.indexOf(excludeName);
                 if (i > -1) {
                     updatedOptions.splice(i, 1);
@@ -823,12 +823,12 @@ export default {
             this.updateAllDropDowns()
         },
         emitSolnModal(e){
+            console.log("----- EMIT SOLN MODAL")
             this.worksheetUtil_hideShowWorksheet()
             this.$root.$emit('show-solution-modal', e)
         },
         submitDM3K(){
             console.log('------- SUBMIT ------')
-            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
             console.log("---> outputJson ", outputJson)
 
@@ -854,7 +854,7 @@ export default {
                     ]
             }
             var json_body = JSON.stringify(data_to_send);
-
+            var body = []
 
             // make a file in Dm3K backend and solve it
             var post_request = $.ajax({
@@ -864,30 +864,35 @@ export default {
                 data: json_body
             });
 
-            post_request.done(function(msg) {
+            post_request.done((msg) => {
                 var jsonMsg = msg;  // its already an object...no need for $.parseJSON(msg)
                 let statusCode = jsonMsg["statusCode"];
-                
+                console.log("--- POST REQUEST DONE")
+                console.log("jsonMsg ", jsonMsg)
                 if (statusCode != 200) {
                     alert("Failed Attempt to Submit to DM3K: " +
                             jsonMsg + "\n" +
                             jsonMsg["body"] /*+ "\n" +
                             body["internal_message"]*/ );
-                    console.log(jsonMsg)
-                    console.log(statusCode)
-                    // console.log(body)
+                    body = $.parseJSON(jsonMsg["body"]);
                 }
                 else {
-                    let body = $.parseJSON(jsonMsg["body"]);
-                    // showSolutionModal(body)
-                    // showSolutionModal(body, outputJson)
+                    console.log("--- SUCCESSFUL")
+                    console.log("before parse")
+                    console.log("jsonMsg['body'] ", jsonMsg["body"])
+                    // body = $.parseJSON(jsonMsg["body"]); // I think it is now returning a JSON object
+                    body = jsonMsg["body"] // I think it is now returning a JSON object
                     // TODO: REMOVE EXAMPLE OUTPUT
-                    this.$root.$emit('show-solution-modal', {body: this.exampleOutput, outputJson: outputJson})
+                    // this.$root.$emit('show-solution-modal', {body: this.exampleOutput, outputJson: outputJson})
+                    // this.$root.$emit('show-solution-modal', {body: body, outputJson: outputJson})
+                    this.emitSolnModal({body: body, outputJson: outputJson})
                 }
-            });
+            })
             
             // TODO: REMOVE HARDCODED CALL HERE TO OUTPUT
-            this.emitSolnModal({body: this.exampleOutput, outputJson: outputJson})
+            // this.emitSolnModal({body: this.exampleOutput, outputJson: outputJson})
+            // console.log({body: body, outputJson: outputJson})
+            // this.emitSolnModal({body: body, outputJson: outputJson})
 
             post_request.fail(function(jqXHR, textStatus, errorThrown) {
                 console.log("Request to vizdata failed: "+textStatus);
@@ -898,797 +903,6 @@ export default {
     },
     data() {
         return{
-               exampleOutput : {
-                "full_trace": {
-                    "resource": [
-                        "Turret_Resource_instance_0",
-                        "Turret_Resource_instance_0",
-                        "Turret_Resource_instance_0",
-                        "Turret_Resource_instance_0",
-                        "Turret_Resource_instance_0",
-                        "Turret_Resource_instance_1",
-                        "Turret_Resource_instance_1",
-                        "Turret_Resource_instance_1",
-                        "Turret_Resource_instance_1",
-                        "Turret_Resource_instance_1",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_0",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_1",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_2",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3",
-                        "Missiles_Resource_instance_3"
-                    ],
-                    "activity": [
-                        "City_Activity_instance_0",
-                        "City_Activity_instance_1",
-                        "City_Activity_instance_2",
-                        "City_Activity_instance_3",
-                        "City_Activity_instance_4",
-                        "City_Activity_instance_0",
-                        "City_Activity_instance_1",
-                        "City_Activity_instance_2",
-                        "City_Activity_instance_3",
-                        "City_Activity_instance_4",
-                        "VIP_Activity_instance_0",
-                        "VIP_Activity_instance_1",
-                        "VIP_Activity_instance_2",
-                        "VIP_Activity_instance_3",
-                        "VIP_Activity_instance_4",
-                        "VIP_Activity_instance_5",
-                        "VIP_Activity_instance_6",
-                        "VIP_Activity_instance_7",
-                        "VIP_Activity_instance_8",
-                        "VIP_Activity_instance_9",
-                        "VIP_Activity_instance_10",
-                        "VIP_Activity_instance_11",
-                        "VIP_Activity_instance_12",
-                        "VIP_Activity_instance_13",
-                        "VIP_Activity_instance_14",
-                        "VIP_Activity_instance_0",
-                        "VIP_Activity_instance_1",
-                        "VIP_Activity_instance_2",
-                        "VIP_Activity_instance_3",
-                        "VIP_Activity_instance_4",
-                        "VIP_Activity_instance_5",
-                        "VIP_Activity_instance_6",
-                        "VIP_Activity_instance_7",
-                        "VIP_Activity_instance_8",
-                        "VIP_Activity_instance_9",
-                        "VIP_Activity_instance_10",
-                        "VIP_Activity_instance_11",
-                        "VIP_Activity_instance_12",
-                        "VIP_Activity_instance_13",
-                        "VIP_Activity_instance_14",
-                        "VIP_Activity_instance_0",
-                        "VIP_Activity_instance_1",
-                        "VIP_Activity_instance_2",
-                        "VIP_Activity_instance_3",
-                        "VIP_Activity_instance_4",
-                        "VIP_Activity_instance_5",
-                        "VIP_Activity_instance_6",
-                        "VIP_Activity_instance_7",
-                        "VIP_Activity_instance_8",
-                        "VIP_Activity_instance_9",
-                        "VIP_Activity_instance_10",
-                        "VIP_Activity_instance_11",
-                        "VIP_Activity_instance_12",
-                        "VIP_Activity_instance_13",
-                        "VIP_Activity_instance_14",
-                        "VIP_Activity_instance_0",
-                        "VIP_Activity_instance_1",
-                        "VIP_Activity_instance_2",
-                        "VIP_Activity_instance_3",
-                        "VIP_Activity_instance_4",
-                        "VIP_Activity_instance_5",
-                        "VIP_Activity_instance_6",
-                        "VIP_Activity_instance_7",
-                        "VIP_Activity_instance_8",
-                        "VIP_Activity_instance_9",
-                        "VIP_Activity_instance_10",
-                        "VIP_Activity_instance_11",
-                        "VIP_Activity_instance_12",
-                        "VIP_Activity_instance_13",
-                        "VIP_Activity_instance_14"
-                    ],
-                    "budget_used": [
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            1,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            1,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            1
-                        ],
-                        [
-                            0,
-                            1
-                        ],
-                        [
-                            0,
-                            1
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            1
-                        ],
-                        [
-                            0,
-                            1
-                        ],
-                        [
-                            0,
-                            1
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ],
-                        [
-                            0,
-                            0
-                        ]
-                    ],
-                    "value": [
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1,
-                        1
-                    ],
-                    "selected": [
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0
-                    ],
-                    "picked": [
-                        0,
-                        1,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0
-                    ],
-                    "allocated": [
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        1,
-                        1,
-                        0,
-                        0,
-                        0
-                    ]
-                },
-                "allocated_amt": {
-                    "Turret_Resource_instance_0": {
-                        "City_Activity_instance_1": {
-                            "Direction": 1
-                        }
-                    },
-                    "Turret_Resource_instance_1": {
-                        "City_Activity_instance_3": {
-                            "Direction": 1
-                        }
-                    },
-                    "Missiles_Resource_instance_1": {
-                        "VIP_Activity_instance_3": {
-                            "Shots": 1
-                        },
-                        "VIP_Activity_instance_4": {
-                            "Shots": 1
-                        },
-                        "VIP_Activity_instance_5": {
-                            "Shots": 1
-                        }
-                    },
-                    "Missiles_Resource_instance_3": {
-                        "VIP_Activity_instance_9": {
-                            "Shots": 1
-                        },
-                        "VIP_Activity_instance_10": {
-                            "Shots": 1
-                        },
-                        "VIP_Activity_instance_11": {
-                            "Shots": 1
-                        }
-                    }
-                },
-                "per_resource_score": {
-                    "Turret_Resource_instance_0": 0,
-                    "Turret_Resource_instance_1": 0,
-                    "Missiles_Resource_instance_1": 3,
-                    "Missiles_Resource_instance_3": 3
-                },
-                "per_resource_budget_used": {
-                    "Turret_Resource_instance_0": {
-                        "Direction": 1
-                    },
-                    "Turret_Resource_instance_1": {
-                        "Direction": 1
-                    },
-                    "Missiles_Resource_instance_1": {
-                        "Shots": 3
-                    },
-                    "Missiles_Resource_instance_3": {
-                        "Shots": 3
-                    }
-                },
-                "allocations": {
-                    "Turret_Resource_instance_0": [
-                        "City_Activity_instance_1"
-                    ],
-                    "Turret_Resource_instance_1": [
-                        "City_Activity_instance_3"
-                    ],
-                    "Missiles_Resource_instance_1": [
-                        "VIP_Activity_instance_3",
-                        "VIP_Activity_instance_4",
-                        "VIP_Activity_instance_5"
-                    ],
-                    "Missiles_Resource_instance_3": [
-                        "VIP_Activity_instance_9",
-                        "VIP_Activity_instance_10",
-                        "VIP_Activity_instance_11"
-                    ]
-                },
-                "objective_value": 6
-            },
             dm3kConverter: {},
             inputJson: [],
             helper_images_info: [
