@@ -1,5 +1,4 @@
 import mxgraph from '../index';
-// import _ from 'lodash';
 
 const {
     mxGraph,

@@ -1,3 +1,7 @@
+import $ from 'jquery'
+import lodash from 'lodash'
+import d3 from 'd3'
+
 export class Dm3kSolutionVis{
     constructor() {
         // this.reducer = (accumulator, currentValue) => accumulator + currentValue;
@@ -35,7 +39,7 @@ export class Dm3kSolutionVis{
         // console.log("Backend output ", data)
         // console.log("**********************************************")
 
-        let act_list = _.uniq(act)
+        let act_list = lodash.uniq(act)
 
         // Populate budget dict for when I rearrange act and res lists
         for (let i = 0; i < res.length; i++) {
@@ -96,7 +100,7 @@ export class Dm3kSolutionVis{
         // Populate resource_dict
         // **************************************************************** //
         let inst_index=0, class_index=0;
-        let last_class = _.uniq(res)[0].split("_")[0];
+        let last_class = lodash.uniq(res)[0].split("_")[0];
         // Need to add tag to instances in outline so I can grab them regardless of what user names then
         // instanceLabel = <className>_Resource_instance_<index>
         // Loop through all resource instances. Create unique labels for them.
@@ -125,7 +129,7 @@ export class Dm3kSolutionVis{
             res[i] = resource_name_label_map.filter(x=> (x.name==res[i]) || (x.label==res[i]) )[0].label
         }
         // Now loop through unique resource labels, and populate resource dict with each resource instance's info
-        for (let r of _.uniq(res)) {
+        for (let r of lodash.uniq(res)) {
             let cur_class = r.split("_")[0].toLowerCase();
             if (last_class!=cur_class){
                 class_index++;
@@ -329,7 +333,7 @@ export class Dm3kSolutionVis{
         // and percentages of instances under class heights
         // **************************************************************** //
         // Looping over unique resource classes
-        for (let c of _.uniq(resource_dict.map(x=>x.class))){
+        for (let c of lodash.uniq(resource_dict.map(x=>x.class))){
             // compute s, sum of "value", or height for each class --> total height for each class type
             let s = resource_dict.filter(x=>x.class==c).map(x=>x.budget).reduce(reducer)
             let budget_unit = resource_dict.filter(x=>x.class==c)[0].budget_unit
@@ -354,8 +358,8 @@ export class Dm3kSolutionVis{
         // console.log("Can I access that const here? ", x_pad_dict)
         // x_pad = get_pad(activity_dict)
         // y_pad = get_pad(resource_dict)
-        x_pad = _.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
-        y_pad = _.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
+        x_pad = lodash.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
+        y_pad = lodash.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
         class_padding = this.get_class_pad(x_pad)
         classBoxSize = this.get_class_box_size(x_pad)
         // x_pad = (activity_dict.length>25) ? 5 : 10;
@@ -370,8 +374,8 @@ export class Dm3kSolutionVis{
         // Get percentage of instances for each class. Loop over every instance
         for (let inst of resource_dict) {
             inst.percentage = inst.budget/total_height_all_classes;
-            let cur_class_name = inst.name.split("_")[0].toLowerCase();
-            let class_portion = instances_per_resource_class.filter(x=>x.class.toLowerCase()==cur_class_name)[0].percentage;
+            // let cur_class_name = inst.name.split("_")[0].toLowerCase();
+            // let class_portion = instances_per_resource_class.filter(x=>x.class.toLowerCase()==cur_class_name)[0].percentage;
             let instance_portion = resource_dict.filter(x=>x.name==inst.name)[0].percentage;
             // let h = containerHeight * class_portion * instance_portion;
             let h = containerHeight * instance_portion;
@@ -388,7 +392,7 @@ export class Dm3kSolutionVis{
         // and percentages of instances under class widths
         // **************************************************************** //
         // Populate instances_per_activity_class. Looping over unique activity classes
-        for (let c of _.uniq(activity_dict.map(x=>x.class))){
+        for (let c of lodash.uniq(activity_dict.map(x=>x.class))){
             let s = activity_dict.filter(x=>x.class==c).map(x=>x.value).reduce(reducer)
             instances_per_activity_class.push({
                 class: c,
@@ -407,9 +411,9 @@ export class Dm3kSolutionVis{
         // Get percentage of instances for each class. Loop over every instance
         for (let inst of activity_dict) {
             inst.percentage = inst.value/total_width_all_classes;
-            let cur_class_name = inst.name.split("_")[0].toLowerCase();
-            let class_portion = _.filter(instances_per_activity_class, function(x){return x.class.toLowerCase() == cur_class_name})[0]["percentage"];
-            let instance_portion = _.filter(activity_dict, function(x){return x.name == inst.name})[0]["percentage"];
+            // let cur_class_name = inst.name.split("_")[0].toLowerCase();
+            // let class_portion = lodash.filter(instances_per_activity_class, function(x){return x.class.toLowerCase() == cur_class_name})[0]["percentage"];
+            let instance_portion = lodash.filter(activity_dict, function(x){return x.name == inst.name})[0]["percentage"];
             // let w = containerWidth * class_portion * instance_portion;
             let w = containerWidth * instance_portion;
             inst.instance_width = w;
@@ -431,11 +435,11 @@ export class Dm3kSolutionVis{
                 rc.total_height = ri.map(x=>x.instance_height).reduce(reducer)
                 rc.num_contained_instances = ri.length
             } else {
-                rc.total_height = ri.map(x=>x.instance_height).reduce(reducer) * (_.uniq(rc.instanceTable.map(x=>x.childInstanceName)).length/ri.length)
-                rc.num_contained_instances = _.uniq(rc.instanceTable.map(x=>x.childInstanceName)).length
+                rc.total_height = ri.map(x=>x.instance_height).reduce(reducer) * (lodash.uniq(rc.instanceTable.map(x=>x.childInstanceName)).length/ri.length)
+                rc.num_contained_instances = lodash.uniq(rc.instanceTable.map(x=>x.childInstanceName)).length
             }
-            rc.row = _.min(ri.map(x=>x.row))
-            rc.y = _.min(ri.map(x=>x.y))
+            rc.row = lodash.min(ri.map(x=>x.row))
+            rc.y = lodash.min(ri.map(x=>x.y))
             rc.num_instances = ri.length
         }
         for (let ac of act_containers){
@@ -446,8 +450,8 @@ export class Dm3kSolutionVis{
                     ac.total_width = ai.map(x=>x.instance_width).reduce(reducer)
                     ac.num_contained_instances = ai.length
                 } else {
-                    ac.total_width = ai.map(x=>x.instance_width).reduce(reducer) * (_.uniq(ac.instanceTable.map(x=>x.childInstanceName)).length/ai.length)
-                    ac.num_contained_instances = _.uniq(ac.instanceTable.map(x=>x.childInstanceName)).length
+                    ac.total_width = ai.map(x=>x.instance_width).reduce(reducer) * (lodash.uniq(ac.instanceTable.map(x=>x.childInstanceName)).length/ai.length)
+                    ac.num_contained_instances = lodash.uniq(ac.instanceTable.map(x=>x.childInstanceName)).length
                 }
                 ac.num_instances = ai.length
             } else{
@@ -456,8 +460,8 @@ export class Dm3kSolutionVis{
                     ac.total_width = ai.map(x=>x.instance_width).reduce(reducer)
                     ac.num_contained_instances = ai.length
                 } else {
-                    ac.total_width = ai.map(x=>x.instance_width).reduce(reducer) * (_.uniq(ac.instanceTable.map(x=>x.childInstanceName)).length/ai.length)
-                    ac.num_contained_instances = _.uniq(ac.instanceTable.map(x=>x.childInstanceName)).length
+                    ac.total_width = ai.map(x=>x.instance_width).reduce(reducer) * (lodash.uniq(ac.instanceTable.map(x=>x.childInstanceName)).length/ai.length)
+                    ac.num_contained_instances = lodash.uniq(ac.instanceTable.map(x=>x.childInstanceName)).length
                 }
                 ac.num_instances = ai.length
             }
@@ -523,7 +527,7 @@ export class Dm3kSolutionVis{
         // Construct the matrix for plotting
         // **************************************************************** //
 
-        let last_res_class = res[0].split("_")[0].toLowerCase();
+        // let last_res_class = res[0].split("_")[0].toLowerCase();
         let last_act_class = act[0].split("_")[0].toLowerCase();
 
         for (let i = 0; i < res.length; i++) {
@@ -626,8 +630,8 @@ export class Dm3kSolutionVis{
         console.log("---> DRAW DRAW DRAW")
         // Plotting vars
         let x_pad=10, y_pad=10, class_padding=25;
-        x_pad = _.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
-        y_pad = _.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
+        x_pad = lodash.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
+        y_pad = lodash.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
         class_padding = this.get_class_pad(x_pad)
         let classBoxSize = this.get_class_box_size(x_pad)
 
@@ -689,7 +693,7 @@ export class Dm3kSolutionVis{
             .style("opacity", 0);
 
         let x_ax_pos = classBoxSize*1.5;
-        let y_ax_pos = classBoxSize*1.5;
+        // let y_ax_pos = classBoxSize*1.5;
         let x_ax_pad = classBoxSize*2;
         // let y_ax_pad = classBoxSize;
         let y_ax_pad = 0;
@@ -701,7 +705,7 @@ export class Dm3kSolutionVis{
         let resourceAx = grid.selectAll(".resourceAx")
             .data(instances_per_resource_class)
                 .enter().append("g")
-                .attr("transform", function(d, i) {
+                .attr("transform", function() {
                     let xt = 0;
                     let yt = classBoxSize*3 + y_ax_pad;
                     if (act_containers.length > 0){
@@ -755,11 +759,9 @@ export class Dm3kSolutionVis{
         resourceAx.append("text")
             .style("font-size", containerLabelFontSize)
             .style("fill", "#707070")
-            .attr("x", function(d) {
-                return 0
-            })
+            .attr("x", 0)
             .attr("y", function (d) {
-                return _.min(resource_dict.filter(x=>x.class==d.class).map(x=>x.y)) + class_padding + y_pad + 
+                return lodash.min(resource_dict.filter(x=>x.class==d.class).map(x=>x.y)) + class_padding + y_pad + 
                 (d.total_height + (d.value-1)*y_pad)/2
             })
             .attr("dy", "0em")
@@ -771,11 +773,9 @@ export class Dm3kSolutionVis{
         resourceAx.append("text")
             .style("font-size", containerLabelFontSize)
             .style("fill", "#707070")
-            .attr("x", function(d) {
-                return 0
-            })
+            .attr("x", 0)
             .attr("y", function (d) {
-                return _.min(resource_dict.filter(x=>x.class==d.class).map(x=>x.y)) + class_padding + y_pad + 
+                return lodash.min(resource_dict.filter(x=>x.class==d.class).map(x=>x.y)) + class_padding + y_pad + 
                 (d.total_height + (d.value-1)*y_pad)/2
             })
             .attr("dy", "1em")
@@ -787,15 +787,14 @@ export class Dm3kSolutionVis{
         let activityAx = grid.selectAll(".activityAx")
             .data(instances_per_activity_class)
                 .enter().append("g")
-                .attr("transform", function(d, i) {
+                .attr("transform", function() {
                     let xt = classBoxSize*3 + x_ax_pad;
-                    let yt = _.max(table.map(x=>x.y)) + table.filter(x=>x.y==_.max(table.map(x=>x.y)))[0].h + 
+                    let yt = lodash.max(table.map(x=>x.y)) + table.filter(x=>x.y==lodash.max(table.map(x=>x.y)))[0].h + 
                         classBoxSize*4 + classBoxSize/2;
                     if (res_containers.length > 0){
                         xt = classBoxSize*4 + x_ax_pad;
                     }
                     if (act_containers.length > 0){
-                        // yt = yt + act_containers.length*classBoxSize/2;
                         yt = yt + (act_containers.length+1)*(classBoxSize/2);
                     }
                     return "translate("+(xt)+","+(yt)+")"; 
@@ -963,7 +962,7 @@ export class Dm3kSolutionVis{
         let resourceContainerRect = grid.selectAll(".resourceContainerRect")
             .data(res_containers)
             .enter().append("g")
-            .attr("transform", function(d, i) {
+            .attr("transform", function() {
                 let xt = classBoxSize/2 + x_ax_pad;
                 let yt = classBoxSize*3 + y_ax_pad;
                 if (res_containers.length > 0){
@@ -1029,39 +1028,39 @@ export class Dm3kSolutionVis{
                 let total_width = ac.total_width;
                 let d = instances_per_activity_class.filter(x=>x.class==ac.childClassLabel)[0]
                 total_width = d.total_width + (d.value-1)*x_pad
-                placeholder_w = (total_width/_.uniq(ac.instanceTable.map(x=>x.parentInstanceName)).length) - x_pad;
+                placeholder_w = (total_width/lodash.uniq(ac.instanceTable.map(x=>x.parentInstanceName)).length) - x_pad;
             } else {
                 // if it's a multi level container
                 var num_levels = i-1;
                 var lc = act_containers.filter(x=>x.parentClassLabel == ac.childClassLabel)[0]
                 while(num_levels){
-                    lc = getChild(act_containers, lc.childClassLabel)
+                    lc = this.getChild(act_containers, lc.childClassLabel)
                     num_levels--;
                 }
                 let parentInstanceTable = ac.instanceTable;
                 let childContainerWidth = lc.total_width + (lc.num_contained_instances-1)*x_pad;
-                let num_contained_instances = _.uniq(parentInstanceTable.map(x=>x.childInstanceName)).length
+                let num_contained_instances = lodash.uniq(parentInstanceTable.map(x=>x.childInstanceName)).length
                 let total_num_instances = outline.activityInstances.filter(x=>x.classLabel==ac.childClassLabel)[0].instanceTable.length
                 let percent_instances_contained = num_contained_instances/total_num_instances
                 let total_width = childContainerWidth * percent_instances_contained;
-                placeholder_w = (total_width/_.uniq(ac.instanceTable.map(x=>x.parentInstanceName)).length) - x_pad;
+                placeholder_w = (total_width/lodash.uniq(ac.instanceTable.map(x=>x.parentInstanceName)).length) - x_pad;
 
             }
 
             // calculate x val
             if (activity_dict.filter(x=>x.name==ac.childClassLabel+"_Activity_instance_0").length>0){
-                x = _.min(activity_dict.filter(x=>x.class==ac.childClassLabel).map(x=>x.x)) + class_padding  + 1;
+                x = lodash.min(activity_dict.filter(x=>x.class==ac.childClassLabel).map(x=>x.x)) + class_padding  + 1;
             } else {
                 num_levels = i-1;
                 lc = act_containers.filter(x=>x.parentClassLabel == ac.childClassLabel)[0]
                 while(num_levels){
-                    lc = getChild(act_containers, lc.childClassLabel)
+                    lc = this.getChild(act_containers, lc.childClassLabel)
                     num_levels--;
                 }
-                x = _.min(activity_dict.filter(x=>x.class==lc.childClassLabel).map(x=>x.x)) + class_padding  + 1;
+                x = lodash.min(activity_dict.filter(x=>x.class==lc.childClassLabel).map(x=>x.x)) + class_padding  + 1;
             }
             cum_container_x = x + x_pad + x_pad/4;
-            for (let ac_name of _.uniq(ac.instanceTable.map(x=>x.parentInstanceName))){
+            for (let ac_name of lodash.uniq(ac.instanceTable.map(x=>x.parentInstanceName))){
                 // aci is activity instances contained by current act container
                 let aci = ac.instanceTable.filter(x=>x.parentInstanceName==ac_name)
                 // let container_instance_w = (aci.length/ac.num_instances) * total_width;
@@ -1083,7 +1082,7 @@ export class Dm3kSolutionVis{
         let activityContainerRect = grid.selectAll(".activityContainerRect")
             .data(flat_act_containers.reverse())
             .enter().append("g")
-            .attr("transform", function(d, i) {
+            .attr("transform", function() {
                 let xt = classBoxSize*3 + x_ax_pad;
                 let yt = 0 + y_ax_pad;
                 if (res_containers.length > 0){
@@ -1095,14 +1094,14 @@ export class Dm3kSolutionVis{
                 return "translate("+(xt)+","+(yt)+")"; 
             })
         activityContainerRect.append('rect')
-            .attr("x", function (d, i) {
+            .attr("x", function (d) {
                 return d.x;
             })
-            .attr("y", function (d, i) {
+            .attr("y", function (d) {
                 return d.y;
             })
             .attr("height", classBoxSize/2)
-            .attr("width", function (d, i) {
+            .attr("width", function (d) {
                 return d.w;
             })
             .style("fill", act_base_color)
@@ -1156,7 +1155,7 @@ export class Dm3kSolutionVis{
         let resourceClassRect = grid.selectAll(".resourceClassRect")
             .data(instances_per_resource_class)
             .enter().append("g")
-            .attr("transform", function(d, i) {
+            .attr("transform", function() {
                 let xt = 0 + x_ax_pad;
                 let yt = classBoxSize*3 + y_ax_pad;
                 if (res_containers.length > 0){
@@ -1255,7 +1254,7 @@ export class Dm3kSolutionVis{
         let resourceInstRect = grid.selectAll(".resourceInstRect")
             .data(resource_dict)
             .enter().append("g")
-            .attr("transform", function(d, i) {
+            .attr("transform", function() {
                 let xt = 0 + x_ax_pad;
                 let yt = classBoxSize*3 + y_ax_pad;
                 if (res_containers.length > 0){
@@ -1312,7 +1311,7 @@ export class Dm3kSolutionVis{
         resourceInstRect.append("text")
             .style("font-size", instanceLabelFontSize)
             .attr("x", function () {
-                return classBoxSize*2 + _.max([x_pad*1.5, 8]);
+                return classBoxSize*2 + lodash.max([x_pad*1.5, 8]);
             })
             .attr("y", function (d) {
                 return table.filter(x=>((x.resource==d.name)&&(x.row==d.row)))[0].y + y_pad;
@@ -1326,7 +1325,7 @@ export class Dm3kSolutionVis{
         let activityClassRect = grid.selectAll(".activityClassRect")
             .data(instances_per_activity_class)
             .enter().append("g")
-            .attr("transform", function(d, i) {
+            .attr("transform", function() {
                 let xt = classBoxSize*4 + x_pad + x_ax_pad;
                 // xt = classBoxSize*4 + x_pad + x_ax_pad;
                 let yt = 0 + y_ax_pad;
@@ -1343,7 +1342,7 @@ export class Dm3kSolutionVis{
 
         activityClassRect.append('rect')
             .attr("x", function (d) {
-                return _.min(activity_dict.filter(x=>x.class==d.class).map(x=>x.x));
+                return lodash.min(activity_dict.filter(x=>x.class==d.class).map(x=>x.x));
             })
             .attr("y", 0)
             .attr("width", function (d) {
@@ -1379,7 +1378,7 @@ export class Dm3kSolutionVis{
             .style("font-size", classLabelFontSize)
             .style("font-weight", classLabelFontStyle)
             .attr("x", function (d) {
-                return _.min(activity_dict.filter(x=>x.class==d.class).map(x=>x.x)) + x_pad;
+                return lodash.min(activity_dict.filter(x=>x.class==d.class).map(x=>x.x)) + x_pad;
             })
             .attr("y", function () {
                 return classBoxSize/2 + 2;
@@ -1454,7 +1453,7 @@ export class Dm3kSolutionVis{
                 return table.filter(x=>((x.activity==d.name)&&(x.col==d.col)))[0].x - classBoxSize;
             })
             .attr("y", function () {
-                return classBoxSize*2 + _.max([y_pad*2.5, 15]);
+                return classBoxSize*2 + lodash.max([y_pad*2.5, 15]);
             })
             .text(function(d) {
                 return !isNaN(+(d.original_name.split("_").slice(-1)[0])) ? d.original_name.split("_").slice(-1)[0] : d.instance;
@@ -1467,7 +1466,7 @@ export class Dm3kSolutionVis{
         grid.selectAll(".allocRect")
             .data(table)
             .enter().append('rect')
-            .attr("transform", function(d, i) {
+            .attr("transform", function() {
                 let xt = classBoxSize*3 + x_ax_pad;
                 let yt = classBoxSize*3 + y_ax_pad;
                 if (res_containers.length > 0){
@@ -1599,7 +1598,7 @@ export class Dm3kSolutionVis{
 
         ]
         let diffs =  x_pad_dict.map(x=>Math.abs(x.num_inst-instance_dict.length))
-        return x_pad_dict[diffs.indexOf(_.min(diffs))].pad
+        return x_pad_dict[diffs.indexOf(lodash.min(diffs))].pad
     }
     get_class_pad(x_pad){
         let d = [
@@ -1617,7 +1616,7 @@ export class Dm3kSolutionVis{
             },
         ]
         let diffs =  d.map(x=>Math.abs(x.pad-x_pad))
-        return d[diffs.indexOf(_.min(diffs))].w
+        return d[diffs.indexOf(lodash.min(diffs))].w
     }
     get_class_box_size(x_pad){
         let b = this.get_class_pad(x_pad)

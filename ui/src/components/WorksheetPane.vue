@@ -178,8 +178,6 @@
 
 <script>
 import $ from 'jquery'
-// import {ResourceInstance} from '../js/dm3kgraph/dataClasses';
-// import {ActivityInstance} from '../js/dm3kgraph/dataClasses';
 import {Dm3kConverter} from '../js/dm3kconversion/dm3kconversion';
 
 export default {
