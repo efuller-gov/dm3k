@@ -3,7 +3,10 @@ export class Dm3kSolutionVis{
         // this.reducer = (accumulator, currentValue) => accumulator + currentValue;
     }
 
-    generateSolnMatrix(data, outline, widthFunc){
+    generateSolnMatrix(solnMatrixObj){
+        let data = solnMatrixObj.data
+        let outline = solnMatrixObj.problemData
+        let widthFunc = solnMatrixObj.width
         // Plotting vars
         let x_pad=10, y_pad=10, class_y_pad = 0, class_x_pad=0, class_padding=25;
         let svgContainerWidth = +d3.select('#soln-visualization').style('width').slice(0, -2)/1.5;
@@ -579,7 +582,7 @@ export class Dm3kSolutionVis{
             a_dict.cum_height += (h+y_pad+class_y_pad);
             class_y_pad = 0;
             class_x_pad = 0;
-            let cur_res_class = last_res_class;
+            // let cur_res_class = last_res_class;
             cur_act_class = last_act_class;
         }
 
@@ -591,7 +594,8 @@ export class Dm3kSolutionVis{
         // console.log("act_containers ", act_containers)
         // console.log("table ", table)
 
-        this.drawSolnOutput(table, 
+        this.drawSolnOutput(
+            table, 
             instances_per_resource_class,
             resource_dict,
             instances_per_activity_class,
@@ -602,7 +606,7 @@ export class Dm3kSolutionVis{
             act_containers,
             outline,
             widthFunc,
-            )
+        )
 
     }
 
@@ -618,7 +622,8 @@ export class Dm3kSolutionVis{
                 act_containers,
                 outline,
                 widthFunc
-        ){
+    ){
+        console.log("---> DRAW DRAW DRAW")
         // Plotting vars
         let x_pad=10, y_pad=10, class_padding=25;
         x_pad = _.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
@@ -629,9 +634,14 @@ export class Dm3kSolutionVis{
         let containerWidth = +d3.select('#soln-visualization').style('width').slice(0, -2)/1.5;
         let margin = {"left": 0, "top": containerWidth/50};
 
-        let classLabelFontSize = "0.6vw";
+        let classLabelFontSize = "0.55vw";
         let instanceLabelFontSize = "0.55vw";
         let containerLabelFontSize = "0.55vw";
+        if (activity_dict.length > 10){
+            classLabelFontSize = "0.4vw";
+            instanceLabelFontSize = "0.3vw";
+            containerLabelFontSize = "0.4vw";
+        }
         let classLabelFontStyle = "normal";
 
         let res_hover_color = "#caced1";
@@ -640,7 +650,7 @@ export class Dm3kSolutionVis{
         let act_hover_color = '#D9D7D2';
         let container_opacity = 0.3;
         
-        let alloc_rect_stroke = "0.25px"
+        let alloc_rect_stroke = "0.3px"
 
         // **************************************************************** //
         // D3 Plotting
@@ -1122,7 +1132,7 @@ export class Dm3kSolutionVis{
                     .style("left", (d3.event.layerX) + "px")
                     .style("top",  (d3.event.layerY*.15) + "px");
             })
-            .on('mouseout', function () {
+            .on('mouseout', function (d) {
                 d3.select(this)
                     .style('fill', act_base_color)
                     .style('stroke', act_base_color)

@@ -460,15 +460,21 @@ export default {
             $('#alloc-selector').hide()
             modal.style.display = "block"
             modal.style.display = "block"
-
-            this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
-            this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
-
-            $("#widthFunctionToggle").change(
-                function() {
-                    this.solnVis.generateSolnMatrix(data, problemData, $('#widthFunctionToggle').val())
+            var solnMatrixObj = {
+                data: data, 
+                problemData: problemData,
+                width: $('#widthFunctionToggle').val()
+            }
+            this.solnVis.generateSolnMatrix(solnMatrixObj)
+            // this.solnVis.generateSolnMatrix(solnMatrixObj)
+            $("#widthFunctionToggle").on('change', e => {
+                solnMatrixObj = {
+                    data: data, 
+                    problemData: problemData,
+                    width: $('#widthFunctionToggle').val()
                 }
-            )
+                this.solnVis.generateSolnMatrix(solnMatrixObj)
+            })
         }
 
     }
