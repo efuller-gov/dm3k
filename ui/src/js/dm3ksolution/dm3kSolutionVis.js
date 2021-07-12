@@ -627,7 +627,6 @@ export class Dm3kSolutionVis{
                 outline,
                 widthFunc
     ){
-        console.log("---> DRAW DRAW DRAW")
         // Plotting vars
         let x_pad=10, y_pad=10, class_padding=25;
         x_pad = lodash.max([this.get_pad(activity_dict), this.get_pad(resource_dict)])
