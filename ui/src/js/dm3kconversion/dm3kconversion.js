@@ -248,8 +248,8 @@ export class Dm3kConverter {
 
 		// add contains instances
 		for (let ci of inputJson.containsInstances) {
-			parent_name = ci.parentClassName;
-			child_name = ci.childClassName;
+			let parent_name = ci.parentClassName;
+			let child_name = ci.childClassName;
 			let ci_dm3k = dm3kgraph.getContainsInstance(parent_name, child_name);
 			ci_dm3k.clearInstanceTable();
 			for (let ci_instance of ci.instanceTable) {
