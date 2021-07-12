@@ -467,7 +467,7 @@ export default {
             }
             this.solnVis.generateSolnMatrix(solnMatrixObj)
             // this.solnVis.generateSolnMatrix(solnMatrixObj) //don't remember why I was calling this twice
-            $("#widthFunctionToggle").on('change', e => {
+            $("#widthFunctionToggle").on('change', () => {
                 solnMatrixObj = {
                     data: data, 
                     problemData: problemData,

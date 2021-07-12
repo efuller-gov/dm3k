@@ -210,8 +210,8 @@ export class Dm3kConverter {
 		// Add resource instances
 		for (let ri of inputJson.resourceInstances) {
 			console.log(ri)
-			ri_name = ri.className;
-			ri_dm3k = dm3kgraph.getResourceInstance(ri_name);
+			let ri_name = ri.className;
+			let ri_dm3k = dm3kgraph.getResourceInstance(ri_name);
 			ri_dm3k.clearInstanceTable();
 			for (let ri_instance of ri.instanceTable) {
 				ri_dm3k.addToInstanceTable(ri_instance.instanceName, ri_instance.budget);
@@ -223,10 +223,10 @@ export class Dm3kConverter {
 		// Add activity instances
 		for (let ai of inputJson.activityInstances) {
 			console.log(ai);
-			ai_name = ai.className;
+			let ai_name = ai.className;
 			console.log(ai_name);
 			console.log(dm3kgraph.activityInstances)
-			ai_dm3k = dm3kgraph.getActivityInstance(ai_name);
+			let ai_dm3k = dm3kgraph.getActivityInstance(ai_name);
 			ai_dm3k.clearInstanceTable();
 			for (let ai_instance of ai.instanceTable) {
 				ai_dm3k.addToInstanceTable(ai_instance.instanceName, ai_instance.reward, ai_instance.cost);
@@ -237,9 +237,9 @@ export class Dm3kConverter {
 		console.log(inputJson.allocationInstances)
 		// add allocation instances
 		for (let ati of inputJson.allocationInstances) {
-			res_name = ati.resourceClassName;
-			act_name = ati.activityClassName;
-			ati_dm3k = dm3kgraph.getAllocatedToInstance(res_name, act_name);
+			let res_name = ati.resourceClassName;
+			let act_name = ati.activityClassName;
+			let ati_dm3k = dm3kgraph.getAllocatedToInstance(res_name, act_name);
 			ati_dm3k.clearInstanceTable();
 			for (let ati_instance of ati.instanceTable) {
 				ati_dm3k.addToInstanceTable(ati_instance.resourceInstanceName, ati_instance.activityInstanceName);
@@ -250,7 +250,7 @@ export class Dm3kConverter {
 		for (let ci of inputJson.containsInstances) {
 			parent_name = ci.parentClassName;
 			child_name = ci.childClassName;
-			ci_dm3k = dm3kgraph.getContainsInstance(parent_name, child_name);
+			let ci_dm3k = dm3kgraph.getContainsInstance(parent_name, child_name);
 			ci_dm3k.clearInstanceTable();
 			for (let ci_instance of ci.instanceTable) {
 				ci_dm3k.addToInstanceTable(ci_instance.parentInstanceName, ci_instance.childInstanceName);
@@ -259,11 +259,11 @@ export class Dm3kConverter {
 
 		// add allocation contraints
 		for (let allc of inputJson.allocationConstraints) {
-			a1FromName = allc.allocationStart.resourceClass;
-			a1ToName = allc.allocationStart.activityClass;
-			a2FromName = allc.allocationEnd.resourceClass;
-			a2ToName = allc.allocationEnd.activityClass;
-			aType = allc.allocationConstraintType;
+			let a1FromName = allc.allocationStart.resourceClass;
+			let a1ToName = allc.allocationStart.activityClass;
+			let a2FromName = allc.allocationEnd.resourceClass;
+			let a2ToName = allc.allocationEnd.activityClass;
+			let aType = allc.allocationConstraintType;
 			dm3kgraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
 		}
 		
