@@ -303,7 +303,6 @@ export default {
                 var ans = this.$store.state.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList);
 
                 if (ans.success) {
-                    console.log('AddResourceComplete success!')
                     this.updateAllDropDowns();
                     // var layout = new mxGraphLayout(dm3kgraph.graph);
                     // executeLayout(dm3kgraph.graph, layout);
@@ -378,7 +377,6 @@ export default {
                 this.$store.state.dm3kGraph.allocatedLinks.forEach(function(link){
                     if (link.source.getValue()==existingResName & link.target.getValue()==actName){
                         alert('Allocation between '+existingResName+' and '+actName+' already exists.')
-                        console.log('SUPPOSED TO RETURN HERE!!!!')
                         duplicateAlloc = 1
                     }
                 })
@@ -388,7 +386,6 @@ export default {
                 let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
                 let  ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
                 if (ans.success) {
-                        console.log('AddActivityComplete success!')
                         this.updateAllDropDowns();
                         // var layout = new mxGraphLayout(this.$store.state.dm3kGraph.graph);
                         // executeLayout(this.$store.state.dm3kGraph.graph, layout);
@@ -412,7 +409,6 @@ export default {
                     let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
                     let ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
                     if (ans.success) {
-                        console.log('AddActivityComplete success!')
                         this.updateAllDropDowns();
                         // var layout = new mxGraphLayout(dm3kgraph.graph);
                         // executeLayout(dm3kgraph.graph, layout);
@@ -526,7 +522,6 @@ export default {
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#res-childName'), [])
 
             // update the "Constrain allocations" worksheet
-            console.log("update StartName1....")
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName1'), []);
 			this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName1'), $('#startName1'), []);
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName2'), []);
@@ -579,7 +574,6 @@ export default {
                 }
             });
 
-            console.log('updatedOptions',updatedOptions)
             return updatedOptions.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
         },
         worksheetUtils_newActivityActivated(){
@@ -823,14 +817,11 @@ export default {
             this.updateAllDropDowns()
         },
         emitSolnModal(e){
-            console.log("----- EMIT SOLN MODAL")
             this.worksheetUtil_hideShowWorksheet()
             this.$root.$emit('show-solution-modal', e)
         },
         submitDM3K(){
-            console.log('------- SUBMIT ------')
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
-            console.log("---> outputJson ", outputJson)
 
             // get url URL from textbox
             var url = $("#serverLoc").val();
@@ -867,8 +858,6 @@ export default {
             post_request.done((msg) => {
                 var jsonMsg = msg;  // its already an object...no need for $.parseJSON(msg)
                 let statusCode = jsonMsg["statusCode"];
-                console.log("--- POST REQUEST DONE")
-                console.log("jsonMsg ", jsonMsg)
                 if (statusCode != 200) {
                     alert("Failed Attempt to Submit to DM3K: " +
                             jsonMsg + "\n" +
@@ -877,9 +866,6 @@ export default {
                     body = $.parseJSON(jsonMsg["body"]);
                 }
                 else {
-                    console.log("--- SUCCESSFUL")
-                    console.log("before parse")
-                    console.log("jsonMsg['body'] ", jsonMsg["body"])
                     // body = $.parseJSON(jsonMsg["body"]); // I think it is now returning a JSON object
                     body = jsonMsg["body"] // I think it is now returning a JSON object
                     // TODO: REMOVE EXAMPLE OUTPUT

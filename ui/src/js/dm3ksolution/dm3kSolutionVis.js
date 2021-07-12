@@ -119,9 +119,6 @@ export class Dm3kSolutionVis{
         }
         // Overwrite res list with labels
         for (let i = 0; i < res.length; i++) {
-            console.log("resource_name_label_map ", resource_name_label_map)
-            console.log("res[i] ", res[i])
-            console.log("resource_name_label_map.filter(x=> (x.name==res[i]) || (x.label==res[i]) ) ", resource_name_label_map.filter(x=> (x.name==res[i]) || (x.label==res[i]) ))
             res[i] = resource_name_label_map.filter(x=> (x.name==res[i]) || (x.label==res[i]) )[0].label
         }
         // Now loop through unique resource labels, and populate resource dict with each resource instance's info
@@ -586,13 +583,13 @@ export class Dm3kSolutionVis{
             cur_act_class = last_act_class;
         }
 
-        console.log("resource_dict ", resource_dict)
-        console.log("instances_per_resource_class ", instances_per_resource_class)
-        console.log("res_containers ", res_containers)
-        console.log("activity_dict ", activity_dict)
-        console.log("instances_per_activity_class ", instances_per_activity_class)
-        console.log("act_containers ", act_containers)
-        console.log("table ", table)
+        // console.log("resource_dict ", resource_dict)
+        // console.log("instances_per_resource_class ", instances_per_resource_class)
+        // console.log("res_containers ", res_containers)
+        // console.log("activity_dict ", activity_dict)
+        // console.log("instances_per_activity_class ", instances_per_activity_class)
+        // console.log("act_containers ", act_containers)
+        // console.log("table ", table)
 
         this.drawSolnOutput(table, 
             instances_per_resource_class,
@@ -644,7 +641,6 @@ export class Dm3kSolutionVis{
         let container_opacity = 0.3;
         
         let alloc_rect_stroke = "0.25px"
-        console.log("+d3.select('#soln-visualization').style('width') ", +d3.select('#soln-visualization').style('width').slice(0, -2))
 
         // **************************************************************** //
         // D3 Plotting

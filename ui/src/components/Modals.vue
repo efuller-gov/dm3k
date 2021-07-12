@@ -57,7 +57,6 @@ export default {
         })
 
         this.$root.$on('show-solution-modal', e => {
-            console.log("SHOW SOLN MODAL e: ", e)
             this.showSolutionModal(e.body, e.outputJson)
         })
 
@@ -88,7 +87,6 @@ export default {
     },
     methods: {
         addRow() {
-            console.log("-- ADD ROW clicked")
             if ($('#add-row').text().includes('resource')) {
                 // let resourceInstance = this.$store.state.resourceInstances.filter(x=>x.label == this.instanceName)[0];
                 let resourceInstance = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == this.instanceName)[0];
@@ -172,8 +170,6 @@ export default {
                 resOrAct = 'contains'
                 let parentName = cellName.split('_')[0]
                 let childName = cellName.split('_')[1]
-                console.log("SENDING PARENT NAME: ", parentName)
-                console.log("SENDING CHILD NAME: ", childName)
                 this.showContainsModal(
                     instanceType,
                     instanceName,
@@ -259,8 +255,6 @@ export default {
                 titleText = "<p>" + instanceName + ", " + instanceType + "</p>You can define any number of <b>" + instanceName + "'s</b>, a <b>" + instanceType + " resource</b>. You may also assign each instance with a <b>budget</b> amount."
                 $('#add-row').text('Add resource instance')
                 // Get tabledata for this resource from the graph
-                // console.log("SHOW res intance table data ", this.$store.state.resourceInstances)
-                // tabledata = this.$store.state.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tabledata = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == instanceName)[0].instanceTableData;
                 tablecols = [{
                         title: "",
