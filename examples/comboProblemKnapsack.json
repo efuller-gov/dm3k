@@ -1,0 +1,165 @@
+{
+    "datasetName": "comboProblem_fanInKnapsack_fanOutKnapsack_connected",
+    "files": [
+    	{
+    		"fileName": "dm3k-viz.json",
+    		"fileContents": {
+	    		"resourceClasses": [
+		    		{"className": "Funding",
+		    		 "loc": 100,
+		    		 "locY": 0,
+		    		 "typeName": "resource",
+		    		 "budgets": ["money"],
+		    		 "containsClasses": [],
+		    		 "canBeAllocatedToClasses": ["Startups"]},
+                    {"className": "Staff",
+		    		 "loc": 100,
+		    		 "locY": 200,
+		    		 "typeName": "resource",
+		    		 "budgets": ["people"],
+		    		 "containsClasses": [],
+		    		 "canBeAllocatedToClasses": ["Startups", "Charities"]}
+                ],
+		    	"activityClasses": [
+		    		{"className": "Startups",
+		    		 "locX": 550,
+		    		 "locY": 0,
+		    		 "typeName": "person/place/thing",
+		    		 "rewards": ["value"],
+		    		 "costs": ["money", "people"],
+		    		 "containsClasses": [],
+		    		 "allocatedWhen": {}
+		    		 },
+                    {"className": "Charities",
+		    		 "locX": 550,
+		    		 "locY": 200,
+		    		 "typeName": "person/place/thing",
+		    		 "rewards": ["value"],
+		    		 "costs": ["people"],
+		    		 "containsClasses": [],
+		    		 "allocatedWhen": {}
+		    		 }
+		    	],
+		    	"resourceInstances": [
+		    		{"className": "Funding",
+		    		 "instanceTable": [
+		    		 	{"instanceName": "funding_Resource_instance_0",
+		    		 	 "budget": {
+							 "money": 3.2
+						 }
+						},
+                        {"instanceName": "funding_Resource_instance_1",
+		    		 	 "budget": {
+							 "money": 5.4
+						 }
+						}
+                     ]
+		    		},
+                    {"className": "Staff",
+		    		 "instanceTable": [
+		    		 	{"instanceName": "staff_Resource_instance_0",
+		    		 	 "budget": {
+							 "people": 10
+						 }
+						},
+                        {"instanceName": "staff_Resource_instance_1",
+		    		 	 "budget": {
+							 "people": 15
+						 }
+						}
+                     ]
+		    		}
+                ],
+		    	"activityInstances": [
+		    		{"className": "Startups",
+		    		 "instanceTable": [
+		    		 	{"instanceName": "startup_Activity_instance_0",
+		    		 	 "cost": {
+							 "money": 1.2,
+                             "people": 3
+						 },
+		    		 	 "reward": 1},
+		    		    {"instanceName": "startup_Activity_instance_1",
+		    		 	 "cost": {
+							 "money": 2.5,
+                             "people": 5
+						 },
+		    		 	 "reward": 1},
+		    		    {"instanceName": "startup_Activity_instance_2",
+		    		 	 "cost": {
+							 "money": 2.2,
+                             "people": 2
+						 },
+		    		 	 "reward": 2},
+					    {"instanceName": "startup_Activity_instance_3",
+		    		 	 "cost": {
+							 "money": 0.5,
+                             "people": 1
+						 },
+		    		 	 "reward": 1},
+		    		    {"instanceName": "startup_Activity_instance_4",
+		    		 	 "cost": {
+							 "money": 3.2,
+                             "people": 8
+						 },
+		    		 	 "reward": 2}
+		    		  ]
+		    		},
+                  {"className": "Charities",
+		    		 "instanceTable": [
+		    		 	{"instanceName": "charity_Activity_instance_0",
+		    		 	 "cost": {
+							 "people": 5
+						 },
+		    		 	 "reward": 3},
+		    		    {"instanceName": "charity_Activity_instance_1",
+		    		 	 "cost": {
+							 "people": 2
+						 },
+		    		 	 "reward": 1},
+		    		    {"instanceName": "charity_Activity_instance_2",
+		    		 	 "cost": {
+							 "people": 3
+						 },
+		    		 	 "reward": 2},
+					    {"instanceName": "charity_Activity_instance_3",
+		    		 	 "cost": {
+							 "people": 1
+						 },
+		    		 	 "reward": 1}
+		    		  ]
+		    		}
+                ],
+		    	"allocationInstances": [
+		    		{"resourceClassName": "Funding",
+		    		 "activityClassName": "Startups",
+		    		 "instanceTable": [
+		    		 	{"resourceInstanceName": "ALL",
+		    		 	 "activityInstanceName": "ALL"
+		    		 	}
+		    		  ]
+		    		},
+                    {"resourceClassName": "Staff",
+		    		 "activityClassName": "Startups",
+		    		 "instanceTable": [
+		    		 	{"resourceInstanceName": "ALL",
+		    		 	 "activityInstanceName": "ALL"
+		    		 	}
+		    		  ]
+		    		},
+                    {"resourceClassName": "Staff",
+		    		 "activityClassName": "Charities",
+		    		 "instanceTable": [
+		    		 	{"resourceInstanceName": "ALL",
+		    		 	 "activityInstanceName": "ALL"
+		    		 	}
+		    		  ]
+		    		}
+		    	],
+		    	"containsInstances": [],
+		    	"allocationConstraints": []
+		    }
+		 }
+	]
+
+}

@@ -1,0 +1,64 @@
+{
+    "datasetName": "simpleKnapsack",
+    "files": [
+    	{
+    		"fileName": "dm3k-viz.json",
+    		"fileContents": {
+	    		"resourceClasses": [
+		    		{"className": "backpack",
+		    		 "loc": 100,
+		    		 "locY": 0,
+		    		 "typeName": "computer",
+		    		 "budgets": ["space"],
+		    		 "containsClasses": [],
+		    		 "canBeAllocatedToClasses": ["item"]}],
+		    	"activityClasses": [
+		    		{"className": "item",
+		    		 "locX": 550,
+		    		 "locY": 0,
+		    		 "typeName": "product",
+		    		 "rewards": ["money"],
+		    		 "costs": ["space"],
+		    		 "containsClasses": [],
+		    		 "allocatedWhen": {}
+		    		 }
+		    	],
+		    	"resourceInstances": [
+		    		{"className": "backpack",
+		    		 "instanceTable": [
+		    		 	{"instanceName": "backpack_Resource_instance_0",
+		    		 	 "budget": {
+							 "space": 1
+						 }
+						}
+		    		  ]
+		    		}
+		    	],
+		    	"activityInstances": [
+		    		{"className": "item",
+		    		 "instanceTable": [
+		    		 	{"instanceName": "item_Activity_instance_0",
+		    		 	 "cost": {
+							 "space": 1
+						 },
+		    		 	 "reward": 1}
+		    		  ]
+		    		}
+		    	],
+		    	"allocationInstances": [
+		    		{"resourceClassName": "backpack",
+		    		 "activityClassName": "item",
+		    		 "instanceTable": [
+		    		 	{"resourceInstanceName": "ALL",
+		    		 	 "activityInstanceName": "ALL"
+		    		 	}
+		    		  ]
+		    		}
+		    	],
+		    	"containsInstances": [],
+		    	"allocationConstraints": []
+		    }
+		 }
+	]
+
+}

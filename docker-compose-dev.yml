@@ -1,27 +1,39 @@
 version: "3.7"
 
 services:
-  aw_api:
+  api:
     build:
-      context: ./api
-      dockerfile: Dockerfile.dev
-    container_name: api
+      context: .
+      dockerfile: Dockerfile.api.dev
+    container_name: dm3k_open_api
     restart: always
     volumes:
-      - ./api/:/app
+      - ./api/:/app/api
+      - ./optimizer/:/app/optimizer
+      - ./tests/:/app/tests
+      - ./examples/:/app/examples
+    expose:
+      - 5000
+    
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    container_name: dm3k_open_nginx
+    restart: always
     ports:
-      - 8000:5000
+      - "80:80"
 
-  aw_ui:
+  ui:
     build:
       context: ./ui
       dockerfile: Dockerfile.dev
-    container_name: ui
+    container_name: dm3k_open_ui
     restart: always
     volumes:
       - ./ui/:/app
-    ports:
-      - 8001:8080
+    expose:
+      - 8080
     stdin_open: true
     tty: true
     environment:

@@ -1,0 +1,364 @@
+{
+    "datasetName": "fanOutKnapsack_ifNot",
+    "files": [
+        {
+            "fileName": "dm3k-viz.json",
+            "fileContents": {
+                    "resourceClasses": [
+                        {
+                            "className": "Supermarket Bag",
+                            "locX": 100,
+                            "locY": 0,
+                            "typeName": "resource",
+                            "budgets": [
+                                "weight"
+                            ],
+                            "containsClasses": [],
+                            "canBeAllocatedToClasses": [
+                                "Food Items",
+                                "Cleaning Items"
+                            ]
+                        },
+                        {
+                            "className": "Pickup Truck",
+                            "locX": 100,
+                            "locY": 380,
+                            "typeName": "container",
+                            "budgets": [
+                                "load"
+                            ],
+                            "containsClasses": [],
+                            "canBeAllocatedToClasses": [
+                                "Garbage",
+                                "Furniture"
+                            ]
+                        }
+                    ],
+                    "activityClasses": [
+                        {
+                            "className": "Food Items",
+                            "locX": 550,
+                            "locY": 0,
+                            "typeName": "person/place/thing",
+                            "rewards": [
+                                "value"
+                            ],
+                            "costs": [
+                                "weight"
+                            ],
+                            "containsClasses": [],
+                            "allocatedWhen": {}
+                        },
+                        {
+                            "className": "Cleaning Items",
+                            "locX": 550,
+                            "locY": 200,
+                            "typeName": "person/place/thing",
+                            "rewards": [
+                                "value"
+                            ],
+                            "costs": [
+                                "weight"
+                            ],
+                            "containsClasses": [],
+                            "allocatedWhen": {}
+                        },
+                        {
+                            "className": "Garbage",
+                            "locX": 550,
+                            "locY": 380,
+                            "typeName": "item",
+                            "rewards": [
+                                "money"
+                            ],
+                            "costs": [
+                                "load"
+                            ],
+                            "containsClasses": [],
+                            "allocatedWhen": {}
+                        },
+                        {
+                            "className": "Furniture",
+                            "locX": 550,
+                            "locY": 520,
+                            "typeName": "item",
+                            "rewards": [
+                                "money"
+                            ],
+                            "costs": [
+                                "load"
+                            ],
+                            "containsClasses": [],
+                            "allocatedWhen": {}
+                        }
+                    ],
+                    "resourceInstances": [
+                        {
+                            "className": "Supermarket Bag",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "bag_Resource_instance_0",
+                                    "budget": {
+                                        "weight": 3
+                                    }
+                                },
+                                {
+                                    "instanceName": "bag_Resource_instance_1",
+                                    "budget": {
+                                        "weight": 3
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "className": "Pickup Truck",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "Pickup Truck_Resource_instance_0",
+                                    "budget": {
+                                        "load": 5
+                                    }
+                                },
+                                {
+                                    "instanceName": "Pickup Truck_Resource_instance_1",
+                                    "budget": {
+                                        "load": 4
+                                    }
+                                }
+                            ]
+                        }
+                    ],
+                    "activityInstances": [
+                        {
+                            "className": "Food Items",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "food_Activity_instance_0",
+                                    "cost": {
+                                        "weight": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "food_Activity_instance_1",
+                                    "cost": {
+                                        "weight": 2
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "food_Activity_instance_2",
+                                    "cost": {
+                                        "weight": 3
+                                    },
+                                    "reward": 2
+                                },
+                                {
+                                    "instanceName": "food_Activity_instance_3",
+                                    "cost": {
+                                        "weight": 1
+                                    },
+                                    "reward": 2
+                                },
+                                {
+                                    "instanceName": "food_Activity_instance_4",
+                                    "cost": {
+                                        "weight": 2
+                                    },
+                                    "reward": 2
+                                }
+                            ]
+                        },
+                        {
+                            "className": "Cleaning Items",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "clean_Activity_instance_0",
+                                    "cost": {
+                                        "weight": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "clean_Activity_instance_1",
+                                    "cost": {
+                                        "weight": 2
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "clean_Activity_instance_2",
+                                    "cost": {
+                                        "weight": 3
+                                    },
+                                    "reward": 6
+                                },
+                                {
+                                    "instanceName": "clean_Activity_instance_3",
+                                    "cost": {
+                                        "weight": 2
+                                    },
+                                    "reward": 4
+                                },
+                                {
+                                    "instanceName": "clean_Activity_instance_4",
+                                    "cost": {
+                                        "weight": 2
+                                    },
+                                    "reward": 2
+                                }
+                            ]
+                        },
+                        {
+                            "className": "Garbage",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "Garbage_Activity_instance_0",
+                                    "cost": {
+                                        "load": 1
+                                    },
+                                    "reward": 2
+                                },
+                                {
+                                    "instanceName": "Garbage_Activity_instance_1",
+                                    "cost": {
+                                        "load": 2
+                                    },
+                                    "reward": 2
+                                },
+                                {
+                                    "instanceName": "Garbage_Activity_instance_2",
+                                    "cost": {
+                                        "load": 1
+                                    },
+                                    "reward": 3
+                                },
+                                {
+                                    "instanceName": "Garbage_Activity_instance_3",
+                                    "cost": {
+                                        "load": 3
+                                    },
+                                    "reward": 4
+                                },
+                                {
+                                    "instanceName": "Garbage_Activity_instance_4",
+                                    "cost": {
+                                        "load": 1
+                                    },
+                                    "reward": 3
+                                },
+                                {
+                                    "instanceName": "Garbage_Activity_instance_5",
+                                    "cost": {
+                                        "load": 2
+                                    },
+                                    "reward": 3
+                                }
+                            ]
+                        },
+                        {
+                            "className": "Furniture",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "Furniture_Activity_instance_0",
+                                    "cost": {
+                                        "load": 4
+                                    },
+                                    "reward": 10
+                                },
+                                {
+                                    "instanceName": "Furniture_Activity_instance_1",
+                                    "cost": {
+                                        "load": 5
+                                    },
+                                    "reward": 10
+                                },
+                                {
+                                    "instanceName": "Furniture_Activity_instance_2",
+                                    "cost": {
+                                        "load": 3
+                                    },
+                                    "reward": 10
+                                },
+                                {
+                                    "instanceName": "Furniture_Activity_instance_3",
+                                    "cost": {
+                                        "load": 4
+                                    },
+                                    "reward": 10
+                                }
+                            ]
+                        }
+                    ],
+                    "allocationInstances": [
+                        {
+                            "resourceClassName": "Supermarket Bag",
+                            "activityClassName": "Food Items",
+                            "instanceTable": [
+                                {
+                                    "resourceInstanceName": "ALL",
+                                    "activityInstanceName": "ALL"
+                                }
+                            ]
+                        },
+                        {
+                            "resourceClassName": "Supermarket Bag",
+                            "activityClassName": "Cleaning Items",
+                            "instanceTable": [
+                                {
+                                    "resourceInstanceName": "ALL",
+                                    "activityInstanceName": "ALL"
+                                }
+                            ]
+                        },
+                        {
+                            "resourceClassName": "Pickup Truck",
+                            "activityClassName": "Garbage",
+                            "instanceTable": [
+                                {
+                                    "resourceInstanceName": "ALL",
+                                    "activityInstanceName": "ALL"
+                                }
+                            ]
+                        },
+                        {
+                            "resourceClassName": "Pickup Truck",
+                            "activityClassName": "Furniture",
+                            "instanceTable": [
+                                {
+                                    "resourceInstanceName": "ALL",
+                                    "activityInstanceName": "ALL"
+                                }
+                            ]
+                        }
+                    ],
+                    "containsInstances": [],
+                    "allocationConstraints": [
+                        {
+                            "allocationStart": {
+                                "resourceClass": "Supermarket Bag",
+                                "activityClass": "Food Items"
+                            },
+                            "allocationEnd": {
+                                "resourceClass": "Supermarket Bag",
+                                "activityClass": "Cleaning Items"
+                            },
+                            "allocationConstraintType": "IF-NOT"
+                        },
+                        {
+                            "allocationStart": {
+                                "resourceClass": "Pickup Truck",
+                                "activityClass": "Garbage"
+                            },
+                            "allocationEnd": {
+                                "resourceClass": "Pickup Truck",
+                                "activityClass": "Furniture"
+                            },
+                            "allocationConstraintType": "IF-NOT"
+                        }
+                    ]
+            }
+        }
+    ]
+
+}

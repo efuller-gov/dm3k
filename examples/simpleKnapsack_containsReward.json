@@ -1,0 +1,113 @@
+{
+    "datasetName": "simpleKnapsack_containsReward",
+    "files": [
+    	{
+    		"fileName": "dm3k-viz.json",
+    		"fileContents": {
+	    		"resourceClasses": [
+		    		{"className": "backpack",
+		    		 "loc": 100,
+		    		 "locY": 0,
+		    		 "typeName": "resource",
+		    		 "budgets": ["space"],
+		    		 "containsClasses": [],
+		    		 "canBeAllocatedToClasses": ["item"]}],
+		    	"activityClasses": [
+		    		{"className": "item",
+		    		 "locX": 550,
+		    		 "locY": 0,
+		    		 "typeName": "person/place/thing",
+		    		 "rewards": ["success"],
+		    		 "costs": ["space"],
+		    		 "containsClasses": [],
+		    		 "allocatedWhen": {}
+		    		},
+                    {"className": "itemGroup",
+                        "locX": 550,
+                        "locY": 200,
+                        "typeName": "group",
+                        "rewards": ["success"],
+                        "costs": ["space"],
+                        "containsClasses": ["item"],
+                        "allocatedWhen": {}
+                    }
+		    	],
+		    	"resourceInstances": [
+		    		{"className": "backpack",
+		    		 "instanceTable": [
+		    		 	{"instanceName": "backpack_Resource_instance_0",
+		    		 	 "budget": {
+							 "space": 2
+						 }
+						}
+		    		  ]
+		    		}
+		    	],
+		    	"activityInstances": [
+		    		{"className": "item",
+		    		 "instanceTable": [
+		    		 	{
+                            "instanceName": "item_Activity_instance_0",
+                            "cost": {
+                                "space": 1
+                            },
+                            "reward": 3
+                        },
+                        {
+                            "instanceName": "item_Activity_instance_1",
+                            "cost": {
+                                "space": 1
+                            },
+                            "reward": 1
+                        },  
+                        {
+                            "instanceName": "item_Activity_instance_2",
+                            "cost": {
+                               "space": 1
+                            },
+                            "reward": 1
+                        }
+		    		  ]
+		    		},
+                    {"className": "itemGroup",
+                        "instanceTable": [
+                            {
+                                "instanceName": "itemGroup_Activity_instance_0",
+                                "cost": {},
+                                "reward": 5}
+                         ]
+                       }
+		    	],
+		    	"allocationInstances": [
+		    		{"resourceClassName": "backpack",
+		    		 "activityClassName": "item",
+		    		 "instanceTable": [
+		    		 	{"resourceInstanceName": "ALL",
+		    		 	 "activityInstanceName": "ALL"
+		    		 	}
+		    		  ]
+		    		}
+		    	],
+		    	"containsInstances": [
+                    {
+                        "parentClassName": "itemGroup",
+                        "childClassName": "item",
+                        "parentType": "activity",
+                        "instanceTable": [
+                            {
+                                "parentInstanceName": "itemGroup_Activity_instance_0",
+                                "childInstanceName": "item_Activity_instance_1"
+                            },
+                            {
+                                "parentInstanceName": "itemGroup_Activity_instance_0",
+                                "childInstanceName": "item_Activity_instance_2"
+                            }
+                        ]
+                    }
+                ],
+		    	"allocationConstraints": []
+		    }
+		 }
+	]
+
+}
