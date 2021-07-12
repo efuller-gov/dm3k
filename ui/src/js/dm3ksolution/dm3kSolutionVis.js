@@ -821,12 +821,8 @@ export class Dm3kSolutionVis{
                         return 0;
                 }
             })
-            .attr("y1", function (d) {
-                return 0;
-            })
-            .attr("y2", function (d) {
-                return 0;
-            })
+            .attr("y1", 0)
+            .attr("y2", 0)
 
             //left hash
             activityAx.append("line")
@@ -856,10 +852,10 @@ export class Dm3kSolutionVis{
                             return 0;
                     }
                 })
-                .attr("y1", function (d) {
+                .attr("y1", function () {
                     return -dumbell_width/2;
                 })
-                .attr("y2", function (d) {
+                .attr("y2", function () {
                     return dumbell_width/2;
                 })
             //right hash
@@ -896,10 +892,10 @@ export class Dm3kSolutionVis{
                             return 0;
                     }
                 })
-                .attr("y1", function (d) {
+                .attr("y1", function () {
                     return -dumbell_width/2;
                 })
-                .attr("y2", function (d) {
+                .attr("y2", function () {
                     return dumbell_width/2;
                 })
 
@@ -970,9 +966,7 @@ export class Dm3kSolutionVis{
             })
 
         resourceContainerRect.append('rect')
-            .attr("x", function (d) {
-                return 0;
-            })
+            .attr("x", 0)
             .attr("y", function (d) {
                 return resource_dict.filter(x=>x.name==d.childClassLabel+"_Resource_instance_0")[0].y + class_padding + y_pad + 0.5;
             })
@@ -998,7 +992,7 @@ export class Dm3kSolutionVis{
                     .style("left", (d3.event.layerX) + "px")
                     .style("top",  (d3.event.layerY*1.25) + "px");
             })
-            .on('mouseout', function (d) {
+            .on('mouseout', function () {
                 d3.select(this)
                 .style('fill', res_base_color)
                 .style('stroke', res_base_color)                
@@ -1128,7 +1122,7 @@ export class Dm3kSolutionVis{
                     .style("left", (d3.event.layerX) + "px")
                     .style("top",  (d3.event.layerY*.15) + "px");
             })
-            .on('mouseout', function (d) {
+            .on('mouseout', function () {
                 d3.select(this)
                     .style('fill', act_base_color)
                     .style('stroke', act_base_color)
@@ -1165,13 +1159,9 @@ export class Dm3kSolutionVis{
             })
 
         resourceClassRect.append('rect')
-            .attr("x", function (d) {
-                return 0;
-            })
+            .attr("x", 0)
             .attr("y", function (d) {
                 return resource_dict.filter(x=>x.name==d.class+"_Resource_instance_0")[0].y + class_padding + y_pad;
-                // return _.min(resource_dict.filter(x=>x.class==d.class).map(x=>x.y)) + class_padding + y_pad;
-
             })
             .attr("width", classBoxSize)
             .attr("height", function (d) {
@@ -1206,7 +1196,7 @@ export class Dm3kSolutionVis{
                     .style("left", (d3.event.layerX) + "px")
                     .style("top",  (d3.event.layerY*1.25) + "px");
             })
-            .on('mouseout', function (d) {
+            .on('mouseout', function () {
                 d3.select(this)
                     .style("stroke", res_base_color)
                     .style('fill', res_base_color)                    
@@ -1218,9 +1208,7 @@ export class Dm3kSolutionVis{
         resourceClassRect.append("text")
             .style("font-size", classLabelFontSize)
             .style("font-weight", classLabelFontStyle)
-            .attr("x", function (d) {
-                return 0;
-            })
+            .attr("x", 0)
             .attr("y", function (d) {
                 return resource_dict.filter(x=>x.name==d.class+"_Resource_instance_0")[0].y + class_padding;
             })
@@ -1236,11 +1224,8 @@ export class Dm3kSolutionVis{
         resourceClassSummary.append("text")
             .style("font-size", "24px")
             .style("font-weight", classLabelFontStyle)
-            .attr("x", function (d, i) {
-                return 0;
-            })
+            .attr("x", 0)
             .attr("y", function (d, i) {
-                // return resource_dict.filter(x=>x.name==d.class+"_Resource_instance_0")[0].y + class_padding;
                 return i*50;
             })
             .attr("dy", "0em")
@@ -1250,14 +1235,7 @@ export class Dm3kSolutionVis{
                 let total_budget = instances_per_resource_class.filter(x=>x.class==d.class)[0].total_budget;
                 explainer_html = explainer_html.concat("<i><b>"+res_class_info.className+"</i></b>"+"<br>"+
                     ""+(truncateDecimals(total_budget_used/total_budget, 2)*100)+"% "+ d.budget_unit +" allocated<br><br><br>")
-                // $("#soln-explainer").html("<i><b>"+res_class_info.className+"</i></b>"+"<br>"+
-                //     "<b><i>"+(truncateDecimals(total_budget_used/total_budget, 2)*100)+"% "+ d.budget_unit +" allocated</i></b><br><br>"+
-                //     truncateDecimals(total_budget_used, 2)+" "+ d.budget_unit +" allocated<br>"+
-                //     truncateDecimals(total_budget, 2)+" "+ d.budget_unit +" budgeted<br>"
-                // )
-                // return d.class+": "+(truncateDecimals(total_budget_used/total_budget, 2)*100)+"% "+ d.budget_unit +" allocated"; 
             })
-            // .style("fill", "#707070")
         
         $("#soln-explainer").html(explainer_html)
 
@@ -1281,7 +1259,7 @@ export class Dm3kSolutionVis{
             })
 
         resourceInstRect.append('rect')
-            .attr("x", function (d) {
+            .attr("x", function () {
                 return classBoxSize + x_pad;
             })
             .attr("y", function (d) {
@@ -1313,7 +1291,7 @@ export class Dm3kSolutionVis{
                 .style("left", (d3.event.layerX) + "px")
                 .style("top",  (d3.event.layerY) + "px");
             })
-            .on('mouseout', function (d) {
+            .on('mouseout', function () {
                 d3.select(this)
                     .style('fill', res_base_color)
                 div.transition()
@@ -1323,7 +1301,7 @@ export class Dm3kSolutionVis{
         
         resourceInstRect.append("text")
             .style("font-size", instanceLabelFontSize)
-            .attr("x", function (d) {
+            .attr("x", function () {
                 return classBoxSize*2 + _.max([x_pad*1.5, 8]);
             })
             .attr("y", function (d) {
@@ -1354,12 +1332,10 @@ export class Dm3kSolutionVis{
             })
 
         activityClassRect.append('rect')
-            .attr("x", function (d, i) {
+            .attr("x", function (d) {
                 return _.min(activity_dict.filter(x=>x.class==d.class).map(x=>x.x));
             })
-            .attr("y", function (d) {
-                return 0;
-            })
+            .attr("y", 0)
             .attr("width", function (d) {
                 return d.total_width + (d.value-1)*x_pad;
             })
@@ -1380,7 +1356,7 @@ export class Dm3kSolutionVis{
                     .style("left", (d3.event.layerX) + "px")
                     .style("top",  (d3.event.layerY*1.25) + "px");
             })
-            .on('mouseout', function (d) {
+            .on('mouseout', function () {
                 d3.select(this)
                     .style("stroke", act_base_color)
                     .style('fill', act_base_color)                    
@@ -1392,10 +1368,10 @@ export class Dm3kSolutionVis{
         activityClassRect.append("text")
             .style("font-size", classLabelFontSize)
             .style("font-weight", classLabelFontStyle)
-            .attr("x", function (d, i) {
+            .attr("x", function (d) {
                 return _.min(activity_dict.filter(x=>x.class==d.class).map(x=>x.x)) + x_pad;
             })
-            .attr("y", function (d) {
+            .attr("y", function () {
                 return classBoxSize/2 + 2;
             })
             .text(function(d) { return d.class; })
@@ -1407,7 +1383,7 @@ export class Dm3kSolutionVis{
         let activityInstRect = grid.selectAll(".activityInstRect")
             .data(activity_dict)
             .enter().append("g")
-            .attr("transform", function(d, i) {
+            .attr("transform", function() {
                 let xt = classBoxSize*4 + x_ax_pad;
                 let yt = 0 + y_ax_pad;
                 if (res_containers.length > 0){
@@ -1423,7 +1399,7 @@ export class Dm3kSolutionVis{
             .attr("x", function (d) {
                 return table.filter(x=>((x.activity==d.name)&&(x.col==d.col)))[0].x - classBoxSize;
             })
-            .attr("y", function (d) {
+            .attr("y", function () {
                 return classBoxSize + y_pad; 
             })
             .attr("width", function (d) {
@@ -1453,7 +1429,7 @@ export class Dm3kSolutionVis{
                     .style("left", (d3.event.layerX) + "px")
                     .style("top",  (d3.event.layerY*1.25) + "px");
             })
-            .on('mouseout', function (d) {
+            .on('mouseout', function () {
                 d3.select(this)
                     .style("stroke", act_base_color)
                     .style('fill', act_base_color)                    
@@ -1467,7 +1443,7 @@ export class Dm3kSolutionVis{
             .attr("x", function (d) {
                 return table.filter(x=>((x.activity==d.name)&&(x.col==d.col)))[0].x - classBoxSize;
             })
-            .attr("y", function (d) {
+            .attr("y", function () {
                 return classBoxSize*2 + _.max([y_pad*2.5, 15]);
             })
             .text(function(d) {
@@ -1533,7 +1509,7 @@ export class Dm3kSolutionVis{
                     .style("left", (d3.event.layerX) + "px")
                     .style("top",  (d3.event.layerY) + "px");
             })
-            .on('mouseout', function (d) {
+            .on('mouseout', function () {
                 d3.select(this)
                     .style('stroke', '#9DB398')
                     .style('stroke-width', alloc_rect_stroke)
