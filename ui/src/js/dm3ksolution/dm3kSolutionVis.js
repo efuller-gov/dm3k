@@ -119,6 +119,9 @@ export class Dm3kSolutionVis{
         }
         // Overwrite res list with labels
         for (let i = 0; i < res.length; i++) {
+            console.log("resource_name_label_map ", resource_name_label_map)
+            console.log("res[i] ", res[i])
+            console.log("resource_name_label_map.filter(x=> (x.name==res[i]) || (x.label==res[i]) ) ", resource_name_label_map.filter(x=> (x.name==res[i]) || (x.label==res[i]) ))
             res[i] = resource_name_label_map.filter(x=> (x.name==res[i]) || (x.label==res[i]) )[0].label
         }
         // Now loop through unique resource labels, and populate resource dict with each resource instance's info

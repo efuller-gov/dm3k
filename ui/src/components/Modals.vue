@@ -309,7 +309,12 @@ export default {
             $('#table-title').html(titleText)
         },
         showContainsModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, parentName, childName){
-		    //get data table for the selected res or act type
+            function removeRow(label){
+                let ind = tabledata.findIndex(x=>x.name==label)
+                tabledata.splice(ind, 1)
+            }
+            
+            //get data table for the selected res or act type
             $('#add-row').text('Specify contains between instances')
 			let modal = document.querySelector(".modal")
             $('#alloc-selector').hide()

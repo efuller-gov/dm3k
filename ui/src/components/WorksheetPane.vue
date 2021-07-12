@@ -10,7 +10,7 @@
                 <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
                 <button @click="allocateResourcesTab()" id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
                 <button @click="containsTab()" id="contains-button" type="button" class="menu-button disabled">Make contains relationship</button>
-                <button id="constrain-allocations-button" type="button" class="menu-button disabled">Constrain allocations</button>
+                <button @click="constrainAllocationsTab()" id="constrain-allocations-button" type="button" class="menu-button disabled">Constrain allocations</button>
             </div>
             <div id="create-resource-column" class="left_column responsive-column-text">
                 <p class="title-text"><b>Create a resource.</b></p>
@@ -135,7 +135,7 @@
                     <option value="ifOnly">IF-ONLY</option>
                 </select>
                 <br><br>
-                <input type="button" class="done-button" value="Done" id="addConstraint">
+                <input @click="addConstraint" type="button" class="done-button" value="Done" id="addConstraint">
             </div>
             <div id="explanatory-info-column" class="persistent_left_column">
 				<p id="pane-level-explanatory-title" class="title-text">Pane-level explanatory text</p>
@@ -304,7 +304,7 @@ export default {
 
                 if (ans.success) {
                     console.log('AddResourceComplete success!')
-                    // updateAllDropDowns(dm3kgraph);
+                    this.updateAllDropDowns();
                     // var layout = new mxGraphLayout(dm3kgraph.graph);
                     // executeLayout(dm3kgraph.graph, layout);
                     this.resetResourcePrompt();
@@ -389,7 +389,7 @@ export default {
                 var ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
                 if (ans.success) {
                         console.log('AddActivityComplete success!')
-                        // updateAllDropDowns(dm3kgraph);
+                        this.updateAllDropDowns();
                         // var layout = new mxGraphLayout(this.$store.state.dm3kGraph.graph);
                         // executeLayout(this.$store.state.dm3kGraph.graph, layout);
                         // resetActivityPrompt();
@@ -413,7 +413,7 @@ export default {
                     var ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
                     if (ans.success) {
                         console.log('AddActivityComplete success!')
-                        // updateAllDropDowns(dm3kgraph);
+                        this.updateAllDropDowns();
                         // var layout = new mxGraphLayout(dm3kgraph.graph);
                         // executeLayout(dm3kgraph.graph, layout);
                         // resetActivityPrompt();
@@ -432,6 +432,17 @@ export default {
             this.changeHelperText('contains')
             this.changeHelperImg('contains')
             this.resetActivityPrompt()
+        },
+        constrainAllocationsTab(){
+            $(".menu-button").removeClass('enabled')
+            $(".left_column").addClass('hide')
+            $("#make-allocation-constraint-column").removeClass('hide')
+			$("#constrain-allocations-button").addClass('enabled')
+            this.changeHelperImg('constrain-allocations')
+            this.changeHelperText('constrain-allocations')
+			this.resetActivityPrompt()
+            this.resetContainsPrompt()
+            this.updateAllDropDowns()
         },
         existingContains(){
             $('#contains-existing-submenu').removeClass('hide')
@@ -453,7 +464,7 @@ export default {
             var child = $('#res-childName').val();
             var parentType = $('#resType2').val();
              this.$store.state.dm3kGraph.addNewResContains(parentType, parent, child);
-            // updateAllDropDowns(dm3kgraph);
+            this.updateAllDropDowns();
         },
         addNewActContains(){
             var parent = $('#act-parentName').val();
@@ -461,7 +472,89 @@ export default {
             var reward = $('#act-parentRewardName').val();
             var parentType = $('#actType2').val();
             this.$store.state.dm3kGraph.addNewActContains(parentType, parent, child, reward);
-            // updateAllDropDowns(dm3kgraph);
+            this.updateAllDropDowns();
+        },
+        addConstraint(){
+            let fromName1 = $("#startName1").val();
+            let toName1 = $("#stopName1").val();
+            let fromName2 = $("#startName2").val();
+            let toName2 = $("#stopName2").val();
+            let constraintType = $("#constraintType").find(":selected").text()
+
+            this.$store.state.dm3kGraph.addConstraint(fromName1, toName1, fromName2, toName2, constraintType);
+        },
+        worksheetUtil_updateContainsDropDown(graph, jQSelectorChild, jQSelectorParent, excludeNamesList) {
+            //console.log('worksheetUtil_updateContainsDropDown on '+jQSelectorChild.attr('id'));
+            jQSelectorChild.empty();
+            let parentName = jQSelectorParent.children("option:selected").val();
+            //console.log('Looking for options based on parent name: '+parentName);
+            let updatedOptions = []
+            
+            //  resources can only contain resources, and activities can only contain activities
+            if (graph.isResource(parentName)) {
+                updatedOptions = graph.getAllNamesOfType('resource');
+            } else {
+                updatedOptions = graph.getAllNamesOfType('activity');
+            }
+            
+            // get rid of the parentName...a parent cannot contain itself
+            const parentIndex = updatedOptions.indexOf(parentName);
+            if (parentIndex > -1) {
+                updatedOptions.splice(parentIndex, 1);
+            }
+
+            // get rid of the rest of the exclude list
+            //console.log('Options: ', updatedOptions)
+            excludeNamesList.forEach(function(excludeName, index) {
+                const i = updatedOptions.indexOf(excludeName);
+                if (i > -1) {
+                    updatedOptions.splice(i, 1);
+                }
+            });
+
+            return updatedOptions.forEach(x => jQSelectorChild.append('<option value="'+x+'">'+x+'</option>'))
+        },
+        updateAllDropDowns() {
+			// update the "Allocate resources to activities" worksheet
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#resName2'),[]);
+
+			// update the "Make contains relationship" worksheet
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource', 'activity'], $('#parentName2'), []);
+			this.worksheetUtil_updateContainsDropDown(this.$store.state.dm3kGraph, $('#childName2'), $('#parentName2'), []);
+
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#act-childName'), [])
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#res-childName'), [])
+
+            // update the "Constrain allocations" worksheet
+            console.log("update StartName1....")
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName1'), []);
+			this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName1'), $('#startName1'), []);
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName2'), []);
+			this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName2'), $('#startName2'), [$('#stopName1').children("option:selected").val()]);
+
+			// this.worksheetUtil_populateExistingActivitiesFromGraph(g)
+
+        },
+        worksheetUtil_updateAllocatedDropDown(graph, jQSelectorTarget, jQSelectorSource, excludeNamesList) {
+            // console.log('worksheetUtil_updateAllocatedDropDown on '+jQSelectorTarget.attr('id'));
+            jQSelectorTarget.empty();
+            let resName = jQSelectorSource.children("option:selected").val();
+            // console.log('Looking for options based on resource name: '+resName);
+            
+            // want to look for allocations available to the resName
+            let updatedOptions = graph.getAllNamesOfAllocatedFrom(resName);
+
+            // get rid of the exclude list
+            //console.log('Options: ', updatedOptions)
+            excludeNamesList.forEach(function(excludeName, index) {
+                const i = updatedOptions.indexOf(excludeName);
+                if (i > -1) {
+                    updatedOptions.splice(i, 1);
+                }
+            });
+
+            //console.log('updatedOptions',updatedOptions)
+            return updatedOptions.forEach(x => jQSelectorTarget.append('<option value="'+x+'">'+x+'</option>'))
         },
         updateDropDown(resList, jQuerySelector) {
             jQuerySelector.empty();
@@ -486,7 +579,7 @@ export default {
                 }
             });
 
-            //console.log('updatedOptions',updatedOptions)
+            console.log('updatedOptions',updatedOptions)
             return updatedOptions.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
         },
         worksheetUtils_newActivityActivated(){
@@ -551,7 +644,7 @@ export default {
                         resolve(inputJson)
                         // dm3kconversion_reverse(dm3kgraph, inputJson);
                         // // update the worksheets and make sure all worksheets are enabled
-                        // updateAllDropDowns(dm3kgraph);
+                        // this.updateAllDropDowns();
                         $('#allocate-resources-button').removeClass('disabled')
                         $('#contains-button').removeClass('disabled')
                         $('#constrain-allocations-button').removeClass('disabled')
@@ -726,6 +819,8 @@ export default {
                 let aType = allc.allocationConstraintType;
                 this.$store.state.dm3kGraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
             }
+
+            this.updateAllDropDowns()
         },
         emitSolnModal(e){
             this.worksheetUtil_hideShowWorksheet()
@@ -1682,7 +1777,7 @@ export default {
             ],
         }
     },
-    emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation', 'clear-graph'],
+    emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation', 'clear-graph','show-solution-modal'],
     watch: {
         '$store.state.dm3kGraph.resources': {
             deep: true,
