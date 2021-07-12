@@ -367,7 +367,7 @@ export class Dm3kSolutionVis{
 
         let containerWidth = svgContainerWidth - res_containers.length*classBoxSize - classBoxSize*2 - activity_dict.length*x_pad - 
             (instances_per_activity_class.length)*class_padding;
-        let containerHeight = containerWidth/1.4 -  act_containers.length*classBoxSize*2 - (instances_per_resource_class.length-1)*class_padding
+        let containerHeight = containerWidth/1.5 -  act_containers.length*classBoxSize*2 - (instances_per_resource_class.length-1)*class_padding
         // -  act_containers.length*classBoxSize - (resource_dict.length-1)*x_pad - 
             // (instances_per_resource_class.length-1)*class_padding;
 
