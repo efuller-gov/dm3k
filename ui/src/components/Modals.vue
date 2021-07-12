@@ -466,7 +466,7 @@ export default {
                 width: $('#widthFunctionToggle').val()
             }
             this.solnVis.generateSolnMatrix(solnMatrixObj)
-            // this.solnVis.generateSolnMatrix(solnMatrixObj)
+            // this.solnVis.generateSolnMatrix(solnMatrixObj) //don't remember why I was calling this twice
             $("#widthFunctionToggle").on('change', e => {
                 solnMatrixObj = {
                     data: data, 
