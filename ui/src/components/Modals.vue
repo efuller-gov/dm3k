@@ -474,3 +474,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .instance-table{
+        height: 30vh !important;
+        overflow: scroll;
+    }
+</style>
