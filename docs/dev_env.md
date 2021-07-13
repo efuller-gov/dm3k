@@ -65,6 +65,18 @@ If you need to get inside of the ui container, run...
 $ sudo docker exec -ti dm3k_open_ui /bin/sh
 ```
 
+To exit the container, run...
+
+```bash
+/app$ exit
+```
+
+To stop the container, run...
+
+```bash
+$ sudo docker-compose -f docker-compose-dev.yml down
+```
+
 ## API Container Development
 
 Within development mode, the system will hot reload any changes within the following directories:
@@ -85,6 +97,7 @@ if you need to add new python packages, you will need to change either the api r
 $ sudo docker-compose -f docker-compose-dev.yml down
 $ sudo docker-compose -f docker-compose-dev.yml up
 ```
+
 If you need to get inside of the api container, run...
 
 ```bash
@@ -94,8 +107,20 @@ $ sudo docker exec -ti dm3k_open_api bash
 Once inside the container you can run any test, by running...
 
 ```bash
-/app$ cd tests
-/app$ cd {test_directory}   # whatever tests you want to run
-/app$ python {test_file}.py 
+/app/api$ cd ../tests           # get to the test directory at top of repo
+/app/api$ cd {test_directory}   # whatever tests you want to run
+/app/api$ python {test_file}.py 
 ```
 Logs from the test will appear on the screen.
+
+To exit the container, run...
+
+```bash
+/app$ exit
+```
+
+To stop the container, run...
+
+```bash
+$ sudo docker-compose -f docker-compose-dev.yml down
+```

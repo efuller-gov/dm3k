@@ -1,8 +1,8 @@
 # OPEN DECISION MAKER 3000
 
-The Open Decision Maker 3000 (OPEN-DM3K) is a generalized decision-engine that breaks down the mathematical steps required to deal with complex resource allocation problems. 
+The Open Decision Maker 3000 (OPEN-DM3K) is a generalized decision-engine that solves complex resource allocation problems. 
 
-OPEN-DM3K provide the user with:
+OPEN-DM3K provides the user with:
 
 - an web-based UI to define their resource allocation problem.
 - an python optimizer that leverages linear optimization techniques to solve the user defined problem.
@@ -22,6 +22,8 @@ from the main directory of the repo run...
 ```bash
 $ sudo docker-compose -f docker-compose.yml up --build -d
 ```
+
+> **NOTE** this make take a while....please be patient
 
 To comfirm the installation, run...
 ```bash
