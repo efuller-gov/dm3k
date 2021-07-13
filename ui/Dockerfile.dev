@@ -2,6 +2,7 @@
 FROM node:12.14.0-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
+RUN yarn config set strict-ssl false 
 RUN yarn
 COPY . .
 

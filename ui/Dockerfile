@@ -5,6 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN yarn
 COPY . .
+RUN yarn config set strict-ssl false 
 RUN yarn run build
 
 # Production stage
