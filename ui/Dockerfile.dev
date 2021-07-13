@@ -4,7 +4,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN yarn config set strict-ssl false 
 RUN yarn
-COPY . .
+
+# didnt 'COPY . .' # danger this copies over node_modules or yarn.lock if this folder is local
+COPY ./public ./public
+COPY ./src ./src
+
+# copy over vue and babel configs
+COPY *config.js ./   
 
 EXPOSE 8080
 

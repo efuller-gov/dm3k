@@ -1,46 +1,63 @@
-# AW UI
-UI for the Eng Alg
+# OPEN DECISION MAKER 3000
 
-## For Production
+The Open Decision Maker 3000 (OPEN-DM3K) is a generalized decision-engine that breaks down the mathematical steps required to deal with complex resource allocation problems. 
+
+OPEN-DM3K provide the user with:
+
+- an web-based UI to define their resource allocation problem.
+- an python optimizer that leverages linear optimization techniques to solve the user defined problem.
+
+## Installation
+
+### Prerequisites
+
+Installation assumes you have...
+
+- docker (v19.03+)  see https://docs.docker.com/get-docker/
+- docker-compose (v1.27+)  see https://docs.docker.com/compose/install/
+
+### Installation Proceedure
+
+from the main directory of the repo run...
+```bash
+$ sudo docker-compose -f docker-compose.yml up --build -d
 ```
-$ cd ui
-$ sudo docker compose --build -d 
-```   
 
-## For development
+To comfirm the installation, run...
+```bash
+$ sudo docker ps
 ```
-$ cd ui
-$ sudo docker-compose -f ../docker-compose-dev.yml up --build -d
-``` 
+Output of this command should show 3 docker containers: dm3k_open_api, dm3k_open_ui, dm3k_open_nginx.  With status as not restarting.
 
-### on API
-Make change and then "Cntl-R" on browser and it should **hot reload**
 
-IF NOT...
-```
-$ sudo docker restart api
+To stop OPEN-DM3K, run...
+```bash
+$ sudo docker-compose -f docker-compose.yml down
 ```
 
-### on UI
-Make change and then it should **hot reload**
+## Usage
 
+Connect to the UI by pointing your web browser to:  http://{hostname} 
 
+where hostname is the name or ip address of the machine that is running docker.
 
-## Project was based on BELOW
+For details on how to use the UI to create/solve resource allocation problems see ./docs/user_guide.md
 
-Please find the tutorial at https://medium.com/@samy_raps/flask-vue-mysql-on-docker-part-i-setting-up-320d55a85971
+## Contributing
 
-### Important commands
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Create a folder called `data` inside the `db` folder.
+Please make sure to update tests as appropriate.
 
-Build and run :: `docker-compose up --build`
+For developers guide, see 
 
-Build and run in the background and view logs for all the instances ::
-`docker-compose up --build -d && docker-compose logs --tail=all -f`
+- ./docs/dev_env.md or
+- ./docs/ui_devGuide.md  or
+- ./docs/api_devGuide.md or 
+- ./docs/optimizer_devGuide.md
 
-Stop instances :: docker-compose down
+Depending on how you wish to contribute
 
-Stop and Delete all containers :: `docker container stop $(docker container ls -aq) && docker container rm $(docker container ls -aq)`
+## License
 
-_Cheers!_
+Apache License 2.0

@@ -31,7 +31,10 @@ services:
     container_name: dm3k_open_ui
     restart: always
     volumes:
-      - ./ui/:/app
+    # trying to avoid copying out node_modules into local system (this causes errors if local node-modules becomes out of date with build node_modules) 
+    # but still getting hot reloads
+      - ./ui/public:/app/public
+      - ./ui/src:/app/src
     expose:
       - 8080
     stdin_open: true
