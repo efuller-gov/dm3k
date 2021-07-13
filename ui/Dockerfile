@@ -3,12 +3,11 @@
 FROM node:12.14.0-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
+COPY yarn.lock ./
+RUN yarn config set strict-ssl false
 RUN yarn
 
-# this should get the yarn.lock if its there
-COPY . .
-
-RUN yarn config set strict-ssl false 
+COPY . . 
 RUN yarn run build
 
 # Production stage
