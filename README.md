@@ -62,4 +62,4 @@ Depending on how you wish to contribute
 
 ## License
 
-Apache License 2.0
+MIT
