@@ -623,6 +623,7 @@ export default {
                 // Load a file from local storage
                 $("#loadLocally").change(function(e) {
                     const file = e.target.files[0];
+                    console.log("--> LOAD LOCALLY ", e)
                     if (!file) {
                         return;
                     }
@@ -653,12 +654,15 @@ export default {
             );
         },
         readFromJson(inputJson){
-            this.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson);
+            console.log(" --> inputJson ", inputJson)
+            this.dm3kconversion_reverse(this.$store.state.dm3kgraph, inputJson.files[0].fileContents);
         },
         dm3kconversion_reverse(dm3kgraph, inputJson) {
             this.$store.state.dm3kGraph.clearAll();  // this should get rid of all boxes and lines on graph
             console.log("Loading...")
-            
+            console.log("---> inputJson ", inputJson)
+            console.log("inputJson.resourceClasses ", inputJson.resourceClasses)
+        
             // add resource class boxes to diagram
             for (let rc of inputJson.resourceClasses) {
 
