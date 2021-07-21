@@ -469,13 +469,8 @@ export default {
             this.updateAllDropDowns();
         },
         doneWithContains(){
-            // this.$store.state.dm3kGraph.addContains(latest.resName, latest.ccName);
-            // this.$store.state.dm3kGraph.addContains(actName, ccName)
             let parent = $('#parentName2').val();
             let child = $('#childName2').val();
-            console.log("parent ", parent)
-            console.log("child ", child)
-            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
             let parent_is_resource = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == parent)[0] != undefined
             let parent_is_activity = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == parent)[0] != undefined
             let child_is_resource = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == child)[0] != undefined
@@ -833,7 +828,6 @@ export default {
                 let aType = allc.allocationConstraintType;
                 this.$store.state.dm3kGraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
             }
-            console.log("UPDATE DROPDOWNS")
             this.updateAllDropDowns()
         },
         emitSolnModal(e){
