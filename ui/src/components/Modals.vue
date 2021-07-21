@@ -68,6 +68,8 @@ export default {
             instanceName: [],
             resourceName: [],
             activityName: [],
+            parentName: [],
+            childName: [],
             xIcon: require("../assets/x-icon.svg"),
         }
     },
@@ -106,9 +108,13 @@ export default {
                     actName: this.activityName
                 })
             }
-            // if ($('#add-row').text().includes('contains')){
-            //     tabledata.push({parentInstance: "ALL", childInstance: 'ALL'});
-            // }
+            if ($('#add-row').text().includes('contains')){
+                // tabledata.push({parentInstance: "ALL", childInstance: 'ALL'});
+                this.$store.commit('addContainsInstance', {
+                    parentName: this.parentName,
+                    childName: this.childName
+                })
+            }
             if ($('#add-row').text().includes('activity')) {
                 let activityInstance = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == this.instanceName)[0];
                 let newName = this.instanceName + "_Activity_instance_" + activityInstance.instanceTableData.length;
@@ -375,6 +381,8 @@ export default {
             let titleText = ''
             let parent_tabledata = []
             let child_instances = []
+            this.parentName = parentName
+            this.childName = childName
             //Columns are Instances of Dropdowns for all available instances | Dropdowns for all available instances
             titleText = "Contains relationship between instances of <b> " + parentName + " </b>and<b> " + childName + "</b>."
 

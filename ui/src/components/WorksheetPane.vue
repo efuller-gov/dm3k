@@ -73,7 +73,7 @@
                         <!--pull from dm3kgraph.resources or activities -->
                     </select>
                     <br><br>
-                    <input type="button" class="done-button" value="Contains Done" id="addContains">
+                    <input @click="doneWithContains()" type="button" class="done-button" value="Contains Done" id="addContains">
                 </div>
                 <div id="contains-new-act-submenu" class="hide">
                     <label for="actType2"> I want </label>
@@ -468,6 +468,25 @@ export default {
             this.$store.state.dm3kGraph.addNewActContains(parentType, parent, child, reward);
             this.updateAllDropDowns();
         },
+        doneWithContains(){
+            // this.$store.state.dm3kGraph.addContains(latest.resName, latest.ccName);
+            // this.$store.state.dm3kGraph.addContains(actName, ccName)
+            let parent = $('#parentName2').val();
+            let child = $('#childName2').val();
+            console.log("parent ", parent)
+            console.log("child ", child)
+            console.log("this.$store.state.dm3kGraph ", this.$store.state.dm3kGraph)
+            let parent_is_resource = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == parent)[0] != undefined
+            let parent_is_activity = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == parent)[0] != undefined
+            let child_is_resource = this.$store.state.dm3kGraph.resourceInstances.filter(x => x.label == child)[0] != undefined
+            let child_is_activity = this.$store.state.dm3kGraph.activityInstances.filter(x => x.label == child)[0] != undefined
+            if ( (parent_is_resource && child_is_activity) || (parent_is_activity && child_is_resource) ){
+                alert('You are trying to contain a resource with an activity or an activity with a resource. ' +
+                    '\n\nContains relationships can only be created between resource and resource or activity and activity.')
+                return
+            }
+            this.$store.state.dm3kGraph.addContains(parent, child)
+        },
         addConstraint(){
             let fromName1 = $("#startName1").val();
             let toName1 = $("#stopName1").val();
@@ -478,7 +497,7 @@ export default {
             this.$store.state.dm3kGraph.addConstraint(fromName1, toName1, fromName2, toName2, constraintType);
         },
         worksheetUtil_updateContainsDropDown(graph, jQSelectorChild, jQSelectorParent, excludeNamesList) {
-            //console.log('worksheetUtil_updateContainsDropDown on '+jQSelectorChild.attr('id'));
+            console.log('worksheetUtil_updateContainsDropDown on '+jQSelectorChild.attr('id'));
             jQSelectorChild.empty();
             let parentName = jQSelectorParent.children("option:selected").val();
             //console.log('Looking for options based on parent name: '+parentName);
@@ -513,8 +532,9 @@ export default {
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#resName2'),[]);
 
 			// update the "Make contains relationship" worksheet
-			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource', 'activity'], $('#parentName2'), []);
-			this.worksheetUtil_updateContainsDropDown(this.$store.state.dm3kGraph, $('#childName2'), $('#parentName2'), []);
+            this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource', 'activity'], $('#parentName2'), []);
+            this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource', 'activity'], $('#childName2'), []);
+			// this.worksheetUtil_updateContainsDropDown(this.$store.state.dm3kGraph, $('#childName2'), $('#parentName2'), []);
 
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#act-childName'), [])
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#res-childName'), [])
@@ -554,7 +574,7 @@ export default {
             return resList.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
         },
         worksheetUtil_updateDropDown(graph, typeList, jQuerySelector, excludeNamesList) {
-            //console.log('worksheetUtil_updateDropDown on '+jQuerySelector.attr('id'));
+            // console.log('worksheetUtil_updateDropDown on '+jQuerySelector.attr('id'));
 
             jQuerySelector.empty();
             let updatedOptions = []
@@ -660,8 +680,6 @@ export default {
         dm3kconversion_reverse(dm3kgraph, inputJson) {
             this.$store.state.dm3kGraph.clearAll();  // this should get rid of all boxes and lines on graph
             console.log("Loading...")
-            console.log("---> inputJson ", inputJson)
-            console.log("inputJson.resourceClasses ", inputJson.resourceClasses)
         
             // add resource class boxes to diagram
             for (let rc of inputJson.resourceClasses) {
@@ -676,12 +694,12 @@ export default {
             }
 
             // add activity class boxes and canBeAllocated to links
-            console.log("...activity classes...")
-            console.log(inputJson.activityClasses)
+            // console.log("...activity classes...")
+            // console.log(inputJson.activityClasses)
             for (let ac of inputJson.activityClasses) {
                 
                 let actName = ac.className;
-                console.log(actName)
+                // console.log(actName)
 
                 // determine which resources are allocated to this activity
                 
@@ -694,7 +712,7 @@ export default {
                     }
                 }
                 }
-                console.log(resAllocList)
+                // console.log(resAllocList)
 
                 // add the activity and add any allocated to links
                 for (let [i, ra] of resAllocList.entries()) {
@@ -711,7 +729,7 @@ export default {
                 }
             }
 
-            console.log("...contains links - resources....");
+            // console.log("...contains links - resources....");
             // add contains links - resources
             for (let rc of inputJson.resourceClasses) {
                 let resName = rc.className;
@@ -723,7 +741,7 @@ export default {
                 }
             }
 
-            console.log("...contains links - activities...");
+            // console.log("...contains links - activities...");
             // add contains links - activities
             for (let ac of inputJson.activityClasses) {
                 let actName = ac.className;
@@ -737,7 +755,7 @@ export default {
                     ac.containsClasses[0],  // do the first one this way, then do rest in loop below
                     ac.rewards[0]) // TODO - need to make it work for mulitple rewards)
                 for (let ccName of ac.containsClasses.slice(1)) {
-                    console.log('Attempting to make a constains link between: '+actName+' and '+ccName);
+                    console.log('Attempting to make a contains link between: '+actName+' and '+ccName);
                     this.$store.state.dm3kGraph.addContains(actName, ccName);
                     console.log(this.$store.state.dm3kGraph.containsLinks)
                 }
@@ -745,7 +763,7 @@ export default {
                 // else it is defined and therefore already available to add contains links to
                 else {   
                 for (let ccName of ac.containsClasses) {
-                    console.log('Attempting to make a constains link between: '+actName+' and '+ccName);
+                    console.log('Attempting to make a contains link between: '+actName+' and '+ccName);
                     this.$store.state.dm3kGraph.addContains(actName, ccName);
                     console.log(this.$store.state.dm3kGraph.containsLinks)
                 }
@@ -753,12 +771,12 @@ export default {
                 
             }
             
-            console.log("...resource instances...");
-            console.log(inputJson.resourceInstances)
+            // console.log("...resource instances...");
+            // console.log(inputJson.resourceInstances)
 
             // Add resource instances
             for (let ri of inputJson.resourceInstances) {
-                console.log(ri)
+                // console.log(ri)
                 let ri_name = ri.className;
                 let ri_dm3k = this.$store.state.dm3kGraph.getResourceInstance(ri_name);
                 ri_dm3k.clearInstanceTable();
@@ -767,14 +785,14 @@ export default {
                 }
             }
 
-            console.log("...activity instances...");
-            console.log(inputJson.activityInstances);
+            // console.log("...activity instances...");
+            // console.log(inputJson.activityInstances);
             // Add activity instances
             for (let ai of inputJson.activityInstances) {
-                console.log(ai);
+                // console.log(ai);
                 let ai_name = ai.className;
-                console.log(ai_name);
-                console.log(this.$store.state.dm3kGraph.activityInstances)
+                // console.log(ai_name);
+                // console.log(this.$store.state.dm3kGraph.activityInstances)
                 let ai_dm3k = this.$store.state.dm3kGraph.getActivityInstance(ai_name);
                 ai_dm3k.clearInstanceTable();
                 for (let ai_instance of ai.instanceTable) {
@@ -782,8 +800,8 @@ export default {
                 }
             }
 
-            console.log("...allocation instances...")
-            console.log(inputJson.allocationInstances)
+            // console.log("...allocation instances...")
+            // console.log(inputJson.allocationInstances)
             // add allocation instances
             for (let ati of inputJson.allocationInstances) {
                 let res_name = ati.resourceClassName;
@@ -815,7 +833,7 @@ export default {
                 let aType = allc.allocationConstraintType;
                 this.$store.state.dm3kGraph.addConstraint(a1FromName, a1ToName, a2FromName, a2ToName, aType);
             }
-
+            console.log("UPDATE DROPDOWNS")
             this.updateAllDropDowns()
         },
         emitSolnModal(e){
@@ -879,7 +897,7 @@ export default {
             
             // TODO: REMOVE HARDCODED CALL HERE TO OUTPUT
             // this.emitSolnModal({body: this.exampleOutput, outputJson: outputJson})
-            // console.log({body: body, outputJson: outputJson})
+            console.log({body: body, outputJson: outputJson})
             // this.emitSolnModal({body: body, outputJson: outputJson})
 
             post_request.fail(function(jqXHR, textStatus, errorThrown) {
