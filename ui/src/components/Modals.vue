@@ -1,6 +1,5 @@
 <template>
     <div>
-        <link href="https://unpkg.com/tabulator-tables@4.4.1/dist/css/tabulator.min.css" rel="stylesheet">
         <div class="modal">
             <span @click="closeModal" class="close-btn">&times;</span>
             <div class="modal-header">
