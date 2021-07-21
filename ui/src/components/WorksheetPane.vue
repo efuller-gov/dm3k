@@ -160,7 +160,7 @@
 				<!-- <p>Save diagram to work on later</p> -->
 				<label for="diagramName">Save current diagram as </label>
 				<input type="text" class="long-input" id="diagramName" value="dm3kDiagram" ><br>
-				<input type="button" class="done-button" value="Save file" id="saveLocally" style="margin-top: 10px;"><br><br>
+				<input @click="saveLocally" type="button" class="done-button" value="Save file" id="saveLocally" style="margin-top: 10px;"><br><br>
 				<p><br>Click below to submit your scenario to DM3K for solving.<br>
 					You may return here to edit your scenario afterwards.</p>
 				<label for="algType">Algorithm Type</label>
@@ -883,7 +883,24 @@ export default {
                 console.log(errorThrown)
                 alert("Failed Attempt to Submit to DM3K");
             });
-        }
+        },
+        saveLocally(){
+            console.log("Saving a file to local...")
+            // capture all of graph in outputjson
+            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
+            let outputJsonString = JSON.stringify(outputJson,null,4);
+            console.log(outputJsonString);
+
+            // get dataset name from textbox
+            let dsName = $("#diagramName").val();
+            
+            // Taken from https://stackoverflow.com/questions/11071473/how-can-javascript-save-to-a-local-file
+            let bb = new Blob([outputJsonString], {type: 'text/plain'});
+            let a = document.createElement('a');
+            a.download = dsName+'.json';
+            a.href = window.URL.createObjectURL(bb);
+            a.click();
+		}
     },
     data() {
         return{
