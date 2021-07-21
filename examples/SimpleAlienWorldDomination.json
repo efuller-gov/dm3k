@@ -2,7 +2,7 @@
     "datasetName": "SimpleAlienWorldDomination",
     "files": [
     	{
-    		"fileName": "dm3k-viz.json",
+    		"fileName": "SimpleAlienWorldDomination.json",
     		"fileContents": 
             {
                 "resourceClasses": [

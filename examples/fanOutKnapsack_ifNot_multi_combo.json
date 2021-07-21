@@ -2,7 +2,7 @@
     "datasetName": "fanOutKnapsack_ifNot",
     "files": [
         {
-            "fileName": "dm3k-viz.json",
+            "fileName": "fanOutKnapsack_ifNot_multi_combo.json",
             "fileContents": {
                 "resourceClasses": [
                     {

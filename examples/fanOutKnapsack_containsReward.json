@@ -1,225 +1,234 @@
 {
-    "resourceClasses": [
+    "datasetName": "fanOutKnapsack_ifNot",
+    "files": [
         {
-            "className": "Supermarket Bag",
-            "locX": 100,
-            "locY": 0,
-            "typeName": "resource",
-            "budgets": [
-                "weight"
-            ],
-            "containsClasses": [],
-            "canBeAllocatedToClasses": [
-                "Food Items",
-                "Cleaning Items"
-            ]
-        }
-    ],
-    "activityClasses": [
-        {
-            "className": "Food Items",
-            "locX": 550,
-            "locY": 0,
-            "typeName": "person/place/thing",
-            "rewards": [
-                "value"
-            ],
-            "costs": [
-                "weight"
-            ],
-            "containsClasses": [],
-            "allocatedWhen": {}
-        },
-        {
-            "className": "Cleaning Items",
-            "locX": 540,
-            "locY": 460,
-            "typeName": "person/place/thing",
-            "rewards": [
-                "value"
-            ],
-            "costs": [
-                "weight"
-            ],
-            "containsClasses": [],
-            "allocatedWhen": {}
-        },
-        {
-            "className": "ItemGroups",
-            "locX": 850,
-            "locY": 200,
-            "typeName": "a new activity",
-            "rewards": [
-                "value"
-            ],
-            "costs": [],
-            "containsClasses": [
-                "Food Items",
-                "Cleaning Items"
-            ],
-            "allocatedWhen": {}
-        }
-    ],
-    "resourceInstances": [
-        {
-            "className": "Supermarket Bag",
-            "instanceTable": [
-                {
-                    "instanceName": "bag_Resource_instance_0",
-                    "budget": {
-                        "weight": 3
+            "fileName": "fanOutKnapsack_containsReward.json",
+            "fileContents": {
+                "resourceClasses": [
+                    {
+                        "className": "Supermarket Bag",
+                        "locX": 100,
+                        "locY": 0,
+                        "typeName": "resource",
+                        "budgets": [
+                            "weight"
+                        ],
+                        "containsClasses": [],
+                        "canBeAllocatedToClasses": [
+                            "Food Items",
+                            "Cleaning Items"
+                        ]
                     }
-                },
-                {
-                    "instanceName": "bag_Resource_instance_1",
-                    "budget": {
-                        "weight": 3
+                ],
+                "activityClasses": [
+                    {
+                        "className": "Food Items",
+                        "locX": 550,
+                        "locY": 0,
+                        "typeName": "person/place/thing",
+                        "rewards": [
+                            "value"
+                        ],
+                        "costs": [
+                            "weight"
+                        ],
+                        "containsClasses": [],
+                        "allocatedWhen": {}
+                    },
+                    {
+                        "className": "Cleaning Items",
+                        "locX": 540,
+                        "locY": 460,
+                        "typeName": "person/place/thing",
+                        "rewards": [
+                            "value"
+                        ],
+                        "costs": [
+                            "weight"
+                        ],
+                        "containsClasses": [],
+                        "allocatedWhen": {}
+                    },
+                    {
+                        "className": "ItemGroups",
+                        "locX": 850,
+                        "locY": 200,
+                        "typeName": "a new activity",
+                        "rewards": [
+                            "value"
+                        ],
+                        "costs": [],
+                        "containsClasses": [
+                            "Food Items",
+                            "Cleaning Items"
+                        ],
+                        "allocatedWhen": {}
                     }
-                }
-            ]
+                ],
+                "resourceInstances": [
+                    {
+                        "className": "Supermarket Bag",
+                        "instanceTable": [
+                            {
+                                "instanceName": "bag_Resource_instance_0",
+                                "budget": {
+                                    "weight": 3
+                                }
+                            },
+                            {
+                                "instanceName": "bag_Resource_instance_1",
+                                "budget": {
+                                    "weight": 3
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "activityInstances": [
+                    {
+                        "className": "Food Items",
+                        "instanceTable": [
+                            {
+                                "instanceName": "food_Activity_instance_0",
+                                "cost": {
+                                    "weight": 1
+                                },
+                                "reward": 1
+                            },
+                            {
+                                "instanceName": "food_Activity_instance_1",
+                                "cost": {
+                                    "weight": 2
+                                },
+                                "reward": 1
+                            },
+                            {
+                                "instanceName": "food_Activity_instance_2",
+                                "cost": {
+                                    "weight": 3
+                                },
+                                "reward": 2
+                            },
+                            {
+                                "instanceName": "food_Activity_instance_3",
+                                "cost": {
+                                    "weight": 1
+                                },
+                                "reward": 1
+                            },
+                            {
+                                "instanceName": "food_Activity_instance_4",
+                                "cost": {
+                                    "weight": 2
+                                },
+                                "reward": 2
+                            }
+                        ]
+                    },
+                    {
+                        "className": "Cleaning Items",
+                        "instanceTable": [
+                            {
+                                "instanceName": "clean_Activity_instance_0",
+                                "cost": {
+                                    "weight": 1
+                                },
+                                "reward": 1
+                            },
+                            {
+                                "instanceName": "clean_Activity_instance_1",
+                                "cost": {
+                                    "weight": 2
+                                },
+                                "reward": 1
+                            },
+                            {
+                                "instanceName": "clean_Activity_instance_2",
+                                "cost": {
+                                    "weight": 3
+                                },
+                                "reward": 2
+                            },
+                            {
+                                "instanceName": "clean_Activity_instance_3",
+                                "cost": {
+                                    "weight": 1
+                                },
+                                "reward": 1
+                            },
+                            {
+                                "instanceName": "clean_Activity_instance_4",
+                                "cost": {
+                                    "weight": 2
+                                },
+                                "reward": 2
+                            }
+                        ]
+                    },
+                    {
+                        "className": "ItemGroups",
+                        "instanceTable": [
+                            {
+                                "instanceName": "ItemGroups_Activity_instance_0",
+                                "cost": {},
+                                "reward": 10
+                            }
+                        ]
+                    }
+                ],
+                "allocationInstances": [
+                    {
+                        "resourceClassName": "Supermarket Bag",
+                        "activityClassName": "Food Items",
+                        "instanceTable": [
+                            {
+                                "resourceInstanceName": "bag_Resource_instance_0",
+                                "activityInstanceName": "ALL"
+                            }
+                        ]
+                    },
+                    {
+                        "resourceClassName": "Supermarket Bag",
+                        "activityClassName": "Cleaning Items",
+                        "instanceTable": [
+                            {
+                                "resourceInstanceName": "bag_Resource_instance_1",
+                                "activityInstanceName": "ALL"
+                            }
+                        ]
+                    }
+                ],
+                "containsInstances": [
+                    {
+                        "parentClassName": "ItemGroups",
+                        "childClassName": "Food Items",
+                        "parentType": "activity",
+                        "instanceTable": [
+                            {
+                                "parentInstanceName": "ItemGroups_Activity_instance_0",
+                                "childInstanceName": "food_Activity_instance_0"
+                            },
+                            {
+                                "parentInstanceName": "ItemGroups_Activity_instance_0",
+                                "childInstanceName": "food_Activity_instance_3"
+                            }
+                        ]
+                    },
+                    {
+                        "parentClassName": "ItemGroups",
+                        "childClassName": "Cleaning Items",
+                        "parentType": "activity",
+                        "instanceTable": [
+                            {
+                                "parentInstanceName": "ItemGroups_Activity_instance_0",
+                                "childInstanceName": "clean_Activity_instance_3"
+                            }
+                        ]
+                    }
+                ],
+                "allocationConstraints": []
+            }
         }
-    ],
-    "activityInstances": [
-        {
-            "className": "Food Items",
-            "instanceTable": [
-                {
-                    "instanceName": "food_Activity_instance_0",
-                    "cost": {
-                        "weight": 1
-                    },
-                    "reward": 1
-                },
-                {
-                    "instanceName": "food_Activity_instance_1",
-                    "cost": {
-                        "weight": 2
-                    },
-                    "reward": 1
-                },
-                {
-                    "instanceName": "food_Activity_instance_2",
-                    "cost": {
-                        "weight": 3
-                    },
-                    "reward": 2
-                },
-                {
-                    "instanceName": "food_Activity_instance_3",
-                    "cost": {
-                        "weight": 1
-                    },
-                    "reward": 1
-                },
-                {
-                    "instanceName": "food_Activity_instance_4",
-                    "cost": {
-                        "weight": 2
-                    },
-                    "reward": 2
-                }
-            ]
-        },
-        {
-            "className": "Cleaning Items",
-            "instanceTable": [
-                {
-                    "instanceName": "clean_Activity_instance_0",
-                    "cost": {
-                        "weight": 1
-                    },
-                    "reward": 1
-                },
-                {
-                    "instanceName": "clean_Activity_instance_1",
-                    "cost": {
-                        "weight": 2
-                    },
-                    "reward": 1
-                },
-                {
-                    "instanceName": "clean_Activity_instance_2",
-                    "cost": {
-                        "weight": 3
-                    },
-                    "reward": 2
-                },
-                {
-                    "instanceName": "clean_Activity_instance_3",
-                    "cost": {
-                        "weight": 1
-                    },
-                    "reward": 1
-                },
-                {
-                    "instanceName": "clean_Activity_instance_4",
-                    "cost": {
-                        "weight": 2
-                    },
-                    "reward": 2
-                }
-            ]
-        },
-        {
-            "className": "ItemGroups",
-            "instanceTable": [
-                {
-                    "instanceName": "ItemGroups_Activity_instance_0",
-                    "cost": {},
-                    "reward": 10
-                }
-            ]
-        }
-    ],
-    "allocationInstances": [
-        {
-            "resourceClassName": "Supermarket Bag",
-            "activityClassName": "Food Items",
-            "instanceTable": [
-                {
-                    "resourceInstanceName": "bag_Resource_instance_0",
-                    "activityInstanceName": "ALL"
-                }
-            ]
-        },
-        {
-            "resourceClassName": "Supermarket Bag",
-            "activityClassName": "Cleaning Items",
-            "instanceTable": [
-                {
-                    "resourceInstanceName": "bag_Resource_instance_1",
-                    "activityInstanceName": "ALL"
-                }
-            ]
-        }
-    ],
-    "containsInstances": [
-        {
-            "parentClassName": "ItemGroups",
-            "childClassName": "Food Items",
-            "parentType": "activity",
-            "instanceTable": [
-                {
-                    "parentInstanceName": "ItemGroups_Activity_instance_0",
-                    "childInstanceName": "food_Activity_instance_0"
-                },
-                {
-                    "parentInstanceName": "ItemGroups_Activity_instance_0",
-                    "childInstanceName": "food_Activity_instance_3"
-                }
-            ]
-        },
-        {
-            "parentClassName": "ItemGroups",
-            "childClassName": "Cleaning Items",
-            "parentType": "activity",
-            "instanceTable": [
-                {
-                    "parentInstanceName": "ItemGroups_Activity_instance_0",
-                    "childInstanceName": "clean_Activity_instance_3"
-                }
-            ]
-        }
-    ],
-    "allocationConstraints": []
+    ]
+
 }

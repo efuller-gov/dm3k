@@ -2,570 +2,435 @@
     "datasetName": "AlienWorldDomination_wShip",
     "files": [
     	{
-    		"fileName": "dm3k-viz.json",
-    		"fileContents": 
-            {
-                "resourceClasses": [
-                    {
-                        "className": "Turret",
-                        "locX": 100,
-                        "locY": 0,
-                        "typeName": "facility",
-                        "budgets": [
-                            "Direction"
-                        ],
-                        "containsClasses": [],
-                        "canBeAllocatedToClasses": [
-                            "City"
-                        ]
-                    },
-                    {
-                        "className": "Missiles",
-                        "locX": 100,
-                        "locY": 200,
-                        "typeName": "weapon",
-                        "budgets": [
-                            "Shots"
-                        ],
-                        "containsClasses": [],
-                        "canBeAllocatedToClasses": [
-                            "VIP"
-                        ]
-                    },
-                    {
-                        "className": "Ship",
-                        "locX": -210,
-                        "locY": 100,
-                        "typeName": "container",
-                        "budgets": [],
-                        "containsClasses": [
-                            "Turret",
-                            "Missiles"
-                        ],
-                        "canBeAllocatedToClasses": []
-                    }
-                ],
-                "activityClasses": [
-                    {
-                        "className": "City",
-                        "locX": 550,
-                        "locY": 0,
-                        "typeName": "area",
-                        "rewards": [],
-                        "costs": [
-                            "Direction"
-                        ],
-                        "containsClasses": [
-                            "VIP"
-                        ],
-                        "allocatedWhen": {}
-                    },
-                    {
-                        "className": "VIP",
-                        "locX": 540,
-                        "locY": 200,
-                        "typeName": "target",
-                        "rewards": [
-                            "value"
-                        ],
-                        "costs": [
-                            "Shots"
-                        ],
-                        "containsClasses": [],
-                        "allocatedWhen": {}
-                    }
-                ],
-                "resourceInstances": [
-                    {
-                        "className": "Turret",
-                        "instanceTable": [
-                            {
-                                "instanceName": "Turret_Resource_instance_0",
-                                "budget": {
-                                    "Direction": 1
-                                }
-                            },
-                            {
-                                "instanceName": "Turret_Resource_instance_1",
-                                "budget": {
-                                    "Direction": 1
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "className": "Missiles",
-                        "instanceTable": [
-                            {
-                                "instanceName": "Missiles_Resource_instance_0",
-                                "budget": {
-                                    "Shots": 2
-                                }
-                            },
-                            {
-                                "instanceName": "Missiles_Resource_instance_1",
-                                "budget": {
-                                    "Shots": 3
-                                }
-                            },
-                            {
-                                "instanceName": "Missiles_Resource_instance_2",
-                                "budget": {
-                                    "Shots": 2
-                                }
-                            },
-                            {
-                                "instanceName": "Missiles_Resource_instance_3",
-                                "budget": {
-                                    "Shots": 3
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "className": "Ship",
-                        "instanceTable": [
-                            {
-                                "instanceName": "Ship_Resource_instance_0",
-                                "budget": {}
-                            },
-                            {
-                                "instanceName": "Ship_Resource_instance_1",
-                                "budget": {}
-                            }
-                        ]
-                    }
-                ],
-                "activityInstances": [
-                    {
-                        "className": "City",
-                        "instanceTable": [
-                            {
-                                "instanceName": "City_Activity_instance_0",
-                                "cost": {
-                                    "Direction": 1
-                                },
-                                "reward": 0
-                            },
-                            {
-                                "instanceName": "City_Activity_instance_1",
-                                "cost": {
-                                    "Direction": 1
-                                },
-                                "reward": 0
-                            },
-                            {
-                                "instanceName": "City_Activity_instance_2",
-                                "cost": {
-                                    "Direction": 1
-                                },
-                                "reward": 0
-                            },
-                            {
-                                "instanceName": "City_Activity_instance_3",
-                                "cost": {
-                                    "Direction": 1
-                                },
-                                "reward": 0
-                            },
-                            {
-                                "instanceName": "City_Activity_instance_4",
-                                "cost": {
-                                    "Direction": 1
-                                },
-                                "reward": 0
-                            }
-                        ]
-                    },
-                    {
-                        "className": "VIP",
-                        "instanceTable": [
-                            {
-                                "instanceName": "VIP_Activity_instance_0",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_1",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_2",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_3",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_4",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_5",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_6",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_7",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_8",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_9",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_10",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_11",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_12",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_13",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            },
-                            {
-                                "instanceName": "VIP_Activity_instance_14",
-                                "cost": {
-                                    "Shots": 1
-                                },
-                                "reward": 1
-                            }
-                        ]
-                    }
-                ],
-                "allocationInstances": [
-                    {
-                        "resourceClassName": "Turret",
-                        "activityClassName": "City",
-                        "instanceTable": [
-                            {
-                                "resourceInstanceName": "Turret_Resource_instance_0",
-                                "activityInstanceName": "City_Activity_instance_0"
-                            },
-                            {
-                                "resourceInstanceName": "Turret_Resource_instance_0",
-                                "activityInstanceName": "City_Activity_instance_1"
-                            },
-                            {
-                                "resourceInstanceName": "Turret_Resource_instance_0",
-                                "activityInstanceName": "City_Activity_instance_2"
-                            },
-                            {
-                                "resourceInstanceName": "Turret_Resource_instance_1",
-                                "activityInstanceName": "City_Activity_instance_3"
-                            },
-                            {
-                                "resourceInstanceName": "Turret_Resource_instance_1",
-                                "activityInstanceName": "City_Activity_instance_4"
-                            }
-
-                        ]
-                    },
-                    {
-                        "resourceClassName": "Missiles",
-                        "activityClassName": "VIP",
-                        "instanceTable": [
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_0"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_1"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_2"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_3"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_4"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_5"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_6"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_7"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_2",
-                                "activityInstanceName": "VIP_Activity_instance_8"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_0",
-                                "activityInstanceName": "VIP_Activity_instance_9"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_0",
-                                "activityInstanceName": "VIP_Activity_instance_10"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_0",
-                                "activityInstanceName": "VIP_Activity_instance_11"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_0",
-                                "activityInstanceName": "VIP_Activity_instance_12"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_0",
-                                "activityInstanceName": "VIP_Activity_instance_13"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_0",
-                                "activityInstanceName": "VIP_Activity_instance_14"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_0"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_1"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_2"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_3"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_4"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_5"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_6"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_7"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_3",
-                                "activityInstanceName": "VIP_Activity_instance_8"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_1",
-                                "activityInstanceName": "VIP_Activity_instance_9"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_1",
-                                "activityInstanceName": "VIP_Activity_instance_10"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_1",
-                                "activityInstanceName": "VIP_Activity_instance_11"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_1",
-                                "activityInstanceName": "VIP_Activity_instance_12"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_1",
-                                "activityInstanceName": "VIP_Activity_instance_13"
-                            },
-                            {
-                                "resourceInstanceName": "Missiles_Resource_instance_1",
-                                "activityInstanceName": "VIP_Activity_instance_14"
-                            }
-                            
-                        ]
-                    }
-                ],
-                "containsInstances": [
-                    {
-                        "parentClassName": "Ship",
-                        "childClassName": "Turret",
-                        "parentType": "resource",
-                        "instanceTable": [
-                            {
-                                "parentInstanceName": "Ship_Resource_instance_0",
-                                "childInstanceName": "Turret_Resource_instance_0"
-                            },
-                            {
-                                "parentInstanceName": "Ship_Resource_instance_1",
-                                "childInstanceName": "Turret_Resource_instance_1"
-                            }
-                        ]
-                    },
-                    {
-                        "parentClassName": "Ship",
-                        "childClassName": "Missiles",
-                        "parentType": "resource",
-                        "instanceTable": [
-                            {
-                                "parentInstanceName": "Ship_Resource_instance_0",
-                                "childInstanceName": "Missiles_Resource_instance_0"
-                            },
-                            {
-                                "parentInstanceName": "Ship_Resource_instance_0",
-                                "childInstanceName": "Missiles_Resource_instance_1"
-                            },
-                            {
-                                "parentInstanceName": "Ship_Resource_instance_1",
-                                "childInstanceName": "Missiles_Resource_instance_2"
-                            },
-                            {
-                                "parentInstanceName": "Ship_Resource_instance_1",
-                                "childInstanceName": "Missiles_Resource_instance_3"
-                            }
-                        ]
-                    },
-                    {
-                        "parentClassName": "City",
-                        "childClassName": "VIP",
-                        "parentType": "activity",
-                        "instanceTable": [
-                            {
-                                "parentInstanceName": "City_Activity_instance_0",
-                                "childInstanceName": "VIP_Activity_instance_0"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_0",
-                                "childInstanceName": "VIP_Activity_instance_1"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_0",
-                                "childInstanceName": "VIP_Activity_instance_2"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_1",
-                                "childInstanceName": "VIP_Activity_instance_3"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_1",
-                                "childInstanceName": "VIP_Activity_instance_4"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_1",
-                                "childInstanceName": "VIP_Activity_instance_5"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_2",
-                                "childInstanceName": "VIP_Activity_instance_6"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_2",
-                                "childInstanceName": "VIP_Activity_instance_7"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_2",
-                                "childInstanceName": "VIP_Activity_instance_8"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_3",
-                                "childInstanceName": "VIP_Activity_instance_9"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_3",
-                                "childInstanceName": "VIP_Activity_instance_10"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_3",
-                                "childInstanceName": "VIP_Activity_instance_11"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_4",
-                                "childInstanceName": "VIP_Activity_instance_12"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_4",
-                                "childInstanceName": "VIP_Activity_instance_13"
-                            },
-                            {
-                                "parentInstanceName": "City_Activity_instance_4",
-                                "childInstanceName": "VIP_Activity_instance_14"
-                            }
-                        ]
-                    }
-                ],
-                "allocationConstraints": [
-                    {
-                        "allocationStart": {
-                            "resourceClass": "Turret",
-                            "activityClass": "City"
+    		"fileName": "AWD_wShip_wNoConnections.json",
+    		"fileContents": {
+                    "resourceClasses": [
+                        {
+                            "className": "Turret",
+                            "locX": 100,
+                            "locY": 0,
+                            "typeName": "facility",
+                            "budgets": [
+                                "Direction"
+                            ],
+                            "containsClasses": [],
+                            "canBeAllocatedToClasses": [
+                                "City"
+                            ]
                         },
-                        "allocationEnd": {
-                            "resourceClass": "Missiles",
-                            "activityClass": "VIP"
+                        {
+                            "className": "Missiles",
+                            "locX": 100,
+                            "locY": 200,
+                            "typeName": "weapon",
+                            "budgets": [
+                                "Shots"
+                            ],
+                            "containsClasses": [],
+                            "canBeAllocatedToClasses": [
+                                "VIP"
+                            ]
                         },
-                        "allocationConstraintType": "Contained IF-THEN"
-                    }
-                ]
+                        {
+                            "className": "Ship",
+                            "locX": -210,
+                            "locY": 100,
+                            "typeName": "container",
+                            "budgets": [],
+                            "containsClasses": [
+                                "Turret",
+                                "Missiles"
+                            ],
+                            "canBeAllocatedToClasses": []
+                        }
+                    ],
+                    "activityClasses": [
+                        {
+                            "className": "City",
+                            "locX": 550,
+                            "locY": 0,
+                            "typeName": "area",
+                            "rewards": [],
+                            "costs": [
+                                "Direction"
+                            ],
+                            "containsClasses": [
+                                "VIP"
+                            ],
+                            "allocatedWhen": {}
+                        },
+                        {
+                            "className": "VIP",
+                            "locX": 540,
+                            "locY": 200,
+                            "typeName": "target",
+                            "rewards": [
+                                "value"
+                            ],
+                            "costs": [
+                                "Shots"
+                            ],
+                            "containsClasses": [],
+                            "allocatedWhen": {}
+                        }
+                    ],
+                    "resourceInstances": [
+                        {
+                            "className": "Turret",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "Turret_Resource_instance_0",
+                                    "budget": {
+                                        "Direction": 1
+                                    }
+                                },
+                                {
+                                    "instanceName": "Turret_Resource_instance_1",
+                                    "budget": {
+                                        "Direction": 1
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "className": "Missiles",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "Missiles_Resource_instance_0",
+                                    "budget": {
+                                        "Shots": 2
+                                    }
+                                },
+                                {
+                                    "instanceName": "Missiles_Resource_instance_1",
+                                    "budget": {
+                                        "Shots": 3
+                                    }
+                                },
+                                {
+                                    "instanceName": "Missiles_Resource_instance_2",
+                                    "budget": {
+                                        "Shots": 2
+                                    }
+                                },
+                                {
+                                    "instanceName": "Missiles_Resource_instance_3",
+                                    "budget": {
+                                        "Shots": 3
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "className": "Ship",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "Ship_Resource_instance_0",
+                                    "budget": {}
+                                },
+                                {
+                                    "instanceName": "Ship_Resource_instance_1",
+                                    "budget": {}
+                                }
+                            ]
+                        }
+                    ],
+                    "activityInstances": [
+                        {
+                            "className": "City",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "City_Activity_instance_0",
+                                    "cost": {
+                                        "Direction": 1
+                                    },
+                                    "reward": 0
+                                },
+                                {
+                                    "instanceName": "City_Activity_instance_1",
+                                    "cost": {
+                                        "Direction": 1
+                                    },
+                                    "reward": 0
+                                },
+                                {
+                                    "instanceName": "City_Activity_instance_2",
+                                    "cost": {
+                                        "Direction": 1
+                                    },
+                                    "reward": 0
+                                },
+                                {
+                                    "instanceName": "City_Activity_instance_3",
+                                    "cost": {
+                                        "Direction": 1
+                                    },
+                                    "reward": 0
+                                },
+                                {
+                                    "instanceName": "City_Activity_instance_4",
+                                    "cost": {
+                                        "Direction": 1
+                                    },
+                                    "reward": 0
+                                }
+                            ]
+                        },
+                        {
+                            "className": "VIP",
+                            "instanceTable": [
+                                {
+                                    "instanceName": "VIP_Activity_instance_0",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_1",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_2",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_3",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_4",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_5",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_6",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_7",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_8",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_9",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_10",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_11",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_12",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_13",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                },
+                                {
+                                    "instanceName": "VIP_Activity_instance_14",
+                                    "cost": {
+                                        "Shots": 1
+                                    },
+                                    "reward": 1
+                                }
+                            ]
+                        }
+                    ],
+                    "allocationInstances": [
+                        {
+                            "resourceClassName": "Turret",
+                            "activityClassName": "City",
+                            "instanceTable": [
+                                {
+                                    "resourceInstanceName": "ALL",
+                                    "activityInstanceName": "ALL"
+                                }
+                            ]
+                        },
+                        {
+                            "resourceClassName": "Missiles",
+                            "activityClassName": "VIP",
+                            "instanceTable": [
+                                {
+                                    "resourceInstanceName": "ALL",
+                                    "activityInstanceName": "ALL"
+                                }
+                            ]
+                        }
+                    ],
+                    "containsInstances": [
+                        {
+                            "parentClassName": "Ship",
+                            "childClassName": "Turret",
+                            "parentType": "resource",
+                            "instanceTable": [
+                                {
+                                    "parentInstanceName": "Ship_Resource_instance_0",
+                                    "childInstanceName": "Turret_Resource_instance_0"
+                                },
+                                {
+                                    "parentInstanceName": "Ship_Resource_instance_1",
+                                    "childInstanceName": "Turret_Resource_instance_1"
+                                }
+                            ]
+                        },
+                        {
+                            "parentClassName": "Ship",
+                            "childClassName": "Missiles",
+                            "parentType": "resource",
+                            "instanceTable": [
+                                {
+                                    "parentInstanceName": "Ship_Resource_instance_0",
+                                    "childInstanceName": "Missiles_Resource_instance_0"
+                                },
+                                {
+                                    "parentInstanceName": "Ship_Resource_instance_0",
+                                    "childInstanceName": "Missiles_Resource_instance_1"
+                                },
+                                {
+                                    "parentInstanceName": "Ship_Resource_instance_1",
+                                    "childInstanceName": "Missiles_Resource_instance_2"
+                                },
+                                {
+                                    "parentInstanceName": "Ship_Resource_instance_1",
+                                    "childInstanceName": "Missiles_Resource_instance_3"
+                                }
+                            ]
+                        },
+                        {
+                            "parentClassName": "City",
+                            "childClassName": "VIP",
+                            "parentType": "activity",
+                            "instanceTable": [
+                                {
+                                    "parentInstanceName": "City_Activity_instance_0",
+                                    "childInstanceName": "VIP_Activity_instance_0"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_0",
+                                    "childInstanceName": "VIP_Activity_instance_1"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_0",
+                                    "childInstanceName": "VIP_Activity_instance_2"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_1",
+                                    "childInstanceName": "VIP_Activity_instance_3"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_1",
+                                    "childInstanceName": "VIP_Activity_instance_4"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_1",
+                                    "childInstanceName": "VIP_Activity_instance_5"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_2",
+                                    "childInstanceName": "VIP_Activity_instance_6"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_2",
+                                    "childInstanceName": "VIP_Activity_instance_7"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_2",
+                                    "childInstanceName": "VIP_Activity_instance_8"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_3",
+                                    "childInstanceName": "VIP_Activity_instance_9"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_3",
+                                    "childInstanceName": "VIP_Activity_instance_10"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_3",
+                                    "childInstanceName": "VIP_Activity_instance_11"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_4",
+                                    "childInstanceName": "VIP_Activity_instance_12"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_4",
+                                    "childInstanceName": "VIP_Activity_instance_13"
+                                },
+                                {
+                                    "parentInstanceName": "City_Activity_instance_4",
+                                    "childInstanceName": "VIP_Activity_instance_14"
+                                }
+                            ]
+                        }
+                    ],
+                    "allocationConstraints": [
+                        {
+                            "allocationStart": {
+                                "resourceClass": "Turret",
+                                "activityClass": "City"
+                            },
+                            "allocationEnd": {
+                                "resourceClass": "Missiles",
+                                "activityClass": "VIP"
+                            },
+                            "allocationConstraintType": "Contained IF-THEN"
+                        }
+                    ]
             }
-		 }
+		}
 	]
 
 }
