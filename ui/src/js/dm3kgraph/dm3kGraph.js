@@ -181,6 +181,21 @@ export class Dm3kGraph {
         return ans
     }
 
+    removeResource(resName){
+        console.log("---find this.resources.filter(x=>x.value==resName)[0] ", this.resources.filter(x=>x.value==resName)[0])
+        // this.graph.removeCells(this.resources.filter(x=>x.value==resName)[0])
+        // this.resources.filter(x=>x.value==resName)[0].remove()
+        // this.resources.filter(x=>x.value==resName)[0].removeFromParent()
+
+        // let model = this.graph.getModel()
+        // let cell_to_remove = model.getCell(resName)
+        let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==resName)
+        console.log("this.graph.getDefaultParent() ", this.graph.getDefaultParent())
+        // console.log("this.graph.getChildVertices(cell_to_remove) ", this.graph.getChildVertices(cell_to_remove))
+        this.graph.removeCells(cell_to_remove)
+        this.resources = this.resources.filter(x=>x.value!=resName);
+    }
+
     addAllocation(newActName, existingResName, newRewardName, locX = null, locY = null) {
         let actCell = this.getActivity(newActName)
         let newActType = actCell.getId()
