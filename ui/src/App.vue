@@ -48,7 +48,7 @@ export default {
       },
       clearGraph(){
         this.$store.commit('clearGraph')
-      }
+      },
   }
 }
 </script>

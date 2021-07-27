@@ -99,6 +99,11 @@
         deleteResAct(e){
           this.$root.$emit('delete-res-act', e)
           // store to delete
+          // console.log("DELETE")
+          // console.log("e: ", e)
+          console.log("this.$store.state.dm3kGraph.resources AFTER", this.$store.state.dm3kGraph.resources)
+          this.$store.state.dm3kGraph.removeResource(e.detail.name)
+          console.log("this.$store.state.dm3kGraph.resources AFTER", this.$store.state.dm3kGraph.resources)
         },
         clearGraph(){
           this.$store.state.dm3kGraph.clearAll()
