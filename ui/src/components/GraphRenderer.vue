@@ -91,9 +91,14 @@
         addListener(){
           let container = document.getElementById('graphContainer')
           container.addEventListener('CircleIClicked', this.emitModal)
+          container.addEventListener('xIconClicked', this.deleteResAct)
         },
         emitModal(e){
           this.$root.$emit('show-instance-modal', e)
+        },
+        deleteResAct(e){
+          this.$root.$emit('delete-res-act', e)
+          // store to delete
         },
         clearGraph(){
           this.$store.state.dm3kGraph.clearAll()
