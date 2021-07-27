@@ -17,6 +17,8 @@ export class Dm3kGraph {
     constructor(container) {
         
         let infoIcon = require('../../assets/rounded-info-icon-gray.png')
+        let xIcon = require('../../assets/x-icon.svg')
+
         // Disables the built-in context menu
         mxEvent.disableContextMenu(container);
 
@@ -50,14 +52,8 @@ export class Dm3kGraph {
         this.budgets = {};
         this.costs = {};
 
-        // the infoIcon
         this.infoIcon = infoIcon;
-
-        //mxGraphView for scaling and stuff
-        // this.view = new mxGraphView(this.graph);
-
-        //in place label editing
-        //this.graph.setHtmlLabels(true);
+        this.xIcon = xIcon;
     }
 
     clearAll() {
@@ -387,7 +383,7 @@ export class Dm3kGraph {
             throw "Cannot use name: " + blockName + " it is already taken"
         } else {
             var resColor = '#E9EDF2';
-            var newRes = addDM3KResAct(this.container, this.graph, true, typeName, blockName, xLoc, yLoc, this.infoIcon, resColor);
+            var newRes = addDM3KResAct(this.container, this.graph, true, typeName, blockName, xLoc, yLoc, this.infoIcon, this.xIcon, resColor);
             this.resources.push(newRes);
             this.resourceInstances.push(new ResourceInstance(typeName, blockName, budgetNameList))
         }
@@ -399,7 +395,7 @@ export class Dm3kGraph {
             throw "Cannot use name: " + blockName + " it is already taken"
         } else {
             var actColor = '#F2EFE9';
-            var newAct = addDM3KResAct(this.container, this.graph, false, typeName, blockName, xLoc, yLoc, this.infoIcon, actColor);
+            var newAct = addDM3KResAct(this.container, this.graph, false, typeName, blockName, xLoc, yLoc, this.infoIcon, this.xIcon, actColor);
             this.activities.push(newAct);
             this.activityInstances.push(new ActivityInstance(typeName, blockName, costNameList))
 
@@ -679,36 +675,6 @@ export class Dm3kGraph {
         });
         return nameArray.includes(name)
     }
-    
-//     showInstanceModal(event){
-//         console.log("IN SHOW INSTANACE MODAL. Event: ", event)
-//         let cellId = event.detail.id;
-//         let cellName = event.detail.name;
-//         let cellType = event.detail.type;   // 'Resource'  or 'Activity' or 'Contains' or 'AllocatedTo'
-//         let eventDetail = event.detail
-//         let instanceType = cellId;
-//         let instanceName = cellName;
-//         let resOrAct = cellType;
-//         let budgetName = event.detail.budget;
-//         let rewardName = event.detail.reward;
-//         let costName = event.detail.cost;
-//         let graph = this.dm3kgraph;
-    
-//         if (cellType.includes('AllocatedTo')){
-//             resOrAct = 'allocation'
-//             let resourceName = cellName.split('_')[0]
-//             let activityName = cellName.split('_')[1]
-//             this.showAllocationModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, resourceName, activityName)
-//         } else if (cellType.includes('Contains')) {
-//             resOrAct = 'contains'
-//             let parentName = cellName.split('_')[0]
-//             let childName = cellName.split('_')[1]
-            
-//             this.showContainsModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, parentName, childName)
-//         } else{
-//             showModal(instanceType, instanceName, resOrAct, budgetName, rewardName, costName, graph, eventDetail)
-//         }
-//     }
 }
 
 // ********************************************************************* //
@@ -717,7 +683,7 @@ export class Dm3kGraph {
 // ********************************************************************* //
 // ********************************************************************* //
 
-function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, yLoc, infoIcon, color) {
+function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, yLoc, infoIcon, xIconImg, color) {
     const width = 150;
     const height = 100;
     const blockStyle = 'fontStyle=1;fontColor=#707070;fontSize=20;fillColor=' + color + ';strokeColor=#E9EDF2';
@@ -728,7 +694,11 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
     const infoIconSize = 25;
     const infoIconX = -15;
     const infoIconY = -15;
+    const xIconX = -15;
+	const xIconY = -85;
+    const xIconSize = 12;
     const infoToolTip = 'click for instance information'
+    const xIconToolTip = 'click to delete'
 
     var block = null;
 
@@ -743,13 +713,20 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
         // var typeLabel = graph.insertVertex(block, blockName, typeName, typeXLoc, typeYLoc, typeSize, typeSize, typeStyle, true);
         graph.insertVertex(block, blockName, typeName, typeXLoc, typeYLoc, typeSize, typeSize, typeStyle, true);
         var iCircle = new mxCellOverlay(new mxImage(infoIcon, infoIconSize, infoIconSize), infoToolTip);
-
+		var xIcon = new mxCellOverlay(new mxImage(xIconImg, xIconSize, xIconSize), xIconToolTip);
 
         // the overlay point to be within the resource box
         var pt = iCircle.offset;
         pt.x = infoIconX;
         pt.y = infoIconY;
         graph.addCellOverlay(block, iCircle);
+
+        // the overlay point to be within the resource box for xIcon
+		var pt_xIcon = xIcon.offset;
+		pt_xIcon.x = xIconX;
+		pt_xIcon.y = xIconY;
+		graph.addCellOverlay(block,xIcon);
+        var connectedBoxIDs, connectedBoxNames = [];
 
         // detect click on the circle-i
         iCircle.addListener(mxEvent.CLICK, function(sender, evt) {
@@ -759,11 +736,10 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
             var budgetName = [];
             var costName = [];
             var rewardName = ''
-            var connectedBoxIDs, connectedBoxNames = [];
+            // var connectedBoxIDs, connectedBoxNames = [];
 
             if (isResource) {
                 cellType = 'Resource';
-
                 connectedBoxIDs = cell.edges.map(x => x.target.getId()); // dont think reward and cost use cell.id like act and res!!!
                 connectedBoxNames = cell.edges.map(x => x.target.getValue());
                 for (let i = 0; i < connectedBoxIDs.length; i++) {
@@ -776,10 +752,8 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
 
             } else {
                 cellType = 'Activity';
-
                 connectedBoxIDs = cell.edges.map(x => x.target.getId()); // dont think reward and cost use cell.id like act and res!!!
                 connectedBoxNames = cell.edges.map(x => x.target.getValue());
-
                 for (let i = 0; i < connectedBoxIDs.length; i++) {
                     if (connectedBoxIDs[i].startsWith('reward')) {
                         rewardName = connectedBoxNames[i];
@@ -807,6 +781,61 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
             );
             container.dispatchEvent(event)
         });
+
+        // detect click on the xIcon to delete element
+		xIcon.addListener(mxEvent.CLICK, function(sender, evt) {
+			// TODO: Remove deleted element from dropdown options.
+			var cell = evt.getProperty('cell');
+			var budgetName = '';
+			var costName = '';
+			var rewardName = '';
+			var cellType = 'Activity';
+			// let children = cell.edges;
+			console.log('xIcon clicked. DELETE this element', cell)
+			
+			if (isResource) {
+				cellType = 'Resource';
+				let connectedBoxIDs = cell.edges.map(x=>x.target.getId());  // dont think reward and cost use cell.id like act and res!!!
+                let connectedBoxNames = cell.edges.map(x=>x.target.getValue());
+				for (let i=0; i< connectedBoxIDs.length; i++) {
+					if (connectedBoxIDs[i] == 'budget') {
+						budgetName = connectedBoxNames[i];
+					}
+				}
+
+
+			} else {
+				cellType = 'Activity';
+				connectedBoxIDs = cell.edges.map(x=>x.target.getId());  // dont think reward and cost use cell.id like act and res!!!
+				connectedBoxNames = cell.edges.map(x=>x.target.getValue());
+				for (let i=0; i< connectedBoxIDs.length; i++) {
+					if (connectedBoxIDs[i] == 'reward') {
+						rewardName = connectedBoxNames[i];
+					}
+					if (connectedBoxIDs[i] == 'cost') {
+						costName = connectedBoxNames[i];
+					}
+				}
+			}
+			var deleteEvent = new CustomEvent(
+				'xIconClicked',
+				{
+					detail: {
+						id: cell.id,
+						name: cell.value,
+						type: cellType,
+						budget: budgetName,
+						cost: costName,
+						reward: rewardName
+					},
+					bubbles: true,
+					cancelable: true
+				}
+			);
+			console.log('dispatchEvent(deleteEvent)')
+			container.dispatchEvent(deleteEvent)
+        });
+        
     } finally {
         // Update the display
         graph.getModel().endUpdate();

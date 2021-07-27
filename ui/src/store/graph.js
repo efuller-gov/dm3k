@@ -46,11 +46,9 @@ export default new Vuex.Store({
     addResourceInstance(state, resPayload){
       let resName = resPayload['instanceName']
       let resourceInstanceObj = resPayload['newInstance']
-      // state.resourceInstances.filter(x=>x.label==resName)[0].instanceTableData.push(resourceInstanceObj)
       state.dm3kGraph.resourceInstances.filter(x=>x.label==resName)[0].instanceTableData.push(resourceInstanceObj)
     },
     addActivity(state, activityObj) {
-      state.dm3kGraph.activities.push(activityObj);
       // Add AllocationInstance when first create
       let ai = new AllocationInstance(activityObj['existingResName'], activityObj['actName']);
       let costNameList = state.dm3kGraph.resources.filter(x=>x.value == activityObj['existingResName'])[0].budgetNameList
