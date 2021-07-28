@@ -168,8 +168,6 @@
 					<option value="KnapsackViz">Knapsack</option>
 					<option value="FullHouseViz">FullHouse</option>
 				</select><br>
-				<label for="serverLoc">DM3K backend </label>
-				<input type="text" class="long-input" id="serverLoc" value="https://10.109.11.239:8050"><br>
                 <input @click="submitDM3K()" style="margin-top: 10px;" type="button" class="done-button" value="Submit to DM3K" id="submitDM3K">
             </div>
         </div>  
@@ -821,9 +819,6 @@ export default {
         submitDM3K(){
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
 
-            // get url URL from textbox
-            var url = $("#serverLoc").val();
-
             // get dataset name from textbox
             var dsName = $("#diagramName").val();
 
@@ -833,7 +828,6 @@ export default {
 
             var data_to_send = {
                     "datasetName": dsName,
-                    "url": url,
                     "algorithm": alg,
                         "files": [
                         {
