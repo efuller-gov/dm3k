@@ -356,7 +356,7 @@ export default {
                 alert('You must select a new activity type from the dropdown menu.')
                 return
             }
-            let model = this.$store.state.dm3kGraph.graph.getModel()
+            // let model = this.$store.state.dm3kGraph.graph.getModel()
             // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
             // if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
             //     // resetActivityPrompt();
@@ -392,9 +392,9 @@ export default {
                     }
             } else{
             // Allocate to new activity, and create new activity
-                if (model.getCell(newActName) != undefined){
-                    alert('Cannot create duplicate node. Please choose a new instance name.')
-                } else{
+                // if (model.getCell(newActName) != undefined){
+                //     alert('Cannot create duplicate node. Please choose a new instance name.')
+                // } else{
                     if (newActType.includes('[')){
                         let tmp = newActType.split('[')
                         tmp = newActType.split(']',2)
@@ -413,7 +413,7 @@ export default {
                     else {
                         alert(ans.details);
                     }
-                }
+                // }
             }
         },
         containsTab(){
