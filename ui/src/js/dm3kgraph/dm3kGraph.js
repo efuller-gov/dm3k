@@ -181,18 +181,20 @@ export class Dm3kGraph {
         return ans
     }
 
-    removeResource(resName){
+    removeResource(resName, budgetName){
         console.log("---find this.resources.filter(x=>x.value==resName)[0] ", this.resources.filter(x=>x.value==resName)[0])
-        // this.graph.removeCells(this.resources.filter(x=>x.value==resName)[0])
-        // this.resources.filter(x=>x.value==resName)[0].remove()
-        // this.resources.filter(x=>x.value==resName)[0].removeFromParent()
 
-        // let model = this.graph.getModel()
-        // let cell_to_remove = model.getCell(resName)
         let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==resName)
-        console.log("this.graph.getDefaultParent() ", this.graph.getDefaultParent())
+        console.log("-- all graph ", this.graph.getDefaultParent())
+        console.log("-- cell_to_remove ", cell_to_remove)
+
+        // remove budget cell
+        let b_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==budgetName)
+        console.log("second way ", b_cell_to_remove)
+
         // console.log("this.graph.getChildVertices(cell_to_remove) ", this.graph.getChildVertices(cell_to_remove))
         this.graph.removeCells(cell_to_remove)
+        this.graph.removeCells(b_cell_to_remove)
         this.resources = this.resources.filter(x=>x.value!=resName);
     }
 
@@ -801,8 +803,8 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
 		xIcon.addListener(mxEvent.CLICK, function(sender, evt) {
 			// TODO: Remove deleted element from dropdown options.
 			var cell = evt.getProperty('cell');
-			var budgetName = '';
-			var costName = '';
+			var budgetName = [];
+			var costName = [];
 			var rewardName = '';
 			var cellType = 'Activity';
 			// let children = cell.edges;
@@ -810,27 +812,28 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
 			
 			if (isResource) {
 				cellType = 'Resource';
-				let connectedBoxIDs = cell.edges.map(x=>x.target.getId());  // dont think reward and cost use cell.id like act and res!!!
-                let connectedBoxNames = cell.edges.map(x=>x.target.getValue());
-				for (let i=0; i< connectedBoxIDs.length; i++) {
-					if (connectedBoxIDs[i] == 'budget') {
-						budgetName = connectedBoxNames[i];
-					}
-				}
+                connectedBoxIDs = cell.edges.map(x => x.target.getId()); // dont think reward and cost use cell.id like act and res!!!
+                connectedBoxNames = cell.edges.map(x => x.target.getValue());
+                for (let i = 0; i < connectedBoxIDs.length; i++) {
+                    if (connectedBoxIDs[i].startsWith('budget')) {
+                        budgetName.push(connectedBoxNames[i]);
+                    }
+                }
 
 
 			} else {
 				cellType = 'Activity';
-				connectedBoxIDs = cell.edges.map(x=>x.target.getId());  // dont think reward and cost use cell.id like act and res!!!
-				connectedBoxNames = cell.edges.map(x=>x.target.getValue());
-				for (let i=0; i< connectedBoxIDs.length; i++) {
-					if (connectedBoxIDs[i] == 'reward') {
-						rewardName = connectedBoxNames[i];
-					}
-					if (connectedBoxIDs[i] == 'cost') {
-						costName = connectedBoxNames[i];
-					}
-				}
+                connectedBoxIDs = cell.edges.map(x => x.target.getId()); // dont think reward and cost use cell.id like act and res!!!
+                connectedBoxNames = cell.edges.map(x => x.target.getValue());
+                for (let i = 0; i < connectedBoxIDs.length; i++) {
+                    if (connectedBoxIDs[i].startsWith('reward')) {
+                        rewardName = connectedBoxNames[i];
+                    }
+                    if (connectedBoxIDs[i].startsWith('cost')) {
+                        costName.push(connectedBoxNames[i]);
+                    }
+                }
+
 			}
 			var deleteEvent = new CustomEvent(
 				'xIconClicked',
@@ -847,7 +850,14 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
 					cancelable: true
 				}
 			);
-			console.log('dispatchEvent(deleteEvent)')
+			console.log('-- dispatchEvent(deleteEvent) ', {
+                id: cell.id,
+                name: cell.value,
+                type: cellType,
+                budget: budgetName,
+                cost: costName,
+                reward: rewardName
+            })
 			container.dispatchEvent(deleteEvent)
         });
         
