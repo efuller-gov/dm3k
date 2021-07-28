@@ -21,8 +21,6 @@ function worksheetUtil_hideShowWorksheet(){
     }
 }
 function worksheetUtil_updateDropDown(graph, typeList, jQuerySelector, excludeNamesList) {
-    //console.log('worksheetUtil_updateDropDown on '+jQuerySelector.attr('id'));
-
     jQuerySelector.empty();
     let updatedOptions = []
     typeList.forEach(function(typeName, index) {

@@ -2,7 +2,7 @@
     "datasetName": "fanInKnapsack",
     "files": [
     	{
-    		"fileName": "dm3k-viz.json",
+    		"fileName": "fanInKnapsack.json",
     		"fileContents": {
 	    		"resourceClasses": [
 		    		{"className": "Funding",

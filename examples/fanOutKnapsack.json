@@ -2,7 +2,7 @@
     "datasetName": "fanOutKnapsack",
     "files": [
     	{
-    		"fileName": "dm3k-viz.json",
+    		"fileName": "fanOutKnapsack.json",
     		"fileContents": {
 	    		"resourceClasses": [
 		    		{"className": "Supermarket Bag",

@@ -78,6 +78,12 @@ export default new Vuex.Store({
     },
     removeResourceInstance(state, resObj){
       state.dm3kGraph.resourceInstances.filter(x=>x.label==resObj['name'])[0]
+    },
+    addContainsInstance(state, containsObj){
+      state.dm3kGraph.containsInstances.filter(x=>(x.childName==containsObj['childName'] && x.parentName==containsObj['parentName']))[0].instanceTableData.push(
+        { childInstance: "ALL",
+          parentInstance: "ALL"}
+      );
     }
   }
 });
