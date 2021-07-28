@@ -1025,6 +1025,11 @@ export default {
         this.changeHelperImg('create-resources')
         this.populateResourcesFromWB()
         this.populateActivitiesFromWB()
+        this.$root.$on('delete-res-act', e => {
+            console.log("-- update dropdowns AFTER deletion")
+            console.log("e ", e)
+            this.updateAllDropDowns();
+        })
     }
 }
 </script>

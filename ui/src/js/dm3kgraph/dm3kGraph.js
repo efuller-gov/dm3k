@@ -182,20 +182,41 @@ export class Dm3kGraph {
     }
 
     removeResource(resName, budgetName){
-        console.log("---find this.resources.filter(x=>x.value==resName)[0] ", this.resources.filter(x=>x.value==resName)[0])
+        console.log("-----> remove RESOURCE ")
 
         let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==resName)
         console.log("-- all graph ", this.graph.getDefaultParent())
         console.log("-- cell_to_remove ", cell_to_remove)
 
         // remove budget cell
-        let b_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==budgetName)
-        console.log("second way ", b_cell_to_remove)
+        let b_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>( (x.value==budgetName) & (x.id.includes('budget'))) )
 
-        // console.log("this.graph.getChildVertices(cell_to_remove) ", this.graph.getChildVertices(cell_to_remove))
         this.graph.removeCells(cell_to_remove)
         this.graph.removeCells(b_cell_to_remove)
         this.resources = this.resources.filter(x=>x.value!=resName);
+    }
+
+    removeActivity(actName, costList, rewardName){
+        console.log("-----> remove ACTIVITY ")
+        console.log("costList ", costList)
+        console.log("rewardName ", rewardName)
+
+        console.log("--- ALL CELLS TO FILTER ", this.graph.getChildVertices(this.graph.getDefaultParent()))
+        let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==actName)
+        console.log("-- all graph ", this.graph.getDefaultParent())
+        console.log("-- cell_to_remove ", cell_to_remove)
+
+        // remove cost cell
+        for (let i=0; i<costList.length; i++){
+            let c_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>( (x.value==costList[i]) & (x.id=='cost')) )
+            this.graph.removeCells(c_cell_to_remove)
+        }
+
+        let r_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==rewardName)
+        this.graph.removeCells(r_cell_to_remove)
+
+        this.graph.removeCells(cell_to_remove)
+        this.activities = this.activities.filter(x=>x.value!=actName);
     }
 
     addAllocation(newActName, existingResName, newRewardName, locX = null, locY = null) {
@@ -752,7 +773,8 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
             var cellType = 'Activity';
             var budgetName = [];
             var costName = [];
-            var rewardName = ''
+            // var rewardName = [];
+            var rewardName = '';
             // var connectedBoxIDs, connectedBoxNames = [];
 
             if (isResource) {
@@ -774,6 +796,7 @@ function addDM3KResAct(container, graph, isResource, typeName, blockName, xLoc, 
                 for (let i = 0; i < connectedBoxIDs.length; i++) {
                     if (connectedBoxIDs[i].startsWith('reward')) {
                         rewardName = connectedBoxNames[i];
+                        // rewardName.push(connectedBoxNames[i]);
                     }
                     if (connectedBoxIDs[i].startsWith('cost')) {
                         costName.push(connectedBoxNames[i]);

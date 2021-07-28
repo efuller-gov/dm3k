@@ -98,7 +98,13 @@
         },
         deleteResAct(e){
           this.$root.$emit('delete-res-act', e)
-          this.$store.state.dm3kGraph.removeResource(e.detail.name, e.detail.budget[0])
+          console.log("--> delete e: ", e)
+          if (e.detail.type == 'Resource'){
+            this.$store.state.dm3kGraph.removeResource(e.detail.name, e.detail.budget[0])
+          }
+          if (e.detail.type == 'Activity'){
+            this.$store.state.dm3kGraph.removeActivity(e.detail.name, e.detail.cost,  e.detail.reward)
+          }
         },
         clearGraph(){
           this.$store.state.dm3kGraph.clearAll()
