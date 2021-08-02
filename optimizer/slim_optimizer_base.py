@@ -34,7 +34,7 @@ if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
 class OptimizerBase:
-    def __init__(self, input_class, model_class, output_class, cmd_map):
+    def __init__(self, input_class, model_class, output_class):
         """
         Create the Optimizer itself.
 
@@ -53,9 +53,7 @@ class OptimizerBase:
                 that solves the problem or all model_classes provided fail the
                 checks.*
             output_class: python class that extends class OutputBase below
-            cmd_map: a dictionary of command names as keys and command classes
-                as values.  Where command classes extend the UndoableCommand or
-                Command class in dm3k.slim_optimizer.util.command_pattern module
+            
         """
         self._input_class = input_class
         self._model_class = model_class
