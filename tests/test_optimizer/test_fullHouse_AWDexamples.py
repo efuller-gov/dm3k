@@ -3,10 +3,16 @@ Tests the full house model ingest from viz input
 """
 import logging
 import os
+import sys
 import unittest
 from unittest import TestCase
 
-from dm3k.slim_optimizer.full_house.full_house_input_viz import FullHouseInputViz
+# ensure that optimizer directory is in path
+app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..')
+if app_directory not in sys.path:
+    sys.path.append(app_directory)
+
+from optimizer.full_house.full_house_input_viz import FullHouseInputViz
 
 log = logging.getLogger(__name__)
 

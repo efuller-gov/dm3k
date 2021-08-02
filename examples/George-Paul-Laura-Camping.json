@@ -1,0 +1,249 @@
+{
+    "resourceClasses": [
+        {
+            "className": "Backpack",
+            "locX": 100,
+            "locY": 0,
+            "typeName": "container",
+            "budgets": [
+                "weight"
+            ],
+            "containsClasses": [],
+            "canBeAllocatedToClasses": [
+                "Camping Item"
+            ]
+        }
+    ],
+    "activityClasses": [
+        {
+            "className": "Camping Item",
+            "locX": 550,
+            "locY": 0,
+            "typeName": "item",
+            "rewards": [
+                "fun"
+            ],
+            "costs": [
+                "weight"
+            ],
+            "containsClasses": [],
+            "allocatedWhen": {}
+        },
+        {
+            "className": "Trip Activity",
+            "locX": 550,
+            "locY": -200,
+            "typeName": "action",
+            "rewards": [
+                "fun"
+            ],
+            "costs": [],
+            "containsClasses": [
+                "Camping Item"
+            ],
+            "allocatedWhen": {}
+        }
+    ],
+    "resourceInstances": [
+        {
+            "className": "Backpack",
+            "instanceTable": [
+                {
+                    "instanceName": "George's Backpack",
+                    "budget": {
+                        "weight": 20
+                    }
+                },
+                {
+                    "instanceName": "Laura's Backpack",
+                    "budget": {
+                        "weight": 20
+                    }
+                },
+                {
+                    "instanceName": "Paul's Backpack",
+                    "budget": {
+                        "weight": 10
+                    }
+                }
+            ]
+        }
+    ],
+    "activityInstances": [
+        {
+            "className": "Camping Item",
+            "instanceTable": [
+                {
+                    "instanceName": "matches",
+                    "cost": {
+                        "weight": 1
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Tent",
+                    "cost": {
+                        "weight": 12
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Camp Stove",
+                    "cost": {
+                        "weight": 4
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Georges Sleeping bag",
+                    "cost": {
+                        "weight": 3
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Georges Rain Gear",
+                    "cost": {
+                        "weight": 2
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Meals",
+                    "cost": {
+                        "weight": 3
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "walking stick",
+                    "cost": {
+                        "weight": 1
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Pauls Sleeping bag",
+                    "cost": {
+                        "weight": 2
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Pauls Rain Gear",
+                    "cost": {
+                        "weight": 2
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Lauras Sleeping bag",
+                    "cost": {
+                        "weight": 2
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Lauras Rain Gear",
+                    "cost": {
+                        "weight": 1
+                    },
+                    "reward": 1
+                },
+                {
+                    "instanceName": "Cooking pots",
+                    "cost": {
+                        "weight": 6
+                    },
+                    "reward": 1
+                }
+            ]
+        },
+        {
+            "className": "Trip Activity",
+            "instanceTable": [
+                {
+                    "instanceName": "Eating",
+                    "cost": {},
+                    "reward": 5
+                },
+                {
+                    "instanceName": "Sleeping",
+                    "cost": {},
+                    "reward": 5
+                },
+                {
+                    "instanceName": "Rain Protection",
+                    "cost": {},
+                    "reward": 2
+                }
+            ]
+        }
+    ],
+    "allocationInstances": [
+        {
+            "resourceClassName": "Backpack",
+            "activityClassName": "Camping Item",
+            "instanceTable": [
+                {
+                    "resourceInstanceName": "ALL",
+                    "activityInstanceName": "ALL"
+                }
+            ]
+        }
+    ],
+    "containsInstances": [
+        {
+            "parentClassName": "Trip Activity",
+            "childClassName": "Camping Item",
+            "parentType": "activity",
+            "instanceTable": [
+                {
+                    "parentInstanceName": "Eating",
+                    "childInstanceName": "Camp Stove"
+                },
+                {
+                    "parentInstanceName": "Eating",
+                    "childInstanceName": "Meals"
+                },
+                {
+                    "parentInstanceName": "Eating",
+                    "childInstanceName": "Cooking pots"
+                },
+                {
+                    "parentInstanceName": "Eating",
+                    "childInstanceName": "matches"
+                },
+                {
+                    "parentInstanceName": "Sleeping",
+                    "childInstanceName": "Georges Sleeping bag"
+                },
+                {
+                    "parentInstanceName": "Sleeping",
+                    "childInstanceName": "Pauls Sleeping bag"
+                },
+                {
+                    "parentInstanceName": "Sleeping",
+                    "childInstanceName": "Lauras Sleeping bag"
+                },
+                {
+                    "parentInstanceName": "Rain Protection",
+                    "childInstanceName": "Tent"
+                },
+                {
+                    "parentInstanceName": "Rain Protection",
+                    "childInstanceName": "Georges Rain Gear"
+                },
+                {
+                    "parentInstanceName": "Rain Protection",
+                    "childInstanceName": "Pauls Rain Gear"
+                },
+                {
+                    "parentInstanceName": "Rain Protection",
+                    "childInstanceName": "Lauras Rain Gear"
+                }
+            ]
+        }
+    ],
+    "allocationConstraints": []
+}

@@ -1,0 +1,97 @@
+{
+    "datasetName": "multiBudgetKnapsack",
+    "files": [
+		{
+    		"fileName": "multiBudgetKnapsack.json",
+    		"fileContents": {
+					"resourceClasses": [
+						{"className": "Compute Node",
+						"loc": 100,
+						"locY": 0,
+						"typeName": "resource",
+						"budgets": ["RAM", "Time"],
+						"containsClasses": [],
+						"canBeAllocatedToClasses": ["Job"]}],
+					"activityClasses": [
+						{"className": "Job",
+						"locX": 550,
+						"locY": 0,
+						"typeName": "person/place/thing",
+						"rewards": ["value"],
+						"costs": ["RAM", "Time"],
+						"containsClasses": [],
+						"allocatedWhen": {}
+						}
+					],
+					"resourceInstances": [
+						{"className": "Compute Node",
+						"instanceTable": [
+							{"instanceName": "node_Resource_instance_0",
+							"budget": {
+								"RAM": 3,
+								"Time": 2
+							}
+							},
+							{"instanceName": "node_Resource_instance_1",
+							"budget": {
+								"RAM": 2,
+								"Time": 3
+							}
+							}
+						]
+						}
+					],
+					"activityInstances": [
+						{"className": "Job",
+						"instanceTable": [
+							{"instanceName": "job_Activity_instance_0",
+							"cost": {
+								"RAM": 1,
+								"Time": 2
+							},
+							"reward": 1},
+							{"instanceName": "job_Activity_instance_1",
+							"cost": {
+								"RAM": 2,
+								"Time": 1
+							},
+							"reward": 1},
+							{"instanceName": "job_Activity_instance_2",
+							"cost": {
+								"RAM": 2,
+								"Time": 3
+							},
+							"reward": 2},
+							{"instanceName": "job_Activity_instance_3",
+							"cost": {
+								"RAM": 1,
+								"Time": 1
+							},
+							"reward": 1},
+							{"instanceName": "job_Activity_instance_4",
+							"cost": {
+								"RAM": 3,
+								"Time": 2
+							},
+							"reward": 1}
+						]
+						}
+					],
+					"allocationInstances": [
+						{"resourceClassName": "Compute Node",
+						"activityClassName": "Job",
+						"instanceTable": [
+							{"resourceInstanceName": "ALL",
+							"activityInstanceName": "ALL"
+							}
+						]
+						}
+					],
+					"containsInstances": [],
+					"allocationConstraints": []
+		
+		
+				}
+		}
+	]
+}

@@ -282,10 +282,6 @@ class TestKnapsackE2E(TestCase):
         input_dict, results = self._all_steps("AlienWorldDomination_wShip.json")
         self._check_all(results, input_dict, 6)
 
-    def test_end2end_AWD_with_ship_no_connections(self):
-        input_dict, results = self._all_steps("AWD_wShip_wNoConnections.json")
-        self._check_all(results, input_dict, 0)
-
 
 if __name__ == "__main__":
     # FOR DEBUGGING USE...
