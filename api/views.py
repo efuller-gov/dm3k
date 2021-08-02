@@ -1,3 +1,17 @@
+"""
+API Endpoints for open-dm3k API
+"""
+# -------------------------------------------------------------------------
+# @license JHUAPL
+# Copyright (C) 2021 Johns Hopkins University Applied Physics Laboratory
+#
+# All Rights Reserved.
+# This material may only be used, modified, or reproduced by or for the
+# U.S. government pursuant to the license rights granted under FAR
+# clause 52.227-14 or DFARS clauses 252.227-7013/7014.
+# For any other permission, please contact the Legal Office at JHU/APL.
+# --------------------------------------------------------------------------
+
 import os
 import sys
 
@@ -13,17 +27,34 @@ if app_directory not in sys.path:
 from optimizer.slim_optimizer_main import create_opt
 
 class Version(Resource):
+    """
+    Simple Endpoint for checking aliveness and providing API version
+    """
     def __init__(self):
         pass
 
     def get(self):
+        """
+        GET /api/version
+
+        :return dict version: the version of the current API
+        """
         return {'api_version': "1.0"}
 
 class VizInput(Resource):
+    """
+    Endpoint for taking in data from the UI
+    """
     def __init__(self):
         pass
 
     def post(self):
+        """
+        POST /api/vizdata
+
+        :return dict response: results of optimization of post data
+            (for full POST API details see /docs/api_devGuide.md)
+        """
     
         app.logger.info("Viz Data POST")
         app.logger.debug(request.get_data())
