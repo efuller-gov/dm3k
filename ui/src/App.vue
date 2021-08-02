@@ -461,8 +461,11 @@ export default {
     margin-top: 50px;
   }
   #table-and-control-buttons-container{
-    float: right;
-    width: 70%;
+    /* float: right; */
+    /* width: 70%; */
+    float: left;
+    margin-left: 10%;
+    width: auto;
   }
   #modal-instance-table .tabulator-header {
     background-color: white;
@@ -473,11 +476,11 @@ export default {
     border: 0px !important;
   }
   .tabulator .tabulator-tableHolder{
-    background: #EFEFEF;
-    /* background: white; */
+    /* background: #EFEFEF; */
+    background: white !important;
   }
   #modal-instance-table .tabulator-tableHolder .tabulator-table .tabulator-row{
-    background-color: white;
+    background-color: white !important;
     color: #707070;
     font-size: 12px;
   }
