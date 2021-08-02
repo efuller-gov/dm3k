@@ -63,7 +63,8 @@ export default {
         return {
             solnVis: {},
             TABLEHEIGHT: "300px",
-            TABLELAYOUT: "fitColumns",
+            // TABLELAYOUT: "fitColumns",
+            TABLELAYOUT: "fitData",
             instanceName: [],
             resourceName: [],
             activityName: [],
@@ -476,7 +477,7 @@ export default {
 </script>
 
 <style scoped>
-    .instance-table{
+    .instance-table {
         height: 30vh !important;
         overflow: scroll;
     }
