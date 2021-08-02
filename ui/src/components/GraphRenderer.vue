@@ -77,15 +77,12 @@
     },
     methods: {
         loadDm3kGraph() {
-          // this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
           this.$store.state.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
         zoomIn(){
-          // this.dm3kGraph.graph.zoomIn()
            this.$store.state.dm3kGraph.graph.zoomIn()
         },
         zoomOut(){
-          // this.dm3kGraph.graph.zoomOut()
           this.$store.state.dm3kGraph.graph.zoomOut()
         },
         addListener(){
@@ -101,7 +98,6 @@
           
           if (e.detail.type == 'Resource'){
             this.$store.state.dm3kGraph.removeResource(e.detail.name, e.detail.budget[0])
-            console.log("AFETR REMOVING. Here is graph: ", this.$store.state.dm3kGraph)
           }
           if (e.detail.type == 'Activity'){
             this.$store.state.dm3kGraph.removeActivity(e.detail.name, e.detail.cost,  e.detail.reward)
