@@ -182,29 +182,53 @@ export class Dm3kGraph {
     }
 
     removeResource(resName, budgetName){
-        console.log("-----> remove RESOURCE ")
+        console.log("-----> remove RESOURCE: ", resName)
 
         let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==resName)
         console.log("-- all graph ", this.graph.getDefaultParent())
         console.log("-- cell_to_remove ", cell_to_remove)
 
+        console.log("The graph: ", this)
         // remove budget cell
         let b_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>( (x.value==budgetName) & (x.id.includes('budget'))) )
 
         this.graph.removeCells(cell_to_remove)
         this.graph.removeCells(b_cell_to_remove)
+        
+        // Remove from resources list
         this.resources = this.resources.filter(x=>x.value!=resName);
+
+        // Remove from instance table
+        this.resourceInstances = this.resourceInstances.filter(x=>x.label!=resName)
+
+        // Remove from allocation instnaces
+        this.allocatedToInstances = this.allocatedToInstances.filter(x=>x.resName!=resName)
+
+        // Remove all traces of the resource's budget
+        let c_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>( (x.value==budgetName) & (x.id=='cost')) )
+        this.graph.removeCells(c_cell_to_remove)
+
+        for (let i=0; i<this.activityInstances.length; i++){
+            console.log(this.activityInstances[i].instanceTableData[i])
+            console.log(Object.keys(this.activityInstances[i].instanceTableData[i]))
+            console.log(Object.keys(this.activityInstances[i].instanceTableData[i]).map(x=>x.split("_")[1]))
+            if (Object.keys(this.activityInstances[i].instanceTableData[i]).map(x=>x.split("_")[1]).includes(budgetName)){
+                console.log("delete ", "cost_"+budgetName)
+                for (let ii=0; ii<this.activityInstances[i].instanceTableData.length; ii++){
+                    delete this.activityInstances[i].instanceTableData[ii]["cost_"+budgetName]
+                }
+            }
+        }
     }
 
     removeActivity(actName, costList, rewardName){
-        console.log("-----> remove ACTIVITY ")
-        console.log("costList ", costList)
-        console.log("rewardName ", rewardName)
+        console.log("-----> remove ACTIVITY: ", actName)
+        // console.log("costList ", costList)
+        // console.log("rewardName ", rewardName)
 
-        console.log("--- ALL CELLS TO FILTER ", this.graph.getChildVertices(this.graph.getDefaultParent()))
         let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==actName)
-        console.log("-- all graph ", this.graph.getDefaultParent())
-        console.log("-- cell_to_remove ", cell_to_remove)
+        // console.log("-- all graph ", this.graph.getDefaultParent())
+        // console.log("-- cell_to_remove ", cell_to_remove)
 
         // remove cost cell
         for (let i=0; i<costList.length; i++){
@@ -216,7 +240,15 @@ export class Dm3kGraph {
         this.graph.removeCells(r_cell_to_remove)
 
         this.graph.removeCells(cell_to_remove)
+
+        // Remove from activities list
         this.activities = this.activities.filter(x=>x.value!=actName);
+
+        // Remove from instance table
+        this.activityInstances = this.activityInstances.filter(x=>x.label!=actName)
+
+        // Remove from allocation instnaces
+        this.allocatedToInstances = this.allocatedToInstances.filter(x=>x.actName!=actName)
     }
 
     addAllocation(newActName, existingResName, newRewardName, locX = null, locY = null) {
