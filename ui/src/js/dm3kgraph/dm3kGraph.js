@@ -215,6 +215,33 @@ export class Dm3kGraph {
                 }
             }
         }
+
+        // remove constraints links
+        for (let i=0; i<this.constraints.length; i++){
+            if ((this.constraints[i].target == null) || (this.constraints[i].source == null) ){
+                this.constraints.splice(i, 1)
+                console.log('REMOVE CONSTRAINT')
+                console.log("this.constraints ", this.constraints)
+            }
+        }
+
+        // remove any contains links and instances
+        this.containsLinks = this.containsLinks.filter(x=>( (x.target.value!=resName) && (x.source.value!=resName)))
+
+        // remove all traces from contains
+        // this.containsInstances
+        // this.containsLinks
+        this.containsInstances = this.containsInstances.filter(x=>( (x.childName!=resName) && (x.parentName!=resName) ))
+        // for (let i=0; i<this.containsInstances.length; i++){
+        //     if (this.containsInstances[i].parentType=='resource'){
+        //         if ( (this.containsInstances[i].childName == resName) || (this.containsInstances[i].parentName == resName) ){
+        //             this.containsInstances.splice(i, 1)
+        //             console.log("REMOVE res: ", resName)
+        //             console.log("graph ", this)
+        //         }
+        //     }
+        //     // else continue;
+        // }
     }
 
     removeActivity(actName, costList, rewardName){
@@ -252,9 +279,33 @@ export class Dm3kGraph {
         // Remove from allocation instnaces
         this.allocatedToInstances = this.allocatedToInstances.filter(x=>x.actName!=actName)
 
-        // remove class name from can
-        console.log("this.allocatedLinks ", this.allocatedLinks)
+        // remove allocated links
+        // console.log("this.allocatedLinks ", this.allocatedLinks)
         this.allocatedLinks = this.allocatedLinks.filter(x=>x.target.value!=actName)
+
+        // remove constraints links
+        for (let i=0; i<this.constraints.length; i++){
+            console.log("this.constraints[i] ", this.constraints[i])
+            if ((this.constraints[i].target == null) || (this.constraints[i].source == null) ){
+                this.constraints.splice(i, 1)
+            }
+        }
+        console.log("the graph ", this)
+
+        // remove any contains links and instances
+        this.containsLinks = this.containsLinks.filter(x=>( (x.target.value!=actName) && (x.source.value!=actName)))
+
+        // remove all traces from contains
+        // this.containsInstances
+        // this.containsLinks
+        for (let i=0; i<this.containsInstances.length; i++){
+            if (this.containsInstances[i].parentType=='activity'){
+                if ( (this.containsInstances[i].childName == actName) || (this.containsInstances[i].parentName == actName) ){
+                    this.containsInstances.splice(i, 1)
+                }
+            }
+            else continue;
+        }
     }
 
     addAllocation(newActName, existingResName, newRewardName, locX = null, locY = null) {
@@ -637,7 +688,7 @@ export class Dm3kGraph {
 
         console.log('New Constraint');
         console.log(newConstraint);
-
+        console.log("the graph ", this)
     }
 
     isResource(name) {
