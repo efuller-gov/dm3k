@@ -7,6 +7,8 @@ OPEN-DM3K provides the user with:
 - an web-based UI to define their resource allocation problem.
 - an python optimizer that leverages linear optimization techniques to solve the user defined problem.
 
+For more explaination of resource allocation problems and their component parts, see */docs/resource_allocation_101.md*
+
 ## Installation
 
 ### Prerequisites
@@ -62,4 +64,11 @@ Depending on how you wish to contribute
 
 ## License
 
-MIT
+(c) Johns Hopkins University Applied Physics Laboratory. All Rights Reserved.
+
+This material may only be used, modified, or reproduced by or for the
+U.S. government pursuant to the license rights granted under FAR
+clause 52.227-14 or DFARS clauses 252.227-7013/7014.
+For any other permission, please contact the Legal Office at JHU/APL.
+
+For more details, see LICENSE file
