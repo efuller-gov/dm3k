@@ -940,7 +940,7 @@ class KnapsackComponentModel(ModelBase):
                 budget_name = self._budget_id_to_name[b_id]
                 if res_name in result["allocated_amt"]:
                     if act_name in result["allocated_amt"][res_name]:
-                        if budget_name in result["allocated_amt"][res_name]:
+                        if budget_name in result["allocated_amt"][res_name][act_name]:
                             log.warning("Attempt to overwrite a budget that already existed")
                         else:
                             result["allocated_amt"][res_name][act_name][budget_name] = self._model.ALLOCATED_AMT[r_id, a_id, b_id].value

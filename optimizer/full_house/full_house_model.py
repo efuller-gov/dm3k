@@ -12,7 +12,6 @@ pa = parent activity
 import logging
 from collections import defaultdict
 
-# from dm3k.data_access_layer import db_helper
 from optimizer.full_house.full_house_input import FullHouseInput
 from optimizer.slim_optimizer_base import ModelBase
 from pyomo.environ import Any, Binary, ConcreteModel, Constraint, NonNegativeReals, Objective, Param, Set, Var, maximize
@@ -399,13 +398,25 @@ class FullHouseModel(ModelBase):
         :param OutputBase output_class: the OutputBase or subclass of output base
         :return output: an instance of the output_class
         """
-        pyomo_model = self.get_model()
-        parent_score = defaultdict(float)
-        container_score = defaultdict(float)
-        result = {"full_trace": defaultdict(list)}
-        child_score = defaultdict(float)
-        parent_allocated = defaultdict(lambda: defaultdict(int))  # nested for efficiency
-        child_allocated = defaultdict(lambda: defaultdict(int))
+        output = output_class()
+        # output class needs 3 things
+        #  1) an objective value
+        output.set_objective_value(self._model.objective.expr())
+
+        #  2) a result - a dictionary of scores
+        result = {
+            "full_trace": {"resource": [], "activity": [], "budget_used": [], "value": [], "selected": [], "picked": [], "allocated": []},
+            "allocated_amt": {},
+            "per_resource_score": {},
+            "per_resource_budget_used": {},
+        }
+        allocations = {}
+        
+        picked_parent_combos = []
+        picked_child_combos = []
+        not_picked_parent_combos = []
+        not_picked_child_combos = []
+
         for container_name, data in self._data["resource_families"].items():
             for parent_resource in data["parent_resources"]:
                 pr = self._rev_pr[parent_resource]  # initials are for index
@@ -413,55 +424,156 @@ class FullHouseModel(ModelBase):
                     cr = self._rev_cr[child_resource]
                     for child_activity in self._data["child_possible_allocations"][child_resource]:
                         ca = self._rev_ca[child_activity]
-                        parent_activities = pyomo_model.list_pa_that_link_pr_cr_ca[(pr, cr, ca)]
-                        child_picked = pyomo_model.CHILD_ALLOCATED[(cr, ca)].value
-                        du_val = pyomo_model.child_score[ca]
+                        parent_activities = self._model.list_pa_that_link_pr_cr_ca[(pr, cr, ca)]
+                        child_picked = self._model.CHILD_ALLOCATED[(cr, ca)].value
+                        du_val = self._model.child_score[ca]
                         for pa in parent_activities:
-                            parent_picked = pyomo_model.PARENT_ALLOCATED[(pr, pa)].value
+                            parent_picked = self._model.PARENT_ALLOCATED[(pr, pa)].value
                             picked = parent_picked * child_picked
                             parent_activity = self._data["parent_activities"][pa]  # get name
-                            result["full_trace"]["container_name"].append(container_name)
-                            result["full_trace"]["parent_resource"].append(parent_resource)
-                            result["full_trace"]["parent_activity"].append(parent_activity)
-                            result["full_trace"]["child_resource"].append(child_resource)
-                            result["full_trace"]["child_activity"].append(child_activity)
-                            # Creating the "camkeys" key here to control order when displaying in table
-                            result["full_trace"]["camkeys"].append("")
-                            result["full_trace"]["parent_budget_used"].append(pyomo_model.PARENT_AMT[(pr, pa)].value * picked)
-                            result["full_trace"]["child_budget_used"].append(pyomo_model.CHILD_AMT[(cr, ca)].value * picked)
-                            result["full_trace"]["value"].append(du_val)
-                            result["full_trace"]["selected"].append(picked)
 
                             if picked:
-                                parent_score[parent_resource] += du_val
-                                container_score[container_name] += du_val
-                                child_score[child_resource] += du_val
+                                if (parent_resource, parent_activity) not in picked_parent_combos:
+                                    picked_parent_combos.append((parent_resource, parent_activity))
+                                
+                                if (child_resource, child_activity) not in picked_child_combos:
+                                    picked_child_combos.append((child_resource, child_activity))
+                            else:
+                                if (parent_resource, parent_activity) not in not_picked_parent_combos:
+                                    if (parent_resource, parent_activity) not in picked_parent_combos:
+                                        not_picked_parent_combos.append((parent_resource, parent_activity))
+                                
+                                if (child_resource, child_activity) not in not_picked_child_combos:
+                                    if (child_resource, child_activity) not in picked_child_combos:
+                                        not_picked_child_combos.append((child_resource, child_activity))
 
-                            if parent_picked:
-                                parent_allocated[parent_resource][parent_activity] = 1
-                            if child_picked:
-                                child_allocated[child_resource][child_activity] = 1
+        # sometimes items in picked get into non-picked
+        for (re, ac) in picked_parent_combos:
+            if (re, ac) in not_picked_parent_combos:
+                not_picked_parent_combos.remove((re, ac))
 
-        result["parent_score"] = parent_score
-        result["child_score"] = child_score
-        result["container_score"] = container_score
-        camkeys = db_helper.get_camkeys(result["full_trace"]["child_activity"])
-        if camkeys is not None:
-            result["full_trace"]["camkeys"] = camkeys
-        else:
-            result["full_trace"].pop("camkeys")
+        for (re, ac) in picked_child_combos:
+            if (re, ac) in not_picked_child_combos:
+                not_picked_child_combos.remove((re, ac))
 
-        solved_objective_value = pyomo_model.objective.expr()
+        # handle all parent metrics
+        budget_name1 = self._data["parent_budget_name"]
+        for (res_name1, act_name1) in picked_parent_combos:
+            pr = self._rev_pr[res_name1]  # initials are for index
+            pa = self._rev_pa[act_name1]
+            # allocated amount
+            if res_name1 in result["allocated_amt"]:
+                if act_name1 in result["allocated_amt"][res_name1]:
+                    if budget_name1 in result["allocated_amt"][res_name1][act_name1]:
+                        log.warning("Attempt to overwrite a budget that already existed")
+                    else:
+                        result["allocated_amt"][res_name1][act_name1][budget_name1] = self._model.PARENT_AMT[(pr, pa)].value
+                else:
+                    result["allocated_amt"][res_name1][act_name1] = {}
+                    result["allocated_amt"][res_name1][act_name1][budget_name1] = self._model.PARENT_AMT[(pr, pa)].value
+            else:
+                result["allocated_amt"][res_name1] = {}
+                result["allocated_amt"][res_name1][act_name1] = {}
+                result["allocated_amt"][res_name1][act_name1][budget_name1] = self._model.PARENT_AMT[(pr, pa)].value
 
-        # already computed in above loop
-        allocations = {
-            "parent": {k: list(parent_allocated[k].keys()) for k in parent_allocated},
-            "child": {k: list(child_allocated[k].keys()) for k in child_allocated},
-        }
+            # handle allocations
+            if res_name1 in allocations:
+                allocations[res_name1].append(act_name1)
+            else:
+                allocations[res_name1] = [act_name1]
 
+            # handle budget used...only 1 budget
+            if res_name1 in result["per_resource_budget_used"]:
+                result["per_resource_budget_used"][res_name1][budget_name1] += self._model.PARENT_AMT[(pr, pa)].value
+            else:
+                result["per_resource_budget_used"][res_name1] = {}
+                result["per_resource_budget_used"][res_name1][budget_name1] = self._model.PARENT_AMT[(pr, pa)].value
+
+            # Full trace
+            act1_value = 0   # parent activities have no value
+            result["full_trace"]["resource"].append(res_name1)
+            result["full_trace"]["activity"].append(act_name1)
+            result["full_trace"]["budget_used"].append(self._model.PARENT_AMT[(pr, pa)].value)
+            result["full_trace"]["value"].append(act1_value)
+            result["full_trace"]["selected"].append(1.0)
+            result["full_trace"]["picked"].append(1.0)
+            result["full_trace"]["allocated"].append(1.0)
+
+        # handle all child metrics
+        budget_name2 = self._data["child_budget_name"]
+        for (res_name2, act_name2) in picked_child_combos:  
+            cr = self._rev_cr[res_name2]
+            ca = self._rev_ca[act_name2]
+
+            # allocated amount
+            if res_name2 in result["allocated_amt"]:
+                if act_name2 in result["allocated_amt"][res_name2]:
+                    if budget_name2 in result["allocated_amt"][res_name2][act_name2]:
+                        log.warning("Attempt to overwrite a budget that already existed")
+                    else:
+                        result["allocated_amt"][res_name2][act_name2][budget_name2] = self._model.CHILD_AMT[(cr, ca)].value
+                else:
+                    result["allocated_amt"][res_name2][act_name2] = {}
+                    result["allocated_amt"][res_name2][act_name2][budget_name2] = self._model.CHILD_AMT[(cr, ca)].value
+            else:
+                result["allocated_amt"][res_name2] = {}
+                result["allocated_amt"][res_name2][act_name2] = {}
+                result["allocated_amt"][res_name2][act_name2][budget_name2] = self._model.CHILD_AMT[(cr, ca)].value
+
+            # handle allocations
+            if res_name2 in allocations:
+                allocations[res_name2].append(act_name2)
+            else:
+                allocations[res_name2] = [act_name2]
+
+            # handle resource score, parent activities have no value
+            ca = self._rev_ca[act_name2]
+            act2_value = self._model.child_score[ca]
+            if res_name2 in result["per_resource_score"]:
+                result["per_resource_score"][res_name2] += act2_value
+            else:
+                result["per_resource_score"][res_name2] = act2_value
+
+            # handle budget used...only 1 budget
+            if res_name2 in result["per_resource_budget_used"]:
+                result["per_resource_budget_used"][res_name2][budget_name2] += self._model.CHILD_AMT[(cr, ca)].value
+            else:
+                result["per_resource_budget_used"][res_name2] = {}
+                result["per_resource_budget_used"][res_name2][budget_name2] = self._model.CHILD_AMT[(cr, ca)].value
+
+            # full trace
+            result["full_trace"]["resource"].append(res_name2)
+            result["full_trace"]["activity"].append(act_name2)
+            result["full_trace"]["budget_used"].append(self._model.CHILD_AMT[(cr, ca)].value)
+            result["full_trace"]["value"].append(act2_value)
+            result["full_trace"]["selected"].append(1.0)
+            result["full_trace"]["picked"].append(1.0)
+            result["full_trace"]["allocated"].append(1.0)
+                            
+                            
+        # do non picked full_trace
+        act1_value = 0 
+        for (res_name1, act_name1) in not_picked_parent_combos:
+            result["full_trace"]["resource"].append(res_name1)
+            result["full_trace"]["activity"].append(act_name1)
+            result["full_trace"]["budget_used"].append(0.0)
+            result["full_trace"]["value"].append(act1_value)
+            result["full_trace"]["selected"].append(0.0)
+            result["full_trace"]["picked"].append(0.0)
+            result["full_trace"]["allocated"].append(0.0)
+
+        for (res_name2, act_name2) in not_picked_child_combos:
+            ca = self._rev_ca[act_name2]
+            act2_value = self._model.child_score[ca] 
+            result["full_trace"]["resource"].append(res_name2)
+            result["full_trace"]["activity"].append(act_name2)
+            result["full_trace"]["budget_used"].append(0.0)
+            result["full_trace"]["value"].append(act2_value)
+            result["full_trace"]["selected"].append(0.0)
+            result["full_trace"]["picked"].append(0.0)
+            result["full_trace"]["allocated"].append(0.0)
+        
         # fill class and return
-        output = output_class()
-        output.set_objective_value(solved_objective_value)
         output.set_results(result)
         output.set_allocations(allocations)
 

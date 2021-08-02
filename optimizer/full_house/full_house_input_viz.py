@@ -122,7 +122,7 @@ class FullHouseInputViz(FullHouseInput):
 
         return prop_value
 
-    def ingest_validate(self, constraints_path, activity_scores_names=None):
+    def ingest_validate(self, input_dict):
         """
         Validate the constraints and activity scores to determine if following Errors are found
 
@@ -134,8 +134,7 @@ class FullHouseInputViz(FullHouseInput):
 
         And then Load the files in the constraints path into this input (capturing them in the self._data attribute)
 
-        :param str constraints_path: string path to the folder which contains the constraints files
-        :param list activity_scores_names:
+        :param dict input_dict: a dict containing the name of the input and the data from files associated with this input
         :return bool fatal: True=a fatal error has been found, the optimizer should not continue
         :return list validation_errors: a list of errors where each error is a dict with the following attributes...
                     "err_code" : <a int where int is key in ERROR_CODE above>,
@@ -144,13 +143,11 @@ class FullHouseInputViz(FullHouseInput):
                     "fix": <string name of process performed to fix the error  or None>,
                     "is_fatal_error": <boolean; True = error is fatal, False = error is fixable>
         """
+        log.debug("Opening Dataset: " + input_dict["datasetName"])
 
         # determine if correct files exist
-        filepath = os.path.join(constraints_path, "dm3k-viz.json")
-        if os.path.exists(filepath):
-            with open(filepath) as openfile:
-                constraints_text = openfile.read()
-        else:
+        file_data = input_dict["files"]
+        if len(file_data) != 1:
             return (
                 True,
                 [
@@ -164,7 +161,7 @@ class FullHouseInputViz(FullHouseInput):
                 ],
             )
 
-        dm3k_viz_data = json.loads(constraints_text)
+        dm3k_viz_data = file_data[0]["fileContents"]
 
         # --- INGEST ---
         log.debug("Ingesting Data")
@@ -184,6 +181,8 @@ class FullHouseInputViz(FullHouseInput):
             "child_possible_allocations": {},
             "resource_families": {},
             "activity_children": {},
+            "parent_budget_name": "",
+            "child_budget_name": ""
         }
 
         # TODO - THIS IS VERY BRITTLE!!! IT ASSUMES THAT ONLY FULL HOUSE PROBLEMS WILL BE SPECIFIED!
@@ -251,7 +250,14 @@ class FullHouseInputViz(FullHouseInput):
                 parent_res_instance = ri
 
         for pri in parent_res_instance["instanceTable"]:
-            self._data["avail_parent_amt"][pri["instanceName"]] = pri["budget"]
+
+            # budget is a dictionary...full house can only take values
+            budget = list(pri["budget"].values())[0]
+
+            # need budget name for output
+            self._data["parent_budget_name"] = list(pri["budget"].keys())[0]
+
+            self._data["avail_parent_amt"][pri["instanceName"]] = budget
 
         log.debug("avail_parent_amt")
         log.debug(self._data["avail_parent_amt"])
@@ -296,6 +302,10 @@ class FullHouseInputViz(FullHouseInput):
             for pa in self._data["parent_possible_allocations"][pr]:
                 tu = (pr, pa)
                 val = self._get_instance_prop(dm3k_viz_data, parent_activity, pa, prop_name="cost", class_type="activity")
+                
+                # val can be a dictionary...full house can only take values
+                val = list(val.values())[0]
+
                 self._data["req_parent_amt"][tu] = val
 
         log.debug("required parent amount")
@@ -353,7 +363,14 @@ class FullHouseInputViz(FullHouseInput):
                 child_res_instance = ri
 
         for cri in child_res_instance["instanceTable"]:
-            self._data["avail_child_amt"][cri["instanceName"]] = cri["budget"]
+
+            # budget is a dictionary...full house can only take values
+            budget = list(cri["budget"].values())[0]
+
+            # need budget name for output
+            self._data["child_budget_name"] = list(cri["budget"].keys())[0]
+
+            self._data["avail_child_amt"][cri["instanceName"]] = budget
 
         log.debug("avail_child_amt")
         log.debug(self._data["avail_child_amt"])
@@ -398,6 +415,10 @@ class FullHouseInputViz(FullHouseInput):
             for ca in self._data["child_possible_allocations"][cr]:
                 tu = (cr, ca)
                 val = self._get_instance_prop(dm3k_viz_data, child_activity, ca, prop_name="cost", class_type="activity")
+                
+                # val can be a dictionary...full house can only take values
+                val = list(val.values())[0]
+                
                 self._data["req_child_amt"][tu] = val
 
         log.debug("required child amount")

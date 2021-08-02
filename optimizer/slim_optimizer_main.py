@@ -7,14 +7,14 @@ import glob
 import logging
 import os
 
-#import optimizer.full_house.full_house_optimizer as fh_optimizer
+import optimizer.full_house.full_house_optimizer as fh_optimizer
 import optimizer.knapsack.knapsack_optimizer as ks_optimizer
 
 log = logging.getLogger(__name__)
 
 algorithm_dict = {
     "default": ks_optimizer.KnapsackOptimizerViz,
-    #"FullHouseViz": fh_optimizer.FullHouseOptimizerViz,
+    "FullHouseViz": fh_optimizer.FullHouseOptimizerViz,
     "KnapsackViz": ks_optimizer.KnapsackOptimizerViz
 }
 

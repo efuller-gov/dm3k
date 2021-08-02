@@ -15,7 +15,8 @@ from collections import defaultdict
 
 #from dm3k.data_access_layer import db_helper
 from optimizer.full_house.full_house_input import FullHouseInput
-from optimizer.slim_optimizer_base import ModelBase
+#from optimizer.slim_optimizer_base import ModelBase
+from optimizer.full_house.full_house_model import FullHouseModel
 from pyomo.environ import Any, Binary, ConcreteModel, Constraint, Objective, Param, Set, Var, maximize
 
 log = logging.getLogger(__name__)
@@ -138,7 +139,7 @@ def combo_rule(model, c):
 '''
 
 
-class FullHouseAWDMissilesModel(ModelBase):
+class FullHouseAWDMissilesModel(FullHouseModel):
     def __init__(self):
         super().__init__()
         self._data = {}
@@ -443,79 +444,74 @@ class FullHouseAWDMissilesModel(ModelBase):
         log.info("DONE!!")
         # log.debug(self._model.pprint())
 
-    def fill_output(self, output_class):
-        """
-        Return the output of the model after it has been solved by instantiating an object of the output class.
+    # def fill_output(self, output_class):
+    #     """
+    #     Return the output of the model after it has been solved by instantiating an object of the output class.
 
-        This method must interrogate the model and produce an output object.  Since models may differ,
-        this method must be implemented in the subclass
+    #     This method must interrogate the model and produce an output object.  Since models may differ,
+    #     this method must be implemented in the subclass
 
-        :param OutputBase output_class: the OutputBase or subclass of output base
-        :return output: an instance of the output_class
-        """
-        output = output_class()
+    #     :param OutputBase output_class: the OutputBase or subclass of output base
+    #     :return output: an instance of the output_class
+    #     """
+    #     output = output_class()
 
-        # objective value
-        output.set_objective_value(self._model.objective.expr())
+    #     # objective value
+    #     output.set_objective_value(self._model.objective.expr())
 
-        # results
-        parent_allocated = defaultdict(lambda: defaultdict(int))  # nested for efficiency
-        child_allocated = defaultdict(lambda: defaultdict(int))
-        parent_score, child_score, container_score = defaultdict(float), defaultdict(float), defaultdict(float)
-        result = {"full_trace": defaultdict(list)}
-        for m, s in self._model.launcherShipArcs:
-            # remember: child resources get combined for missiles; just 1 quantity per ship
-            container_name = self._data["containers"][s]
-            parent_resource = self._data["parent_resources"][m]
-            if self._data["resource_families"][container_name]["child_resources"]:
-                child_resource = self._data["resource_families"][container_name]["child_resources"][0]
-            else:
-                child_resource = "child_resource_".format(s)
-            for t in self.launcherTargets[m]:
-                child_picked = self._model.FIRE[(m, t)].value
-                du_val = self.targetValues[t]
-                child_activity = self._data["child_activities"][t]
-                for o in self.launcherOrientations[m]:
-                    if o in self.targetOrientations[t]:
-                        parent_picked = self._model.ORIENT[m, o].value
-                        picked = parent_picked * child_picked
-                        parent_activity = self._data["parent_activities"][o]
-                        result["full_trace"]["container_name"].append(container_name)
-                        result["full_trace"]["parent_resource"].append(parent_resource)
-                        result["full_trace"]["parent_activity"].append(parent_activity)
-                        result["full_trace"]["child_resource"].append(child_resource)
-                        result["full_trace"]["child_activity"].append(child_activity)
-                        # Creating the "camkeys" key here to control order when displaying in table
-                        result["full_trace"]["camkeys"].append("")
-                        result["full_trace"]["parent_budget_used"].append(1 * picked)
-                        result["full_trace"]["child_budget_used"].append(1 * picked)
-                        result["full_trace"]["value"].append(du_val)
-                        result["full_trace"]["selected"].append(picked)
+    #     # results
+    #     parent_allocated = defaultdict(lambda: defaultdict(int))  # nested for efficiency
+    #     child_allocated = defaultdict(lambda: defaultdict(int))
+    #     parent_score, child_score, container_score = defaultdict(float), defaultdict(float), defaultdict(float)
+    #     result = {"full_trace": defaultdict(list)}
+    #     for m, s in self._model.launcherShipArcs:
+    #         # remember: child resources get combined for missiles; just 1 quantity per ship
+    #         container_name = self._data["containers"][s]
+    #         parent_resource = self._data["parent_resources"][m]
+    #         if self._data["resource_families"][container_name]["child_resources"]:
+    #             child_resource = self._data["resource_families"][container_name]["child_resources"][0]
+    #         else:
+    #             child_resource = "child_resource_{}".format(s)
+    #         for t in self.launcherTargets[m]:
+    #             child_picked = self._model.FIRE[(m, t)].value
+    #             du_val = self.targetValues[t]
+    #             child_activity = self._data["child_activities"][t]
+    #             for o in self.launcherOrientations[m]:
+    #                 if o in self.targetOrientations[t]:
+    #                     parent_picked = self._model.ORIENT[m, o].value
+    #                     picked = parent_picked * child_picked
+    #                     parent_activity = self._data["parent_activities"][o]
+    #                     result["full_trace"]["container_name"].append(container_name)
+    #                     result["full_trace"]["parent_resource"].append(parent_resource)
+    #                     result["full_trace"]["parent_activity"].append(parent_activity)
+    #                     result["full_trace"]["child_resource"].append(child_resource)
+    #                     result["full_trace"]["child_activity"].append(child_activity)
+    #                     # Creating the "camkeys" key here to control order when displaying in table
+    #                     result["full_trace"]["camkeys"].append("")
+    #                     result["full_trace"]["parent_budget_used"].append(1 * picked)
+    #                     result["full_trace"]["child_budget_used"].append(1 * picked)
+    #                     result["full_trace"]["value"].append(du_val)
+    #                     result["full_trace"]["selected"].append(picked)
 
-                        if picked:
-                            parent_score[parent_resource] += du_val
-                            container_score[container_name] += du_val
-                            child_score[child_resource] += du_val
+    #                     if picked:
+    #                         parent_score[parent_resource] += du_val
+    #                         container_score[container_name] += du_val
+    #                         child_score[child_resource] += du_val
 
-                        if parent_picked:
-                            parent_allocated[parent_resource][parent_activity] = 1
-                        if child_picked:
-                            child_allocated[container_name][child_activity] = 1
-        result["parent_score"] = parent_score
-        result["child_score"] = child_score
-        result["container_score"] = container_score
-        camkeys = db_helper.get_camkeys(result["full_trace"]["child_activity"])
-        if camkeys is not None:
-            result["full_trace"]["camkeys"] = camkeys
-        else:
-            result["full_trace"].pop("camkeys")
+    #                     if parent_picked:
+    #                         parent_allocated[parent_resource][parent_activity] = 1
+    #                     if child_picked:
+    #                         child_allocated[container_name][child_activity] = 1
+    #     result["parent_score"] = parent_score
+    #     result["child_score"] = child_score
+    #     result["container_score"] = container_score
 
-        output.set_results(result)
+    #     output.set_results(result)
 
-        allocations = {
-            "parent": {k: list(parent_allocated[k].keys()) for k in parent_allocated},
-            "child": {k: list(child_allocated[k].keys()) for k in child_allocated},
-        }
-        output.set_allocations(allocations)
+    #     allocations = {
+    #         "parent": {k: list(parent_allocated[k].keys()) for k in parent_allocated},
+    #         "child": {k: list(child_allocated[k].keys()) for k in child_allocated},
+    #     }
+    #     output.set_allocations(allocations)
 
-        return output
+    #     return output
