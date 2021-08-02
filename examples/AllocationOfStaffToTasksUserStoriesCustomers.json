@@ -1,541 +1,550 @@
 {
-    "resourceClasses": [
-        {
-            "className": "System Engineering",
-            "locX": 640,
-            "locY": 140,
-            "typeName": "labor",
-            "budgets": [
-                "SE hours"
-            ],
-            "containsClasses": [],
-            "canBeAllocatedToClasses": [
-                "Dev Tasks"
-            ]
-        },
-        {
-            "className": "UI Development",
-            "locX": 650,
-            "locY": 320,
-            "typeName": "labor",
-            "budgets": [
-                "FE Dev Hours"
-            ],
-            "containsClasses": [],
-            "canBeAllocatedToClasses": [
-                "Dev Tasks"
-            ]
-        },
-        {
-            "className": "BackEnd Development",
-            "locX": 650,
-            "locY": 480,
-            "typeName": "labor",
-            "budgets": [
-                "BE Dev Hours"
-            ],
-            "containsClasses": [],
-            "canBeAllocatedToClasses": [
-                "Dev Tasks"
-            ]
-        },
-        {
-            "className": "Contractor Companies",
-            "locX": 120,
-            "locY": 330,
-            "typeName": "facility",
-            "budgets": [],
-            "containsClasses": [
-                "System Engineering",
-                "UI Development",
-                "BackEnd Development"
-            ],
-            "canBeAllocatedToClasses": []
+    "datasetName": "AllocationOfStaffToTasksUserStoriesCustomers",
+    "files": [
+    	{
+    		"fileName": "AllocationOfStaffToTasksUserStoriesCustomers.json",
+    		"fileContents": {
+                "resourceClasses": [
+                    {
+                        "className": "System Engineering",
+                        "locX": 640,
+                        "locY": 140,
+                        "typeName": "labor",
+                        "budgets": [
+                            "SE hours"
+                        ],
+                        "containsClasses": [],
+                        "canBeAllocatedToClasses": [
+                            "Dev Tasks"
+                        ]
+                    },
+                    {
+                        "className": "UI Development",
+                        "locX": 650,
+                        "locY": 320,
+                        "typeName": "labor",
+                        "budgets": [
+                            "FE Dev Hours"
+                        ],
+                        "containsClasses": [],
+                        "canBeAllocatedToClasses": [
+                            "Dev Tasks"
+                        ]
+                    },
+                    {
+                        "className": "BackEnd Development",
+                        "locX": 650,
+                        "locY": 480,
+                        "typeName": "labor",
+                        "budgets": [
+                            "BE Dev Hours"
+                        ],
+                        "containsClasses": [],
+                        "canBeAllocatedToClasses": [
+                            "Dev Tasks"
+                        ]
+                    },
+                    {
+                        "className": "Contractor Companies",
+                        "locX": 120,
+                        "locY": 330,
+                        "typeName": "facility",
+                        "budgets": [],
+                        "containsClasses": [
+                            "System Engineering",
+                            "UI Development",
+                            "BackEnd Development"
+                        ],
+                        "canBeAllocatedToClasses": []
+                    }
+                ],
+                "activityClasses": [
+                    {
+                        "className": "Dev Tasks",
+                        "locX": 1060,
+                        "locY": 320,
+                        "typeName": "assignment",
+                        "rewards": [
+                            "value"
+                        ],
+                        "costs": [
+                            "SE hours",
+                            "FE Dev Hours",
+                            "BE Dev Hours"
+                        ],
+                        "containsClasses": [],
+                        "allocatedWhen": {}
+                    },
+                    {
+                        "className": "User Stories",
+                        "locX": 1320,
+                        "locY": 320,
+                        "typeName": "product",
+                        "rewards": [
+                            "value"
+                        ],
+                        "costs": [],
+                        "containsClasses": [
+                            "Dev Tasks"
+                        ],
+                        "allocatedWhen": {}
+                    },
+                    {
+                        "className": "Customers",
+                        "locX": 1580,
+                        "locY": 320,
+                        "typeName": "project",
+                        "rewards": [
+                            "value"
+                        ],
+                        "costs": [],
+                        "containsClasses": [
+                            "User Stories"
+                        ],
+                        "allocatedWhen": {}
+                    }
+                ],
+                "resourceInstances": [
+                    {
+                        "className": "System Engineering",
+                        "instanceTable": [
+                            {
+                                "instanceName": "SE George",
+                                "budget": {
+                                    "SE hours": 10
+                                }
+                            },
+                            {
+                                "instanceName": "SE Troy",
+                                "budget": {
+                                    "SE hours": 20
+                                }
+                            },
+                            {
+                                "instanceName": "SE Keith",
+                                "budget": {
+                                    "SE hours": 20
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "className": "UI Development",
+                        "instanceTable": [
+                            {
+                                "instanceName": "UI Laura",
+                                "budget": {
+                                    "FE Dev Hours": 16
+                                }
+                            },
+                            {
+                                "instanceName": "UI Jaime",
+                                "budget": {
+                                    "FE Dev Hours": 10
+                                }
+                            },
+                            {
+                                "instanceName": "UI Tamara",
+                                "budget": {
+                                    "FE Dev Hours": 20
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "className": "BackEnd Development",
+                        "instanceTable": [
+                            {
+                                "instanceName": "BE Jeff",
+                                "budget": {
+                                    "BE Dev Hours": 20
+                                }
+                            },
+                            {
+                                "instanceName": "BE Dan",
+                                "budget": {
+                                    "BE Dev Hours": 20
+                                }
+                            },
+                            {
+                                "instanceName": "BE Freddy",
+                                "budget": {
+                                    "BE Dev Hours": 20
+                                }
+                            },
+                            {
+                                "instanceName": "BE Lauren",
+                                "budget": {
+                                    "BE Dev Hours": 20
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "className": "Contractor Companies",
+                        "instanceTable": [
+                            {
+                                "instanceName": "The Software House",
+                                "budget": {}
+                            },
+                            {
+                                "instanceName": "Agency04",
+                                "budget": {}
+                            },
+                            {
+                                "instanceName": "Emergent",
+                                "budget": {}
+                            },
+                            {
+                                "instanceName": "Britenet",
+                                "budget": {}
+                            }
+                        ]
+                    }
+                ],
+                "activityInstances": [
+                    {
+                        "className": "Dev Tasks",
+                        "instanceTable": [
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_0",
+                                "cost": {
+                                    "SE hours": 1,
+                                    "FE Dev Hours": 0,
+                                    "BE Dev Hours": 15
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_1",
+                                "cost": {
+                                    "SE hours": 2,
+                                    "FE Dev Hours": 10,
+                                    "BE Dev Hours": 12
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_2",
+                                "cost": {
+                                    "SE hours": 5,
+                                    "FE Dev Hours": 5,
+                                    "BE Dev Hours": 0
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_3",
+                                "cost": {
+                                    "SE hours": 10,
+                                    "FE Dev Hours": 1,
+                                    "BE Dev Hours": 1
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_4",
+                                "cost": {
+                                    "SE hours": 3,
+                                    "FE Dev Hours": 2,
+                                    "BE Dev Hours": 8
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_5",
+                                "cost": {
+                                    "SE hours": 12,
+                                    "FE Dev Hours": 1,
+                                    "BE Dev Hours": 1
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_6",
+                                "cost": {
+                                    "SE hours": 2,
+                                    "FE Dev Hours": 1,
+                                    "BE Dev Hours": 10
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_7",
+                                "cost": {
+                                    "SE hours": 1,
+                                    "FE Dev Hours": 12,
+                                    "BE Dev Hours": 2
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_8",
+                                "cost": {
+                                    "SE hours": 3,
+                                    "FE Dev Hours": 8,
+                                    "BE Dev Hours": 8
+                                },
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "Dev Tasks_Activity_instance_9",
+                                "cost": {
+                                    "SE hours": 1,
+                                    "FE Dev Hours": 8,
+                                    "BE Dev Hours": 0
+                                },
+                                "reward": 0
+                            }
+                        ]
+                    },
+                    {
+                        "className": "User Stories",
+                        "instanceTable": [
+                            {
+                                "instanceName": "User Stories_Activity_instance_0",
+                                "cost": {},
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "User Stories_Activity_instance_1",
+                                "cost": {},
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "User Stories_Activity_instance_2",
+                                "cost": {},
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "User Stories_Activity_instance_3",
+                                "cost": {},
+                                "reward": 0
+                            },
+                            {
+                                "instanceName": "User Stories_Activity_instance_4",
+                                "cost": {},
+                                "reward": 0
+                            }
+                        ]
+                    },
+                    {
+                        "className": "Customers",
+                        "instanceTable": [
+                            {
+                                "instanceName": "Customers_Activity_instance_0",
+                                "cost": {},
+                                "reward": 10
+                            },
+                            {
+                                "instanceName": "Customers_Activity_instance_1",
+                                "cost": {},
+                                "reward": 5
+                            },
+                            {
+                                "instanceName": "Customers_Activity_instance_2",
+                                "cost": {},
+                                "reward": 9
+                            }
+                        ]
+                    }
+                ],
+                "allocationInstances": [
+                    {
+                        "resourceClassName": "System Engineering",
+                        "activityClassName": "Dev Tasks",
+                        "instanceTable": [
+                            {
+                                "resourceInstanceName": "ALL",
+                                "activityInstanceName": "ALL"
+                            }
+                        ]
+                    },
+                    {
+                        "resourceClassName": "UI Development",
+                        "activityClassName": "Dev Tasks",
+                        "instanceTable": [
+                            {
+                                "resourceInstanceName": "ALL",
+                                "activityInstanceName": "ALL"
+                            }
+                        ]
+                    },
+                    {
+                        "resourceClassName": "BackEnd Development",
+                        "activityClassName": "Dev Tasks",
+                        "instanceTable": [
+                            {
+                                "resourceInstanceName": "ALL",
+                                "activityInstanceName": "ALL"
+                            }
+                        ]
+                    }
+                ],
+                "containsInstances": [
+                    {
+                        "parentClassName": "User Stories",
+                        "childClassName": "Dev Tasks",
+                        "parentType": "activity",
+                        "instanceTable": [
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_0",
+                                "childInstanceName": "Dev Tasks_Activity_instance_0"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_0",
+                                "childInstanceName": "Dev Tasks_Activity_instance_1"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_0",
+                                "childInstanceName": "Dev Tasks_Activity_instance_2"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_1",
+                                "childInstanceName": "Dev Tasks_Activity_instance_3"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_1",
+                                "childInstanceName": "Dev Tasks_Activity_instance_4"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_2",
+                                "childInstanceName": "Dev Tasks_Activity_instance_5"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_2",
+                                "childInstanceName": "Dev Tasks_Activity_instance_6"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_2",
+                                "childInstanceName": "Dev Tasks_Activity_instance_0"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_3",
+                                "childInstanceName": "Dev Tasks_Activity_instance_7"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_4",
+                                "childInstanceName": "Dev Tasks_Activity_instance_8"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_4",
+                                "childInstanceName": "Dev Tasks_Activity_instance_9"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_4",
+                                "childInstanceName": "Dev Tasks_Activity_instance_5"
+                            },
+                            {
+                                "parentInstanceName": "User Stories_Activity_instance_4",
+                                "childInstanceName": "Dev Tasks_Activity_instance_3"
+                            }
+                        ]
+                    },
+                    {
+                        "parentClassName": "Customers",
+                        "childClassName": "User Stories",
+                        "parentType": "activity",
+                        "instanceTable": [
+                            {
+                                "parentInstanceName": "Customers_Activity_instance_0",
+                                "childInstanceName": "User Stories_Activity_instance_0"
+                            },
+                            {
+                                "parentInstanceName": "Customers_Activity_instance_0",
+                                "childInstanceName": "User Stories_Activity_instance_3"
+                            },
+                            {
+                                "parentInstanceName": "Customers_Activity_instance_1",
+                                "childInstanceName": "User Stories_Activity_instance_1"
+                            },
+                            {
+                                "parentInstanceName": "Customers_Activity_instance_1",
+                                "childInstanceName": "User Stories_Activity_instance_3"
+                            },
+                            {
+                                "parentInstanceName": "Customers_Activity_instance_1",
+                                "childInstanceName": "User Stories_Activity_instance_4"
+                            },
+                            {
+                                "parentInstanceName": "Customers_Activity_instance_2",
+                                "childInstanceName": "User Stories_Activity_instance_0"
+                            },
+                            {
+                                "parentInstanceName": "Customers_Activity_instance_2",
+                                "childInstanceName": "User Stories_Activity_instance_2"
+                            },
+                            {
+                                "parentInstanceName": "Customers_Activity_instance_2",
+                                "childInstanceName": "User Stories_Activity_instance_3"
+                            }
+                        ]
+                    },
+                    {
+                        "parentClassName": "Contractor Companies",
+                        "childClassName": "System Engineering",
+                        "parentType": "resource",
+                        "instanceTable": [
+                            {
+                                "parentInstanceName": "Agency04",
+                                "childInstanceName": "SE George"
+                            },
+                            {
+                                "parentInstanceName": "The Software House",
+                                "childInstanceName": "SE Troy"
+                            },
+                            {
+                                "parentInstanceName": "Britenet",
+                                "childInstanceName": "SE Keith"
+                            }
+                        ]
+                    },
+                    {
+                        "parentClassName": "Contractor Companies",
+                        "childClassName": "UI Development",
+                        "parentType": "resource",
+                        "instanceTable": [
+                            {
+                                "parentInstanceName": "Emergent",
+                                "childInstanceName": "UI Jaime"
+                            },
+                            {
+                                "parentInstanceName": "Britenet",
+                                "childInstanceName": "UI Tamara"
+                            },
+                            {
+                                "parentInstanceName": "Britenet",
+                                "childInstanceName": "UI Laura"
+                            }
+                        ]
+                    },
+                    {
+                        "parentClassName": "Contractor Companies",
+                        "childClassName": "BackEnd Development",
+                        "parentType": "resource",
+                        "instanceTable": [
+                            {
+                                "parentInstanceName": "The Software House",
+                                "childInstanceName": "BE Jeff"
+                            },
+                            {
+                                "parentInstanceName": "The Software House",
+                                "childInstanceName": "BE Dan"
+                            },
+                            {
+                                "parentInstanceName": "Emergent",
+                                "childInstanceName": "BE Lauren"
+                            },
+                            {
+                                "parentInstanceName": "Emergent",
+                                "childInstanceName": "BE Freddy"
+                            }
+                        ]
+                    }
+                ],
+                "allocationConstraints": []
+            }
         }
-    ],
-    "activityClasses": [
-        {
-            "className": "Dev Tasks",
-            "locX": 1060,
-            "locY": 320,
-            "typeName": "assignment",
-            "rewards": [
-                "value"
-            ],
-            "costs": [
-                "SE hours",
-                "FE Dev Hours",
-                "BE Dev Hours"
-            ],
-            "containsClasses": [],
-            "allocatedWhen": {}
-        },
-        {
-            "className": "User Stories",
-            "locX": 1320,
-            "locY": 320,
-            "typeName": "product",
-            "rewards": [
-                "value"
-            ],
-            "costs": [],
-            "containsClasses": [
-                "Dev Tasks"
-            ],
-            "allocatedWhen": {}
-        },
-        {
-            "className": "Customers",
-            "locX": 1580,
-            "locY": 320,
-            "typeName": "project",
-            "rewards": [
-                "value"
-            ],
-            "costs": [],
-            "containsClasses": [
-                "User Stories"
-            ],
-            "allocatedWhen": {}
-        }
-    ],
-    "resourceInstances": [
-        {
-            "className": "System Engineering",
-            "instanceTable": [
-                {
-                    "instanceName": "SE George",
-                    "budget": {
-                        "SE hours": 10
-                    }
-                },
-                {
-                    "instanceName": "SE Troy",
-                    "budget": {
-                        "SE hours": 20
-                    }
-                },
-                {
-                    "instanceName": "SE Keith",
-                    "budget": {
-                        "SE hours": 20
-                    }
-                }
-            ]
-        },
-        {
-            "className": "UI Development",
-            "instanceTable": [
-                {
-                    "instanceName": "UI Laura",
-                    "budget": {
-                        "FE Dev Hours": 16
-                    }
-                },
-                {
-                    "instanceName": "UI Jaime",
-                    "budget": {
-                        "FE Dev Hours": 10
-                    }
-                },
-                {
-                    "instanceName": "UI Tamara",
-                    "budget": {
-                        "FE Dev Hours": 20
-                    }
-                }
-            ]
-        },
-        {
-            "className": "BackEnd Development",
-            "instanceTable": [
-                {
-                    "instanceName": "BE Jeff",
-                    "budget": {
-                        "BE Dev Hours": 20
-                    }
-                },
-                {
-                    "instanceName": "BE Dan",
-                    "budget": {
-                        "BE Dev Hours": 20
-                    }
-                },
-                {
-                    "instanceName": "BE Freddy",
-                    "budget": {
-                        "BE Dev Hours": 20
-                    }
-                },
-                {
-                    "instanceName": "BE Lauren",
-                    "budget": {
-                        "BE Dev Hours": 20
-                    }
-                }
-            ]
-        },
-        {
-            "className": "Contractor Companies",
-            "instanceTable": [
-                {
-                    "instanceName": "The Software House",
-                    "budget": {}
-                },
-                {
-                    "instanceName": "Agency04",
-                    "budget": {}
-                },
-                {
-                    "instanceName": "Emergent",
-                    "budget": {}
-                },
-                {
-                    "instanceName": "Britenet",
-                    "budget": {}
-                }
-            ]
-        }
-    ],
-    "activityInstances": [
-        {
-            "className": "Dev Tasks",
-            "instanceTable": [
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_0",
-                    "cost": {
-                        "SE hours": 1,
-                        "FE Dev Hours": 0,
-                        "BE Dev Hours": 15
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_1",
-                    "cost": {
-                        "SE hours": 2,
-                        "FE Dev Hours": 10,
-                        "BE Dev Hours": 12
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_2",
-                    "cost": {
-                        "SE hours": 5,
-                        "FE Dev Hours": 5,
-                        "BE Dev Hours": 0
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_3",
-                    "cost": {
-                        "SE hours": 10,
-                        "FE Dev Hours": 1,
-                        "BE Dev Hours": 1
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_4",
-                    "cost": {
-                        "SE hours": 3,
-                        "FE Dev Hours": 2,
-                        "BE Dev Hours": 8
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_5",
-                    "cost": {
-                        "SE hours": 12,
-                        "FE Dev Hours": 1,
-                        "BE Dev Hours": 1
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_6",
-                    "cost": {
-                        "SE hours": 2,
-                        "FE Dev Hours": 1,
-                        "BE Dev Hours": 10
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_7",
-                    "cost": {
-                        "SE hours": 1,
-                        "FE Dev Hours": 12,
-                        "BE Dev Hours": 2
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_8",
-                    "cost": {
-                        "SE hours": 3,
-                        "FE Dev Hours": 8,
-                        "BE Dev Hours": 8
-                    },
-                    "reward": 0
-                },
-                {
-                    "instanceName": "Dev Tasks_Activity_instance_9",
-                    "cost": {
-                        "SE hours": 1,
-                        "FE Dev Hours": 8,
-                        "BE Dev Hours": 0
-                    },
-                    "reward": 0
-                }
-            ]
-        },
-        {
-            "className": "User Stories",
-            "instanceTable": [
-                {
-                    "instanceName": "User Stories_Activity_instance_0",
-                    "cost": {},
-                    "reward": 0
-                },
-                {
-                    "instanceName": "User Stories_Activity_instance_1",
-                    "cost": {},
-                    "reward": 0
-                },
-                {
-                    "instanceName": "User Stories_Activity_instance_2",
-                    "cost": {},
-                    "reward": 0
-                },
-                {
-                    "instanceName": "User Stories_Activity_instance_3",
-                    "cost": {},
-                    "reward": 0
-                },
-                {
-                    "instanceName": "User Stories_Activity_instance_4",
-                    "cost": {},
-                    "reward": 0
-                }
-            ]
-        },
-        {
-            "className": "Customers",
-            "instanceTable": [
-                {
-                    "instanceName": "Customers_Activity_instance_0",
-                    "cost": {},
-                    "reward": 10
-                },
-                {
-                    "instanceName": "Customers_Activity_instance_1",
-                    "cost": {},
-                    "reward": 5
-                },
-                {
-                    "instanceName": "Customers_Activity_instance_2",
-                    "cost": {},
-                    "reward": 9
-                }
-            ]
-        }
-    ],
-    "allocationInstances": [
-        {
-            "resourceClassName": "System Engineering",
-            "activityClassName": "Dev Tasks",
-            "instanceTable": [
-                {
-                    "resourceInstanceName": "ALL",
-                    "activityInstanceName": "ALL"
-                }
-            ]
-        },
-        {
-            "resourceClassName": "UI Development",
-            "activityClassName": "Dev Tasks",
-            "instanceTable": [
-                {
-                    "resourceInstanceName": "ALL",
-                    "activityInstanceName": "ALL"
-                }
-            ]
-        },
-        {
-            "resourceClassName": "BackEnd Development",
-            "activityClassName": "Dev Tasks",
-            "instanceTable": [
-                {
-                    "resourceInstanceName": "ALL",
-                    "activityInstanceName": "ALL"
-                }
-            ]
-        }
-    ],
-    "containsInstances": [
-        {
-            "parentClassName": "User Stories",
-            "childClassName": "Dev Tasks",
-            "parentType": "activity",
-            "instanceTable": [
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_0",
-                    "childInstanceName": "Dev Tasks_Activity_instance_0"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_0",
-                    "childInstanceName": "Dev Tasks_Activity_instance_1"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_0",
-                    "childInstanceName": "Dev Tasks_Activity_instance_2"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_1",
-                    "childInstanceName": "Dev Tasks_Activity_instance_3"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_1",
-                    "childInstanceName": "Dev Tasks_Activity_instance_4"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_2",
-                    "childInstanceName": "Dev Tasks_Activity_instance_5"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_2",
-                    "childInstanceName": "Dev Tasks_Activity_instance_6"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_2",
-                    "childInstanceName": "Dev Tasks_Activity_instance_0"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_3",
-                    "childInstanceName": "Dev Tasks_Activity_instance_7"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_4",
-                    "childInstanceName": "Dev Tasks_Activity_instance_8"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_4",
-                    "childInstanceName": "Dev Tasks_Activity_instance_9"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_4",
-                    "childInstanceName": "Dev Tasks_Activity_instance_5"
-                },
-                {
-                    "parentInstanceName": "User Stories_Activity_instance_4",
-                    "childInstanceName": "Dev Tasks_Activity_instance_3"
-                }
-            ]
-        },
-        {
-            "parentClassName": "Customers",
-            "childClassName": "User Stories",
-            "parentType": "activity",
-            "instanceTable": [
-                {
-                    "parentInstanceName": "Customers_Activity_instance_0",
-                    "childInstanceName": "User Stories_Activity_instance_0"
-                },
-                {
-                    "parentInstanceName": "Customers_Activity_instance_0",
-                    "childInstanceName": "User Stories_Activity_instance_3"
-                },
-                {
-                    "parentInstanceName": "Customers_Activity_instance_1",
-                    "childInstanceName": "User Stories_Activity_instance_1"
-                },
-                {
-                    "parentInstanceName": "Customers_Activity_instance_1",
-                    "childInstanceName": "User Stories_Activity_instance_3"
-                },
-                {
-                    "parentInstanceName": "Customers_Activity_instance_1",
-                    "childInstanceName": "User Stories_Activity_instance_4"
-                },
-                {
-                    "parentInstanceName": "Customers_Activity_instance_2",
-                    "childInstanceName": "User Stories_Activity_instance_0"
-                },
-                {
-                    "parentInstanceName": "Customers_Activity_instance_2",
-                    "childInstanceName": "User Stories_Activity_instance_2"
-                },
-                {
-                    "parentInstanceName": "Customers_Activity_instance_2",
-                    "childInstanceName": "User Stories_Activity_instance_3"
-                }
-            ]
-        },
-        {
-            "parentClassName": "Contractor Companies",
-            "childClassName": "System Engineering",
-            "parentType": "resource",
-            "instanceTable": [
-                {
-                    "parentInstanceName": "Agency04",
-                    "childInstanceName": "SE George"
-                },
-                {
-                    "parentInstanceName": "The Software House",
-                    "childInstanceName": "SE Troy"
-                },
-                {
-                    "parentInstanceName": "Britenet",
-                    "childInstanceName": "SE Keith"
-                }
-            ]
-        },
-        {
-            "parentClassName": "Contractor Companies",
-            "childClassName": "UI Development",
-            "parentType": "resource",
-            "instanceTable": [
-                {
-                    "parentInstanceName": "Emergent",
-                    "childInstanceName": "UI Jaime"
-                },
-                {
-                    "parentInstanceName": "Britenet",
-                    "childInstanceName": "UI Tamara"
-                },
-                {
-                    "parentInstanceName": "Britenet",
-                    "childInstanceName": "UI Laura"
-                }
-            ]
-        },
-        {
-            "parentClassName": "Contractor Companies",
-            "childClassName": "BackEnd Development",
-            "parentType": "resource",
-            "instanceTable": [
-                {
-                    "parentInstanceName": "The Software House",
-                    "childInstanceName": "BE Jeff"
-                },
-                {
-                    "parentInstanceName": "The Software House",
-                    "childInstanceName": "BE Dan"
-                },
-                {
-                    "parentInstanceName": "Emergent",
-                    "childInstanceName": "BE Lauren"
-                },
-                {
-                    "parentInstanceName": "Emergent",
-                    "childInstanceName": "BE Freddy"
-                }
-            ]
-        }
-    ],
-    "allocationConstraints": []
+	]
+
 }
