@@ -833,6 +833,8 @@ export default {
             this.$root.$emit('show-solution-modal', e)
         },
         submitDM3K(){
+
+            console.log("----> ABOUT to submit. Here is graph.  ", this.$store.state.dm3kGraph)
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
 
             // get dataset name from textbox
@@ -874,19 +876,13 @@ export default {
                     body = $.parseJSON(jsonMsg["body"]);
                 }
                 else {
-                    // body = $.parseJSON(jsonMsg["body"]); // I think it is now returning a JSON object
-                    body = jsonMsg["body"] // I think it is now returning a JSON object
-                    // TODO: REMOVE EXAMPLE OUTPUT
-                    // this.$root.$emit('show-solution-modal', {body: this.exampleOutput, outputJson: outputJson})
-                    // this.$root.$emit('show-solution-modal', {body: body, outputJson: outputJson})
+                    body = jsonMsg["body"] 
                     this.emitSolnModal({body: body, outputJson: outputJson})
                 }
             })
             
-            // TODO: REMOVE HARDCODED CALL HERE TO OUTPUT
-            // this.emitSolnModal({body: this.exampleOutput, outputJson: outputJson})
             console.log({body: body, outputJson: outputJson})
-            // this.emitSolnModal({body: body, outputJson: outputJson})
+            console.log("JSON OUTPUT ", JSON.stringify(outputJson))
 
             post_request.fail(function(jqXHR, textStatus, errorThrown) {
                 console.log("Request to vizdata failed: "+textStatus);
