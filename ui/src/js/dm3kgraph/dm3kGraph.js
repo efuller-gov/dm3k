@@ -209,11 +209,7 @@ export class Dm3kGraph {
         this.graph.removeCells(c_cell_to_remove)
 
         for (let i=0; i<this.activityInstances.length; i++){
-            console.log(this.activityInstances[i].instanceTableData[i])
-            console.log(Object.keys(this.activityInstances[i].instanceTableData[i]))
-            console.log(Object.keys(this.activityInstances[i].instanceTableData[i]).map(x=>x.split("_")[1]))
             if (Object.keys(this.activityInstances[i].instanceTableData[i]).map(x=>x.split("_")[1]).includes(budgetName)){
-                console.log("delete ", "cost_"+budgetName)
                 for (let ii=0; ii<this.activityInstances[i].instanceTableData.length; ii++){
                     delete this.activityInstances[i].instanceTableData[ii]["cost_"+budgetName]
                 }
@@ -223,22 +219,28 @@ export class Dm3kGraph {
 
     removeActivity(actName, costList, rewardName){
         console.log("-----> remove ACTIVITY: ", actName)
-        // console.log("costList ", costList)
-        // console.log("rewardName ", rewardName)
 
         let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==actName)
-        // console.log("-- all graph ", this.graph.getDefaultParent())
-        // console.log("-- cell_to_remove ", cell_to_remove)
+        let edges = cell_to_remove[0].edges
 
         // remove cost cell
         for (let i=0; i<costList.length; i++){
-            let c_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>( (x.value==costList[i]) & (x.id=='cost')) )
-            this.graph.removeCells(c_cell_to_remove)
+            for (let ii=0; ii<edges.length; ii++){
+                if ( (edges[ii].target.value == costList[i]) & (edges[ii].target.id == 'cost')){
+                    console.log("remove this edge cost ", edges[ii].target)
+                    this.graph.removeCells([edges[ii].target])
+                }
+            }
         }
 
-        let r_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==rewardName)
-        this.graph.removeCells(r_cell_to_remove)
+        // remove reward cell
+        for (let i=0; i<edges.length; i++){
+            if ( (edges[i].target.value == rewardName) & (edges[i].target.id == 'reward')){
+                this.graph.removeCells([edges[i].target])
+            }
+        }
 
+        // remove activity cell
         this.graph.removeCells(cell_to_remove)
 
         // Remove from activities list
@@ -249,6 +251,10 @@ export class Dm3kGraph {
 
         // Remove from allocation instnaces
         this.allocatedToInstances = this.allocatedToInstances.filter(x=>x.actName!=actName)
+
+        // remove class name from can
+        console.log("this.allocatedLinks ", this.allocatedLinks)
+        this.allocatedLinks = this.allocatedLinks.filter(x=>x.target.value!=actName)
     }
 
     addAllocation(newActName, existingResName, newRewardName, locX = null, locY = null) {
