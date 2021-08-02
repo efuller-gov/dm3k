@@ -493,7 +493,8 @@ class FullHouseModel(ModelBase):
             act1_value = 0   # parent activities have no value
             result["full_trace"]["resource"].append(res_name1)
             result["full_trace"]["activity"].append(act_name1)
-            result["full_trace"]["budget_used"].append(self._model.PARENT_AMT[(pr, pa)].value)
+            # assume there are two budgets and its oriented [parent_budget, child_budget]
+            result["full_trace"]["budget_used"].append([self._model.PARENT_AMT[(pr, pa)].value, 0.0])
             result["full_trace"]["value"].append(act1_value)
             result["full_trace"]["selected"].append(1.0)
             result["full_trace"]["picked"].append(1.0)
@@ -544,7 +545,8 @@ class FullHouseModel(ModelBase):
             # full trace
             result["full_trace"]["resource"].append(res_name2)
             result["full_trace"]["activity"].append(act_name2)
-            result["full_trace"]["budget_used"].append(self._model.CHILD_AMT[(cr, ca)].value)
+            # assume there are two budgets and its oriented [parent_budget, child_budget]
+            result["full_trace"]["budget_used"].append([0.0, self._model.CHILD_AMT[(cr, ca)].value])
             result["full_trace"]["value"].append(act2_value)
             result["full_trace"]["selected"].append(1.0)
             result["full_trace"]["picked"].append(1.0)
@@ -556,7 +558,7 @@ class FullHouseModel(ModelBase):
         for (res_name1, act_name1) in not_picked_parent_combos:
             result["full_trace"]["resource"].append(res_name1)
             result["full_trace"]["activity"].append(act_name1)
-            result["full_trace"]["budget_used"].append(0.0)
+            result["full_trace"]["budget_used"].append([0.0, 0.0])
             result["full_trace"]["value"].append(act1_value)
             result["full_trace"]["selected"].append(0.0)
             result["full_trace"]["picked"].append(0.0)
@@ -567,7 +569,7 @@ class FullHouseModel(ModelBase):
             act2_value = self._model.child_score[ca] 
             result["full_trace"]["resource"].append(res_name2)
             result["full_trace"]["activity"].append(act_name2)
-            result["full_trace"]["budget_used"].append(0.0)
+            result["full_trace"]["budget_used"].append([0.0, 0.0])
             result["full_trace"]["value"].append(act2_value)
             result["full_trace"]["selected"].append(0.0)
             result["full_trace"]["picked"].append(0.0)
