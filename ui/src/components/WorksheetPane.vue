@@ -17,7 +17,7 @@
                 <label for="resType">My <b>resource</b> is what I am limited by. <br>It can be best described by</label>
                 <select class="chosen-select" id="resType">
                     <option value="none">     </option>
-                    <option value="custom input">custom input</option>
+                    <!-- <option value="custom input">custom input</option> -->
                 </select><br><br>
                 <label id="resource-label" for="resName">Label the resource </label>
                 <input type="text" id="resName"><br><br>
@@ -39,7 +39,7 @@
                     <label for="actType"> to </label>
                     <select @change="worksheetUtils_newActivityActivated" class="chosen-select activity-select" id="actType" style="margin-left: 0px;">
                         <option selected style="font-weight: bold;">a new activity</option>
-                        <option value="custom input">custom input</option>
+                        <!-- <option value="custom input">custom input</option> -->
                     </select>
                     <select class="chosen-select activity-select disabled" id="actTypeExisting" onchange="worksheetUtils_existingActivityActivated()">
                         <option style="font-weight: bold;">an existing activity</option>
@@ -79,7 +79,7 @@
                     <label for="actType2"> I want </label>
                     <select class="chosen-select activity-select" id="actType2" style="margin-left: 0px;" @change="worksheetUtils_newActivityActivated">
                         <option selected style="font-weight: bold;">a new activity</option>
-                        <option value="custom input">custom input</option>
+                        <!-- <option value="custom input">custom input</option> -->
                     </select>
                     <label for="act-childName">to contain</label>
                     <select class="chosen-select" id="act-childName">
@@ -96,7 +96,7 @@
                     <label for="resType2"> I want </label>
                     <select class="chosen-select activity-select" id="resType2" style="margin-left: 0px;" @change="worksheetUtils_newResourceActivated">
                         <option selected style="font-weight: bold;">a new resource</option>
-                        <option value="custom input">custom input</option>
+                        <!-- <option value="custom input">custom input</option> -->
                     </select>
                     <label for="res-childName">to contain</label>
                     <select class="chosen-select" id="res-childName">
@@ -914,6 +914,27 @@ export default {
     },
     data() {
         return{
+            RESOURCE_WORD_BANK : [
+                "labor",
+                "capital",
+                "material",
+                "facility",
+                "time",
+                "container",
+                "computer",
+                "equipment",
+                "supplies",
+                "weapon"],
+            ACTIVITY_WORD_BANK : [
+                "assignment",
+                "product",
+                "item",
+                "area",
+                "role",
+                "action",
+                "project",
+                "job",
+                "target"],
             dm3kConverter: {},
             inputJson: [],
             helper_images_info: [
@@ -941,27 +962,6 @@ export default {
                     'text-size': '11px',
                     'scale-width': '92%'
                 }],
-            RESOURCE_WORD_BANK : [
-                "labor",
-                "capital",
-                "material",
-                "facility",
-                "time",
-                "container",
-                "computer",
-                "equipment",
-                "supplies",
-                "weapon"],
-            ACTIVITY_WORD_BANK : [
-                "assignment",
-                "product",
-                "item",
-                "area",
-                "role",
-                "action",
-                "project",
-                "job",
-                "target"],
             helper_text : [
                 {
                     'worksheet': 'create-resources',
