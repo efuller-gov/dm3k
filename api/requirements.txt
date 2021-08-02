@@ -1,15 +1,15 @@
-aniso8601==8.0.0
-Click==7.0
-Flask==1.1.1
-Flask-Cors==3.0.8
-Flask-RESTful==0.3.7
-itsdangerous==1.1.0
-Jinja2==2.10.1
-MarkupSafe==1.1.1
-PyMySQL==0.9.3
-pytz==2019.2
-six==1.12.0
-SQLAlchemy==1.3.8
-Werkzeug==0.16.0
-uWSGI==2.0.18
-requests==2.25.1
+aniso8601==8.0.0        # GPLv3!!!  (Distributed under Flask-RESTful...https://github.com/flask-restful/flask-restful/issues/327)
+Click==7.0              #  BSD-3 clause license
+Flask==1.1.1            #  BSD-3 clause license
+Flask-Cors==3.0.8       # MIT license
+Flask-RESTful==0.3.7    #  BSD-3 clause license  <-- may not be able to use cause aniso above
+itsdangerous==1.1.0     #  BSD-3 clause license
+Jinja2==2.10.1          #  BSD-3 clause license
+MarkupSafe==1.1.1       #  BSD-3 clause license
+PyMySQL==0.9.3          # MIT license
+pytz==2019.2            # MIT license
+six==1.12.0             # MIT license
+SQLAlchemy==1.3.8       # MIT license
+Werkzeug==0.16.0        #  BSD-3 clause license
+uWSGI==2.0.18           #  GPLv2 (with linking exception!) - https://github.com/unbit/uwsgi/blob/master/LICENSE
+requests==2.25.1        # Apache 2.0
