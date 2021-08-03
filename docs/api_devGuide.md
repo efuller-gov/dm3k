@@ -102,8 +102,21 @@ The expected data params for the POST /api/vizdata endpoint include a single JSO
       * *instanceTable*: a list of JSON objects where each JSON object represents an allocation of a specific resource instance to a specific activity instance and has the following attributes:
         * *resourceInstanceName*: can be "ALL" or the *instanceName* of the resource Instance.  Where "ALL" means all instances of the *resourceClassName*
         * *activityInstanceName*: can be "ALL" or the *instanceName* of the activity Instance.  Where "ALL" means all instances of the *activityClassName*
-    * *containsInstances*: TODO
-    * *allocationConstraints*: TODO
+    * *containsInstances*:  a list of JSON objects which establish which specific *resourceInstances* and *activityInstances* contain which other specific *resourceInstances* and *activityInstances*.  Each containsInstance has the following:
+      * *parentClassName*: string name of resouce/activity class which contains
+      * *childClassName*: string name of resource/activity class which is contained
+      * *parentType*: "resource" | "activity" - what type are the *parentClassName* and the *childClassName*
+      * *instanceTable*: a list of JSON objects where each JSON object represents when a specific resource/activity instance contains a specific resource/activity instance and has the following attributes:
+        * *parentInstanceName*: can be "ALL" or the *instanceName* of the *parentClassName*.  Where "ALL" means all instances of the *parentClassName*
+        * *childInstanceName*: can be "ALL" or the *instanceName* of the *childClassName*.  Where "ALL" means all instances of the *childClassName*
+    * *allocationConstraints*: a list of JSON objects when one "can be allocated" link constrains another "can be allocated" link.  Each allocationConstraints object has the following:
+      * *allocationStart.resourceClass*: a *resourceClassName* that is one side of the "can be allocated" link that constrains
+      * *allocationStart.activityClass*: a *activityClassName* that is one side of the "can be allocated" link that constrains
+      * *allocationEnd.resourceClass*: a *resourceClassName* that is one side of the "can be allocated" link that is constrained
+      * *allocationEnd.activityClass*: a *activityClassName* that is one side of the "can be allocated" link that is constrained
+      * *allocationConstraintType*: "Contained IF-THEN" | "IF-NOT" - the type of allocation constraint.  
+        * "Contained IF-THEN" = the allocationEnd resource and activity instances can only be selected if the allocationStart resource and activity instances respectively contain the allocationEnd resource and activity instances.
+        * "IF-NOT" - a resource cannot be allocated along both allocationStart and allocationEnd "can be allocated" links.
 
 Example:
 
@@ -172,7 +185,46 @@ Example:
 }
 ```
 
-
 ### Expected Success Response ###
 
+Given a problem defined as described above the solution is a JSON object with the following attributes:
+
+* *reason*: "OK" 
+* *body*: a JSON object with the following attributes:
+  * *objective_value*: the total reward earned by all resource instances. (sums up the total reward of all activities that have been allocated to resources)
+  * *allocations*: for each resource instance, what is the list of activity instances that a given resource is allocated to.
+  * *allocated_amt*: the allocated amount of budget used by each resource instance on each activity instance for each budget type
+  * *per_resource_budget_used*: the total amount of budget used by each resource instance for each budget type.
+  * *per_resource_score*: the total reward earned by each resource instance (sums up the reward of each activity this resource is allocated to)
+  * *full_trace*: a table formed by a list of JSON objects, where each row in the table contains:
+    * *resource*: the name of the resource instance
+    * *activity*: the name of the activity instance
+    * *budget_used*: a list of budget values which represents the amount of each budget type used in the allocation of the resource to the activity
+    * *value*: the reward achieved by allocating the resource to the activity
+    * *selected*: if the resource-activity combo has been picked and allocated
+    * *allocated*: indicates that the resource has been allocated to the activity
+    * *picked*: Indicates that a resource from each incoming 'allocated to' arrow was allocated to this activity.  (all costs across all budget types of this activity were satisfied)
+
 ### Validation Error Response ###
+
+One error response the API can provide is when the problem is not defined correctly.  
+
+A given input problem may have 1 or more errors.  This response attempts to document as many errors as possible before these errors prevent the validation process from stopping.  Some errors will be fixable and the system will attempt to fix them.  Some errors will be fatal and the system will stop.
+
+In the event that the problem is not defined correctly, a JSON object is returned with the following attributes:
+
+* *reason*: "Validation Errors in input data" 
+* *body*: a list of JSON objects where each JSON object represents a validation error, and each validation error has the following attributes:
+  * *err_code*: an int code (see table below for explaination)
+  * *err_txt*: human readable string that describes the error in the input problem
+  * *offender*: a string name of the area of the input problem that is causing the error.
+  * *fix*: a string name of the process performed to fix the error
+  * *is_fatal_error*: a boolean where True = error is fatal and caused the system to stop
+
+
+Error Code  | Description
+------------|-----------------------------
+1           | the necessary files do not exist
+2           | the formats of the files are not corret
+3           | the data within the files is not internally consistent
+4           | the names within the files is not internally consistent
