@@ -18,17 +18,13 @@ import logging
 
 from flask import Flask
 from flask_cors import CORS
-from flask_restful import Api
-from views import Version, VizInput
+from views import api
 
 import argparse
 
 app = Flask(__name__)
 CORS(app)
-api = Api(app)
-
-api.add_resource(VizInput, '/api/vizdata')
-api.add_resource(Version, '/api/version')
+app.register_blueprint(api)
 
 # logging
 # set up logging
