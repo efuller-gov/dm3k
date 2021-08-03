@@ -2,6 +2,11 @@
 
 This README file explains how to set up and work with the docker system in the development mode for OPEN-DM3K
 
+Table of Contents:
+
+[[_TOC_]]
+
+
 ## Installation
 
 ### Prerequisites

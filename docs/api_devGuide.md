@@ -2,7 +2,11 @@
 
 The API contains two endpoints used to access the back-end and optimizer for Open-DM3K.  These endpoints are described below.
 
-> NOTE: the URL for the API is based on where you established the project docker containers.  The system is available on **port 80** of whatever IP or URL the server you started the docker containers on.
+> NOTE: the URL for the API is based on where you established the project docker containers.  The production system is available on **port 80** of whatever IP or URL the server you started the docker containers on.
+
+Table of Contents:
+
+[[_TOC_]]
 
 ## GET /api/version ##
 
@@ -12,7 +16,7 @@ Presents a simple endpoint to check aliveness and the API version
 * **METHODS**: `GET`
 * **URL Params**: None
 * **Data Params**: None
-* **Success Response**: 
+* **Success Response**:
   * **Code**: 200
   * **Content**: `{'api_version': "1.0"}`
 * **Error Response**: None
@@ -40,6 +44,7 @@ The Main endpoint to provide visual data to the optimizer.  The response is the 
   * **Content**: *See Validation Error Response Below*
 * **Sample Call**:
     python
+
     ```python
         import os
         import json
@@ -189,7 +194,7 @@ Example:
 
 Given a problem defined as described above the solution is a JSON object with the following attributes:
 
-* *reason*: "OK" 
+* *reason*: "OK"
 * *body*: a JSON object with the following attributes:
   * *objective_value*: the total reward earned by all resource instances. (sums up the total reward of all activities that have been allocated to resources)
   * *allocations*: for each resource instance, what is the list of activity instances that a given resource is allocated to.
@@ -213,14 +218,13 @@ A given input problem may have 1 or more errors.  This response attempts to docu
 
 In the event that the problem is not defined correctly, a JSON object is returned with the following attributes:
 
-* *reason*: "Validation Errors in input data" 
+* *reason*: "Validation Errors in input data"
 * *body*: a list of JSON objects where each JSON object represents a validation error, and each validation error has the following attributes:
   * *err_code*: an int code (see table below for explaination)
   * *err_txt*: human readable string that describes the error in the input problem
   * *offender*: a string name of the area of the input problem that is causing the error.
   * *fix*: a string name of the process performed to fix the error
   * *is_fatal_error*: a boolean where True = error is fatal and caused the system to stop
-
 
 Error Code  | Description
 ------------|-----------------------------
