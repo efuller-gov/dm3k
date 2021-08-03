@@ -14,21 +14,36 @@ Installation assumes you have...
 ### Installation Proceedure
 
 from the main directory of the repo run...
+
 ```bash
 $ sudo docker-compose -f docker-compose-dev.yml up --build -d
 ```
 
 To comfirm the installation, run...
+
 ```bash
 $ sudo docker ps
 ```
+
 Output of this command should show 3 docker containers: dm3k_open_api, dm3k_open_ui, dm3k_open_nginx.  With status as not restarting.
 
-
 To stop OPEN-DM3K, run...
+
 ```bash
 $ sudo docker-compose -f docker-compose-dev.yml down
 ```
+
+## Usage
+
+Connect to the UI by pointing your web browser to:  http://{hostname}/ui 
+
+where hostname is the name or ip address of the machine that is running docker.
+
+For details on how to use the UI to create/solve resource allocation problems see ./docs/user_guide.md
+
+To confirm the API is working you can point your browser to: http://{hostname}/api/version
+
+This should return `{"api_version":"1.0"}`
 
 ## UI Container Development
 
@@ -87,6 +102,7 @@ Within development mode, the system will hot reload any changes within the follo
 - ./tests
 
 If hot reload does not occur, try restarting the api container by running...
+
 ```bash
 $ sudo docker restart dm3k_open_api
 ```
@@ -111,6 +127,7 @@ Once inside the container you can run any test, by running...
 /app/api$ cd {test_directory}   # whatever tests you want to run
 /app/api$ python {test_file}.py 
 ```
+
 Logs from the test will appear on the screen.
 
 To exit the container, run...
