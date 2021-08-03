@@ -7,7 +7,7 @@ OPEN-DM3K provides the user with:
 - an web-based UI to define their resource allocation problem.
 - an python optimizer that leverages linear optimization techniques to solve the user defined problem.
 
-For more explaination of resource allocation problems and their component parts, see */docs/resource_allocation_101.md*
+For more explaination of resource allocation problems and their component parts, see [*/docs/resource_allocation_101.md*](/docs/resource_allocation_101.md)
 
 ## Installation
 
@@ -45,7 +45,7 @@ Connect to the UI by pointing your web browser to:  http://{hostname}
 
 where hostname is the name or ip address of the machine that is running docker.
 
-For details on how to use the UI to create/solve resource allocation problems see ./docs/user_guide.md
+For details on how to use the UI to create/solve resource allocation problems see [*/docs/user_guide.md*](/docs/user_guide.md)
 
 ## Contributing
 
@@ -55,10 +55,10 @@ Please make sure to update tests as appropriate.
 
 For developers guide, see 
 
-- ./docs/dev_env.md or
-- ./docs/ui_devGuide.md  or
-- ./docs/api_devGuide.md or 
-- ./docs/optimizer_devGuide.md
+- [*/docs/dev_env.md*](/docs/dev_env.md) or
+- [*/docs/ui_devGuide.md*](/docs/ui_devGuide.md)  or
+- [*/docs/api_devGuide.md*](/docs/api_devGuide.md) or 
+- [*/docs/optimizer_devGuide.md*](/docs/optimizer_devGuide.md)
 
 Depending on how you wish to contribute
 
@@ -71,4 +71,4 @@ U.S. government pursuant to the license rights granted under FAR
 clause 52.227-14 or DFARS clauses 252.227-7013/7014.
 For any other permission, please contact the Legal Office at JHU/APL.
 
-For more details, see LICENSE file
+For more details, see [LICENSE](./LICENSE) file
