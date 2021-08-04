@@ -182,13 +182,8 @@ export class Dm3kGraph {
     }
 
     removeResource(resName, budgetName){
-        console.log("-----> remove RESOURCE: ", resName)
-
         let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==resName)
-        console.log("-- all graph ", this.graph.getDefaultParent())
-        console.log("-- cell_to_remove ", cell_to_remove)
 
-        console.log("The graph: ", this)
         // remove budget cell
         let b_cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>( (x.value==budgetName) & (x.id.includes('budget'))) )
 
@@ -220,8 +215,6 @@ export class Dm3kGraph {
         for (let i=0; i<this.constraints.length; i++){
             if ((this.constraints[i].target == null) || (this.constraints[i].source == null) ){
                 this.constraints.splice(i, 1)
-                console.log('REMOVE CONSTRAINT')
-                console.log("this.constraints ", this.constraints)
             }
         }
 
@@ -229,23 +222,10 @@ export class Dm3kGraph {
         this.containsLinks = this.containsLinks.filter(x=>( (x.target.value!=resName) && (x.source.value!=resName)))
 
         // remove all traces from contains
-        // this.containsInstances
-        // this.containsLinks
         this.containsInstances = this.containsInstances.filter(x=>( (x.childName!=resName) && (x.parentName!=resName) ))
-        // for (let i=0; i<this.containsInstances.length; i++){
-        //     if (this.containsInstances[i].parentType=='resource'){
-        //         if ( (this.containsInstances[i].childName == resName) || (this.containsInstances[i].parentName == resName) ){
-        //             this.containsInstances.splice(i, 1)
-        //             console.log("REMOVE res: ", resName)
-        //             console.log("graph ", this)
-        //         }
-        //     }
-        //     // else continue;
-        // }
     }
 
     removeActivity(actName, costList, rewardName){
-        console.log("-----> remove ACTIVITY: ", actName)
 
         let cell_to_remove = this.graph.getChildVertices(this.graph.getDefaultParent()).filter(x=>x.value==actName)
         let edges = cell_to_remove[0].edges
@@ -254,7 +234,6 @@ export class Dm3kGraph {
         for (let i=0; i<costList.length; i++){
             for (let ii=0; ii<edges.length; ii++){
                 if ( (edges[ii].target.value == costList[i]) & (edges[ii].target.id == 'cost')){
-                    console.log("remove this edge cost ", edges[ii].target)
                     this.graph.removeCells([edges[ii].target])
                 }
             }
@@ -285,27 +264,16 @@ export class Dm3kGraph {
 
         // remove constraints links
         for (let i=0; i<this.constraints.length; i++){
-            console.log("this.constraints[i] ", this.constraints[i])
             if ((this.constraints[i].target == null) || (this.constraints[i].source == null) ){
                 this.constraints.splice(i, 1)
             }
         }
-        console.log("the graph ", this)
 
         // remove any contains links and instances
         this.containsLinks = this.containsLinks.filter(x=>( (x.target.value!=actName) && (x.source.value!=actName)))
 
         // remove all traces from contains
-        // this.containsInstances
-        // this.containsLinks
-        for (let i=0; i<this.containsInstances.length; i++){
-            if (this.containsInstances[i].parentType=='activity'){
-                if ( (this.containsInstances[i].childName == actName) || (this.containsInstances[i].parentName == actName) ){
-                    this.containsInstances.splice(i, 1)
-                }
-            }
-            else continue;
-        }
+        this.containsInstances = this.containsInstances.filter(x=>( (x.childName!=actName) && (x.parentName!=actName) ))
     }
 
     addAllocation(newActName, existingResName, newRewardName, locX = null, locY = null) {
