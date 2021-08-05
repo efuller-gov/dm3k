@@ -436,7 +436,7 @@ function addDM3KConstraintEdge(container, graph, allocatedLink1, allocatedLink2,
 		// properties for label
 		graph.setCellStyles(mxConstants.STYLE_FONTCOLOR, 'blue', [edge] ) 
 		graph.setCellStyles(mxConstants.STYLE_FONTSIZE, 9, [edge] )    // fontsize in pixels
-		graph.setCellStyles(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_TOP, [edge] )  // how is label aligned verically, set to top
+		graph.setCellStyles(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_TOP, [edge] )  // how is label aligned vertically, set to top
 		graph.setCellStyles(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_LEFT, [edge] )  // how is label aligned horizontally, set to left
 		graph.setCellStyles(mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_RIGHT, [edge] )  // how is the label position horizontally aligned
 		graph.setCellStyles(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_TOP, [edge] ) 

@@ -16,7 +16,7 @@ Installation assumes you have...
 - docker (v19.03+)  see https://docs.docker.com/get-docker/
 - docker-compose (v1.27+)  see https://docs.docker.com/compose/install/
 
-### Installation Proceedure
+### Installation Procedure
 
 from the main directory of the repo run...
 
@@ -24,7 +24,7 @@ from the main directory of the repo run...
 $ sudo docker-compose -f docker-compose-dev.yml up --build -d
 ```
 
-To comfirm the installation, run...
+To confirm the installation, run...
 
 ```bash
 $ sudo docker ps
@@ -59,7 +59,7 @@ Within development mode, the system will hot reload any changes within the follo
 
 If hot reload does not occur, try the following...
 
-1. Cntl-R in the browser.  This should force a hard reload.
+1. Ctrl-R in the browser.  This should force a hard reload.
 2. If #1 doesnt work, try restarting the ui container by running...
 
     ```bash

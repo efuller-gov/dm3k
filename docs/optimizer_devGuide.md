@@ -1,6 +1,6 @@
 # Optimizer Development and Extension Guide #
 
-The optimizer is one of the core pieces of functionality of Open-DM3K.  It takes in the problem definition, performs integer programming optimization of the problem, and returns the results of the optimizaton.
+The optimizer is one of the core pieces of functionality of Open-DM3K.  It takes in the problem definition, performs integer programming optimization of the problem, and returns the results of the optimization.
 
 This document describes the component parts of the optimizer and how others can add new optimizers to the existing system.
 
@@ -30,7 +30,7 @@ The core classes are shown in the diagram below.
 
 The developers of this repo want to encourage the development of new and better optimizers and therefore provide a way to extend this system.
 
-For an example how to extend, refer to the Full House optimizer (located in /optimizer/full_house).  This is our original extension of the generic optimzer (located in /optimizer/knapsack).  The Full House was developed to be a faster way to solve a specific type of resource allocation problem; problems with 3 resources (1 parent and 2 children) and 2 activities (1 parent and 1 child) linked together with an "Contains IF-THEN" allocation constraint.  (*Full House comes from the 3 resources and 2 activities*)
+For an example how to extend, refer to the Full House optimizer (located in /optimizer/full_house).  This is our original extension of the generic optimizer (located in /optimizer/knapsack).  The Full House was developed to be a faster way to solve a specific type of resource allocation problem; problems with 3 resources (1 parent and 2 children) and 2 activities (1 parent and 1 child) linked together with an "Contains IF-THEN" allocation constraint.  (*Full House comes from the 3 resources and 2 activities*)
 
 If you wish to create your own optimizer, the following process defines how to extend the existing system:
 
@@ -43,4 +43,4 @@ If you wish to create your own optimizer, the following process defines how to e
    2. *build*: develop this method to take in data from your InputBase subclass and construct your pyomo model based on objectives and constraints you defined.
    3. *fill_output*: develop this method to translate your output to the output format (see [api guide](/docs/api_devGuide.md) for problem output format)
 5. Create a subclass of the **optimizer.slim_optimizer_base.OptimizerBase** class.  Only instantiate the init function by indicating your subclass of InputBase, your subclass of ModelBase, and the standard OutputBase class.  
-6. In the **optimizer.slim_optimizer_main** module. Add your optimzer to the global variable "algorithm_dict" by following the pattern already in place.  This will allow your optimizer to be available to be selected when an optimizer is instantiated.
+6. In the **optimizer.slim_optimizer_main** module. Add your optimizer to the global variable "algorithm_dict" by following the pattern already in place.  This will allow your optimizer to be available to be selected when an optimizer is instantiated.

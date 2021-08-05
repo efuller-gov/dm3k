@@ -13,9 +13,7 @@ This ingests the format from the DM3K-Viz tool
 # --------------------------------------------------------------------------
 
 
-import json
 import logging
-import os
 
 from optimizer.slim_optimizer_base import InputBase
 
@@ -66,7 +64,7 @@ class KnapsackInputViz(InputBase):
             )
 
         # --- INGEST ---
-        json_data = file_data[0]["fileContents"]   # this type of input only has one file type
+        json_data = file_data[0]["fileContents"]  # this type of input only has one file type
         log.debug("Incoming constraints keys: " + str(list(json_data.keys())))
         self._data = json_data
 

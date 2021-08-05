@@ -31,7 +31,7 @@ Assumptions:
     -  should not have more than one instance of ALL:ALL
     -  budgets and costs have consistent names across allocation paths
 
-    - (FUTURE)all budgets/costsa in resource/actiivty classes have values for each instance
+    - (FUTURE)all budgets/costs in resource/activity classes have values for each instance
 
 Model description:
 1) INDICES
@@ -55,7 +55,7 @@ Model description:
     - model.r_a_b_arcs = [(<res_id>, <act_id>, <budget_id>),...]   # r_a with which budgets
     - model.r_b_arcs = [(<res_id>, <budget_id>),...]  # which resources have which budgets
     - model.a_b_arcs = [(<act_id>, <budget_id>), ...]  # which activities have which budgets (costs)
-    - model.p_a_arcs = [(<pair_id>, <act_id>), ...]   # which activities are in which 'allocted to' arrow pairs
+    - model.p_a_arcs = [(<pair_id>, <act_id>), ...]   # which activities are in which 'allocated to' arrow pairs
 
     - model.allocatable_act_index = [<act_Id>, ...]  # which activities can be allocated to (need to exclude the non-allocated ones)
 
@@ -66,7 +66,7 @@ Model description:
     - model.num_incoming_pairs[<act_id>] = <int>
     - model.total_reverse_allocations[<act_id>] = [<res_id>, ...]    # across all pairs
     - model.contained_activities[<act_id>] = [<act_id>, ...]
-    - model.num_contained_activites[<act_id>] = <int>
+    - model.num_contained_activities[<act_id>] = <int>
 
     - model.reward[<act_id>] = <value>
     - model.required_amount[<act_id>, <budget_id>] =  <value>    # how much does each act cost
@@ -79,7 +79,7 @@ Model description:
             incoming 'allocated to' arrows
     - allocation limit rule - an activity cannot be allocated more than once per resource-activity pair
             (i.e. per 'allocated to' arrow)
-    
+
     - activity picked contains rule - An activity is picked (selected) if no resource is allocated to it and if all activities it contains are picked
 
 
@@ -99,13 +99,13 @@ Model description:
 # --------------------------------------------------------------------------
 
 
-
 import logging
 from collections import deque
 
+from pyomo.environ import Any, Binary, ConcreteModel, Constraint, NonNegativeReals, Objective, Param, Set, Var, maximize
+
 from optimizer.knapsack.knapsack_input_viz import KnapsackInputViz
 from optimizer.slim_optimizer_base import ModelBase
-from pyomo.environ import Any, Binary, ConcreteModel, Constraint, NonNegativeReals, Objective, Param, Set, Var, maximize
 
 log = logging.getLogger(__name__)
 
@@ -209,19 +209,20 @@ def if_not_limit_rule(model, r_id, a_id):
     :return: [description]
     """
     if model.not_allocations[r_id, a_id]:
-        return ( len(model.not_allocations[r_id, a_id]) * model.ALLOCATED[r_id, a_id] + 
-                 sum(model.ALLOCATED[r_id, not_a_id] for not_a_id in model.not_allocations[r_id, a_id]) <= 
-                 len(model.not_allocations[r_id, a_id]))
+        return len(model.not_allocations[r_id, a_id]) * model.ALLOCATED[r_id, a_id] + sum(
+            model.ALLOCATED[r_id, not_a_id] for not_a_id in model.not_allocations[r_id, a_id]
+        ) <= len(model.not_allocations[r_id, a_id])
     else:
         return Constraint.Skip
 
+
 def if_contains_rule(model, r_id, a_id):
     """
-    when an Contained IF-THEN constaint exists, you can only allocate a resource instance (resource 1) to an activity instance (activity 1) along the allocation
-    link (that is the target of the constraint) if you have allocated a resource instance, that is in the contains heirarchy of resource 1, to 
-    an activity instances, that is in the contains heirarchy of activity 1.
+    when an Contained IF-THEN constraint exists, you can only allocate a resource instance (resource 1) to an activity instance (activity 1) along the allocation
+    link (that is the target of the constraint) if you have allocated a resource instance, that is in the contains hierarchy of resource 1, to
+    an activity instances, that is in the contains hierarchy of activity 1.
 
-    For example, a missile (resource1) can hit a target (activity1) only if the missile launcher (a container of the missile) is pointed in the 
+    For example, a missile (resource1) can hit a target (activity1) only if the missile launcher (a container of the missile) is pointed in the
     geographic region in which the target exists (geographic region is a container of target)
 
     :param ConcreteModel model: [description]
@@ -231,12 +232,13 @@ def if_contains_rule(model, r_id, a_id):
     """
     return model.ALLOCATED[r_id, a_id] <= sum(model.ALLOCATED[pr, pa] for (pr, pa) in model.containing_allocations[r_id, a_id])
 
+
 def if_contains_picked(model, a_id):
     """
     When an contained IF-THEN constraint exists, you may have a allocatedTo link without a reward, since the reward of selecting an allocation
     to a activity without a reward may be to open up the ability to allocated to an activity with a reward.
 
-    for example, there may be no reward for allocating a missile launcher to a geographic region...but that allocation is necessary to shot 
+    for example, there may be no reward for allocating a missile launcher to a geographic region...but that allocation is necessary to shot
     missiles at VIPs in that geographic region.
 
     Therefore the activities without rewards will be not PICKED
@@ -248,7 +250,7 @@ def if_contains_picked(model, a_id):
         )
     else:
         return Constraint.Skip
-       
+
 
 # -------------------------------------------------------------------------------
 # MODEL
@@ -263,7 +265,7 @@ class KnapsackComponentModel(ModelBase):
         In the event the system can leverage multiple models, this function is used to determine if this model
         can solve the input.
 
-        :param FullHouseInput input_instance: a instance of the InputBase class
+        :param KnapsackInputViz input_instance: a instance of the InputBase class
         :return: Boolean, True = yes, this model can solve it.  False = something about input cannot be solved by model
         """
         # the KnapsackComponentModel can solve any input in the form of the KnapsackInputViz class
@@ -280,10 +282,10 @@ class KnapsackComponentModel(ModelBase):
         self._data = data
         log.info("Building Pyomo model...")
         self._model = ConcreteModel()
-        self.__create_for_base_res_act_relationship()   # all indices, relatinships, params and constraints to support any number of resources allocated to any number of activities
-        self.__create_for_contained_reward()            # all indicies, relationships, params and constraints to support contained rewards
-        self.__create_for_if_not_constraint()           # all indicies, relationships, params, and constraints to support IF-NOT constraints
-        self.__create_contained_if_constraint()          # all indicies, relationships, params, and constraints to support Contained IF-THEN
+        self.__create_for_base_res_act_relationship()  # all indices, relationships, params and constraints to support any number of resources allocated to any number of activities
+        self.__create_for_contained_reward()  # all indices, relationships, params and constraints to support contained rewards
+        self.__create_for_if_not_constraint()  # all indices, relationships, params, and constraints to support IF-NOT constraints
+        self.__create_contained_if_constraint()  # all indices, relationships, params, and constraints to support Contained IF-THEN
 
         self.__create_objective()
 
@@ -292,20 +294,20 @@ class KnapsackComponentModel(ModelBase):
 
     def __create_for_base_res_act_relationship(self):
         log.info("CREATING BASE COMPONENT:  Resource-Activity Allocation...")
-        self.__create_indicies()
+        self.__create_indices()
         self.__create_relationships()
         self.__create_params_variables()
         self.__create_constraints()
-    
-    def __create_contained_if_constraint(self): 
+
+    def __create_contained_if_constraint(self):
         """
-        contained if-then constraints occur when a allcoation constraint is placed between two 'allocated to' links where the resouces contain
+        contained if-then constraints occur when a allocation constraint is placed between two 'allocated to' links where the resources contain
         each other and the activities contain each other
         """
         log.info("CREATING ADDITIONAL COMPONENT: Contained IF-THEN Constraints")
         contained_if_constraint_present = False
         for item in self._data["allocationConstraints"]:
-            if item['allocationConstraintType'] == "Contained IF-THEN":
+            if item["allocationConstraintType"] == "Contained IF-THEN":
                 contained_if_constraint_present = True
                 break
 
@@ -314,74 +316,81 @@ class KnapsackComponentModel(ModelBase):
             return
 
         # indices
-        r_a_arcs_for_contains = []   # a list of all possible resource to activity allocations BUT 
-                                     #  only for allocations relevant to the contains contraint
+        r_a_arcs_for_contains = []  # a list of all possible resource to activity allocations BUT
+        #  only for allocations relevant to the contains constraint
 
-
-        # containing_allocations is a map of pairs (end_resource_instance_name, end_activity_instance_name) to the 
+        # containing_allocations is a map of pairs (end_resource_instance_name, end_activity_instance_name) to the
         # potential list of pairs (start_resource_instance_name, start_activity_instance_name) that can enable the key pair.
-        containing_allocations = {}     # names version
-        containing_allocations_id = {}     # a dict with keys = [resource_id, activity_id] and values = list of 
-                                        # (res_id, act_id) pairs that contain the (resource_id, activity_id) pair
+        containing_allocations = {}  # names version
+        containing_allocations_id = {}  # a dict with keys = [resource_id, activity_id] and values = list of
+        # (res_id, act_id) pairs that contain the (resource_id, activity_id) pair
 
         for item in self._data["allocationConstraints"]:
-            if item['allocationConstraintType'] == "Contained IF-THEN": 
+            if item["allocationConstraintType"] == "Contained IF-THEN":
                 # get the names out
                 start_r_name = item["allocationStart"]["resourceClass"]
                 start_a_name = item["allocationStart"]["activityClass"]
                 end_r_name = item["allocationEnd"]["resourceClass"]
                 end_a_name = item["allocationEnd"]["activityClass"]
 
-                # create heirarchies
-                start_r_heirarchy = self._get_heirarchy_trace(start_r_name)
-                start_a_heirarchy = self._get_heirarchy_trace(start_a_name)
-                end_r_heirarchy = self._get_heirarchy_trace(end_r_name)
-                end_a_heirarchy = self._get_heirarchy_trace(end_a_name)
+                # create hierarchies
+                start_r_hierarchy = self._get_hierarchy_trace(start_r_name)
+                start_a_hierarchy = self._get_hierarchy_trace(start_a_name)
+                end_r_hierarchy = self._get_hierarchy_trace(end_r_name)
+                end_a_hierarchy = self._get_hierarchy_trace(end_a_name)
 
                 # find first common parents
                 res_common_parent = None
-                for class_name in end_r_heirarchy:
-                    if class_name in start_r_heirarchy:
+                for class_name in end_r_hierarchy:
+                    if class_name in start_r_hierarchy:
                         res_common_parent = class_name
                         break
 
                 act_common_parent = None
-                for class_name in end_a_heirarchy:
-                    if class_name in start_a_heirarchy:
+                for class_name in end_a_hierarchy:
+                    if class_name in start_a_hierarchy:
                         act_common_parent = class_name
                         break
 
                 if res_common_parent is None:
-                    raise ValueError("For 'contains IF-THEN' constraint, resources need to share a common parent...these resources do not!")
+                    raise ValueError(
+                        "For 'contains IF-THEN' constraint, resources need to share a common parent...these resources do not!"
+                    )
 
                 if act_common_parent is None:
-                    raise ValueError("For 'contains IF-THEN' constraint, activities need to share a common parent...these activities do not!")
+                    raise ValueError(
+                        "For 'contains IF-THEN' constraint, activities need to share a common parent...these activities do not!"
+                    )
 
                 # fill the params
                 child_adjacency_matrix = self._get_child_adjacency_matrix()
-                
+
                 # determine which start instances are containers of which end instances
-                end_r_start_r_map = self._create_resource_end_to_start_map(child_adjacency_matrix, res_common_parent, start_r_name, end_r_name)
-                end_a_start_a_map = self._create_activity_end_to_start_map(child_adjacency_matrix, act_common_parent, start_a_name, end_a_name)
-                
+                end_r_start_r_map = self._create_resource_end_to_start_map(
+                    child_adjacency_matrix, res_common_parent, start_r_name, end_r_name
+                )
+                end_a_start_a_map = self._create_activity_end_to_start_map(
+                    child_adjacency_matrix, act_common_parent, start_a_name, end_a_name
+                )
+
                 # determine the possible allocations of the start and end instances
                 start_alloc_list = self._determine_list_all_possible_allocations(start_r_name, start_a_name)
                 end_alloc_list = self._determine_list_all_possible_allocations(end_r_name, end_a_name)
-                            
+
                 # for each end alloc, use the maps to determine the possible end allocs
                 for end_alloc in end_alloc_list:
                     end_r_inst_name = end_alloc[0]
                     end_a_inst_name = end_alloc[1]
                     start_r_name_list = end_r_start_r_map[end_r_inst_name]
                     start_a_name_list = end_a_start_a_map[end_a_inst_name]
-                    
+
                     containing_allocations[end_alloc] = []
                     for start_r_name in start_r_name_list:
                         for start_a_name in start_a_name_list:
                             if (start_r_name, start_a_name) in start_alloc_list:
                                 if (start_r_name, start_a_name) not in containing_allocations[end_alloc]:
                                     containing_allocations[end_alloc].append((start_r_name, start_a_name))
-        
+
         # convert all items in containing_allocations to ids
         for (key_r_name, key_a_name) in containing_allocations:
             key_r_id = self._res_name_to_id[key_r_name]
@@ -390,47 +399,42 @@ class KnapsackComponentModel(ModelBase):
             containing_allocations_id[(key_r_id, key_a_id)] = []
             for (r_name, a_name) in containing_allocations[(key_r_name, key_a_name)]:
                 r_id = self._res_name_to_id[r_name]
-                a_id = self._act_name_to_id[a_name] 
+                a_id = self._act_name_to_id[a_name]
                 if (r_id, a_id) not in containing_allocations_id[(key_r_id, key_a_id)]:
                     containing_allocations_id[(key_r_id, key_a_id)].append((r_id, a_id))
 
-        
         # no_reward allocation
         no_reward_allocation = {}
         for a_id in self._model.act_id_index.data():
             no_reward_allocation[a_id] = False
-            
+
         for a_class in self._data["activityInstances"]:
             for a_inst in a_class["instanceTable"]:
                 if a_inst["reward"] == 0:
                     a_id = self._act_name_to_id[a_inst["instanceName"]]
                     no_reward_allocation[a_id] = True
-        
+
         # move them to model
         self._model.r_a_arcs_for_contains = Set(initialize=r_a_arcs_for_contains)
 
-        self._model.containing_allocations = Param(self._model.r_a_arcs_for_contains,
-                                            initialize=containing_allocations_id,
-                                            within=Any)
+        self._model.containing_allocations = Param(self._model.r_a_arcs_for_contains, initialize=containing_allocations_id, within=Any)
 
-        self._model.no_reward_allocation = Param(self._model.act_id_index,
-                                                 initialize=no_reward_allocation,
-                                                 within=Binary)        
+        self._model.no_reward_allocation = Param(self._model.act_id_index, initialize=no_reward_allocation, within=Binary)
 
         # constraints
-        self._model.if_contains_containt = Constraint(self._model.r_a_arcs_for_contains, rule=if_contains_rule)
+        self._model.if_contains_constraint = Constraint(self._model.r_a_arcs_for_contains, rule=if_contains_rule)
 
         self._model.if_contains_picked_constraint = Constraint(self._model.allocatable_act_id_index, rule=if_contains_picked)
 
     def __create_for_if_not_constraint(self):
         """
-        if-not constraints occur when a allcoation constraint is placed between two 'allocated to' links and the same resource exists in 
+        if-not constraints occur when a allocation constraint is placed between two 'allocated to' links and the same resource exists in
         both of the 'allocated to'
         """
         log.info("CREATING ADDITIONAL COMPONENT: IF NOT Constraints")
         if_not_constraint_present = False
         for item in self._data["allocationConstraints"]:
-            if item['allocationConstraintType'] == "IF-NOT":
+            if item["allocationConstraintType"] == "IF-NOT":
                 if_not_constraint_present = True
                 break
 
@@ -439,15 +443,15 @@ class KnapsackComponentModel(ModelBase):
             return
 
         # indices
-        r_a_arcs_for_not = []   # a list of all possible resource to activity allocations BUT 
-                                #  only for allocations relevant to the not contraint
+        r_a_arcs_for_not = []  # a list of all possible resource to activity allocations BUT
+        #  only for allocations relevant to the not constraint
 
         # params
-        not_allocations = {}    # a dict with keys = [resource_id, activity_id] and values = list 
-                                #  of activity ids that the resource_id cannot be allocated to
+        not_allocations = {}  # a dict with keys = [resource_id, activity_id] and values = list
+        #  of activity ids that the resource_id cannot be allocated to
 
         for item in self._data["allocationConstraints"]:
-            if item['allocationConstraintType'] == "IF-NOT":
+            if item["allocationConstraintType"] == "IF-NOT":
                 # get the names out
                 start_r_name = item["allocationStart"]["resourceClass"]
                 start_a_name = item["allocationStart"]["activityClass"]
@@ -486,11 +490,11 @@ class KnapsackComponentModel(ModelBase):
                     part_of_not_constraint = False
 
                     # check to ensure this is part of not constraint
-                    if (res_class_name == r_name and act_class_name == start_a_name):
+                    if res_class_name == r_name and act_class_name == start_a_name:
                         part_of_not_constraint = True
                         all_a_ids = all_start_a_ids
 
-                    elif (res_class_name == r_name and act_class_name == end_a_name):
+                    elif res_class_name == r_name and act_class_name == end_a_name:
                         part_of_not_constraint = True
                         all_a_ids = all_end_a_ids
 
@@ -508,14 +512,14 @@ class KnapsackComponentModel(ModelBase):
                             if act_inst_name != "ALL":
                                 a_ids = [self._act_name_to_id[act_inst_name]]
                             else:
-                                a_ids = all_a_ids 
+                                a_ids = all_a_ids
 
                             # create all res-to-act arcs
                             for r_id in r_ids:
                                 for a_id in a_ids:
                                     if (r_id, a_id) not in r_a_arcs_for_not:
                                         r_a_arcs_for_not.append((r_id, a_id))
-                                                     
+
                         # create not_allocations
                         for (r_id, a_id) in r_a_arcs_for_not:
                             if a_id in all_start_a_ids:
@@ -537,12 +541,10 @@ class KnapsackComponentModel(ModelBase):
         # move them to model
         self._model.r_a_arcs_for_not = Set(initialize=r_a_arcs_for_not)
 
-        self._model.not_allocations = Param(self._model.r_a_arcs_for_not,
-                                            initialize=not_allocations,
-                                            within=Any)
+        self._model.not_allocations = Param(self._model.r_a_arcs_for_not, initialize=not_allocations, within=Any)
 
         # constraints
-        self._model.if_not_limit_containt = Constraint(self._model.r_a_arcs_for_not, rule=if_not_limit_rule)
+        self._model.if_not_limit_constraint = Constraint(self._model.r_a_arcs_for_not, rule=if_not_limit_rule)
 
     def __create_for_contained_reward(self):
         """
@@ -586,7 +588,7 @@ class KnapsackComponentModel(ModelBase):
                 if child_act_id not in contained_activities[parent_act_id]:
                     contained_activities[parent_act_id].append(child_act_id)
 
-        num_contained_activities = {}  # a dict with keys = activity id and value equal to the todal
+        num_contained_activities = {}  # a dict with keys = activity id and value equal to the total
         for a_id, contained_act_list in contained_activities.items():
             num_contained_activities[a_id] = len(contained_act_list)
 
@@ -600,9 +602,9 @@ class KnapsackComponentModel(ModelBase):
         )
 
         # constraints
-        self._model.act_picked_contains_containt = Constraint(self._model.container_act_id_index, rule=act_picked_contains_rule)
-    
-    def __create_indicies(self):
+        self._model.act_picked_contains_constraint = Constraint(self._model.container_act_id_index, rule=act_picked_contains_rule)
+
+    def __create_indices(self):
         log.info("Creating indices...")
 
         # allocation pair id index...every possible allocation gets a unique number
@@ -664,16 +666,15 @@ class KnapsackComponentModel(ModelBase):
 
         # forbid set
         # TODO
-
-        log.debug("   res-act pair indicies..." + str(len(self._model.pair_id_index.data())))
+        log.debug("   res-act pair indices..." + str(len(self._model.pair_id_index.data())))
         log.debug("     " + str(self._model.pair_id_index.data()))
-        log.debug("   resource indicies..." + str(len(self._model.res_id_index.data())))
+        log.debug("   resource indices..." + str(len(self._model.res_id_index.data())))
         log.debug("     " + str(self._model.res_id_index.data()))
-        log.debug("   activity indicies..." + str(len(self._model.act_id_index.data())))
+        log.debug("   activity indices..." + str(len(self._model.act_id_index.data())))
         log.debug("     " + str(self._model.act_id_index.data()))
-        log.debug("   allocatable activity indicies..." + str(len(self._model.allocatable_act_id_index.data())))
+        log.debug("   allocatable activity indices..." + str(len(self._model.allocatable_act_id_index.data())))
         log.debug("     " + str(self._model.allocatable_act_id_index.data()))
-        log.debug("   budget indicies..." + str(len(self._model.budget_index.data())))
+        log.debug("   budget indices..." + str(len(self._model.budget_index.data())))
         log.debug("     " + str(self._model.budget_index.data()))
 
     def __create_relationships(self):
@@ -821,7 +822,7 @@ class KnapsackComponentModel(ModelBase):
         # activity-budget(cost) arcs
         self._model.a_b_arcs = Set(within=self._model.act_id_index * self._model.budget_index, initialize=a_b_arcs)
 
-        # res-act pair to activty arcs
+        # res-act pair to activity arcs
         self._model.p_a_arcs = Set(within=self._model.pair_id_index * self._model.act_id_index, initialize=p_a_arcs)
 
         # possible allocations
@@ -1063,13 +1064,15 @@ class KnapsackComponentModel(ModelBase):
                     allocated_classes.append(a)
         return name in allocated_classes
 
-    def _get_heirarchy_trace(self, class_name):
-        " breadth first search through the contains instances class heirarchy"
+    def _get_hierarchy_trace(self, class_name):
+        """
+        breadth first search through the contains instances class hierarchy
+        """
 
         q = deque()
         q.append(class_name)
         trace = []
-        
+
         while q:
             v = q.popleft()
             trace.append(v)
@@ -1081,7 +1084,7 @@ class KnapsackComponentModel(ModelBase):
         return trace
 
     def _get_all_resource_instance_names(self, name):
-        
+
         rc = self._get_resource_class_instance(name)
         rin = []
         for i in rc["instanceTable"]:
@@ -1089,7 +1092,7 @@ class KnapsackComponentModel(ModelBase):
         return rin
 
     def _get_all_activity_instance_names(self, name):
-        
+
         rc = self._get_activity_class_instance(name)
         rin = []
         for i in rc["instanceTable"]:
@@ -1120,7 +1123,7 @@ class KnapsackComponentModel(ModelBase):
             if vertex in adjacency_matrix:
                 for neighbor in adjacency_matrix[vertex]:
                     stack.append(neighbor)
-        
+
         return children_of_parent_inst
 
     def _create_resource_start_to_end_map(self, child_adjacency_matrix, res_common_parent, start_r_name, end_r_name):
@@ -1131,11 +1134,11 @@ class KnapsackComponentModel(ModelBase):
 
         start_end_map = {}
         for parent_inst in parent_instances:
-            
-            # from the common parent, determine which start_r and end_r chidren decend from that parent
+
+            # from the common parent, determine which start_r and end_r children descend from that parent
             start_child_inst_list = self._depth_search_for_children(child_adjacency_matrix, parent_inst, start_instances)
             end_child_inst_list = self._depth_search_for_children(child_adjacency_matrix, parent_inst, end_instances)
-            
+
             # assemble a pseudo parent-child map
             for start_inst in start_child_inst_list:
                 start_end_map[start_inst] = []
@@ -1152,11 +1155,11 @@ class KnapsackComponentModel(ModelBase):
 
         end_start_map = {}
         for parent_inst in parent_instances:
-            
-            # from the common parent, determine which start_r and end_r chidren decend from that parent
+
+            # from the common parent, determine which start_r and end_r children descend from that parent
             start_child_inst_list = self._depth_search_for_children(child_adjacency_matrix, parent_inst, start_instances)
             end_child_inst_list = self._depth_search_for_children(child_adjacency_matrix, parent_inst, end_instances)
-            
+
             # assemble a pseudo parent-child map
             for end_inst in end_child_inst_list:
                 end_start_map[end_inst] = []
@@ -1173,11 +1176,11 @@ class KnapsackComponentModel(ModelBase):
 
         start_end_map = {}
         for parent_inst in parent_instances:
-            
-            # from the common parent, determine which start_r and end_r chidren decend from that parent
+
+            # from the common parent, determine which start_r and end_r children descend from that parent
             start_child_inst_list = self._depth_search_for_children(child_adjacency_matrix, parent_inst, start_instances)
             end_child_inst_list = self._depth_search_for_children(child_adjacency_matrix, parent_inst, end_instances)
-            
+
             # assemble a pseudo parent-child map
             for start_inst in start_child_inst_list:
                 start_end_map[start_inst] = []
@@ -1194,11 +1197,11 @@ class KnapsackComponentModel(ModelBase):
 
         end_start_map = {}
         for parent_inst in parent_instances:
-            
-            # from the common parent, determine which start_r and end_r chidren decend from that parent
+
+            # from the common parent, determine which start_r and end_r children descend from that parent
             start_child_inst_list = self._depth_search_for_children(child_adjacency_matrix, parent_inst, start_instances)
             end_child_inst_list = self._depth_search_for_children(child_adjacency_matrix, parent_inst, end_instances)
-            
+
             # assemble a pseudo parent-child map
             for end_inst in end_child_inst_list:
                 end_start_map[end_inst] = []
@@ -1208,14 +1211,14 @@ class KnapsackComponentModel(ModelBase):
         return end_start_map
 
     def _determine_list_all_possible_allocations(self, r_name, a_name):
-        
+
         all_r_instances = self._get_all_resource_instance_names(r_name)
         all_a_instances = self._get_all_activity_instance_names(a_name)
 
         alloc_inst = self._get_alloc_inst(r_name, a_name)
         alloc_list = []
         for inst in alloc_inst["instanceTable"]:
-            
+
             if inst["resourceInstanceName"] == "ALL":
                 res_inst_list = all_r_instances
             else:
@@ -1224,7 +1227,7 @@ class KnapsackComponentModel(ModelBase):
             if inst["activityInstanceName"] == "ALL":
                 act_inst_list = all_a_instances
             else:
-                act_inst_list = [inst['activityInstanceName']]
+                act_inst_list = [inst["activityInstanceName"]]
 
             for res_name in res_inst_list:
                 for act_name in act_inst_list:
@@ -1232,5 +1235,3 @@ class KnapsackComponentModel(ModelBase):
                         alloc_list.append((res_name, act_name))
 
         return alloc_list
-
-

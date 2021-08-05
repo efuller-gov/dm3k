@@ -23,27 +23,26 @@ import time
 from datetime import datetime
 
 import pandas as pd
-import psutil
-
-from optimizer.util.history_pattern import HistoryManager
-from optimizer.util.util import full_house_input_keys, remove_old_temp_files
-# from pyomo.common.tempfiles import TempfileManager
+import psutil  # See https://github.com/PyUtilib/pyutilib/issues/31  - getting ValueError: signal only works in main thread
+import pyutilib.subprocess.GlobalData
 from pyomo.opt import SolverFactory, SolverStatus, TerminationCondition
 from pyutilib.common._exceptions import ApplicationError
 from pyutilib.services import TempfileManager
 
-# See https://github.com/PyUtilib/pyutilib/issues/31  - getting ValueError: signal only works in main thread
-import pyutilib.subprocess.GlobalData
+from optimizer.util.history_pattern import HistoryManager
+from optimizer.util.util import remove_old_temp_files
+
 pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
 
 log = logging.getLogger(__name__)
 
 # set up logging
-app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..')
-LOG_DIR = os.path.join(app_directory, 'logs')
+app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+LOG_DIR = os.path.join(app_directory, "logs")
 if not os.path.exists(LOG_DIR):
-    log.debug("Creating LOG_DIR="+str(LOG_DIR))
+    log.debug("Creating LOG_DIR=" + str(LOG_DIR))
     os.makedirs(LOG_DIR)
+
 
 class OptimizerBase:
     def __init__(self, input_class, model_class, output_class):
@@ -65,13 +64,13 @@ class OptimizerBase:
                 that solves the problem or all model_classes provided fail the
                 checks.*
             output_class: python class that extends class OutputBase below
-            
+
         """
         self._input_class = input_class
         self._model_class = model_class
         self._output_class = output_class
 
-        self._hist_mgr = HistoryManager()   # enables system to generate timings and memory usage
+        self._hist_mgr = HistoryManager()  # enables system to generate timings and memory usage
 
         self._input_instance = None
         self._constraints_dataset = ""
@@ -83,10 +82,10 @@ class OptimizerBase:
         """
         Update the reward values in the input
 
-        :param dict reward_dict: a dict of activity instance names as keys and assocaiated new reward values as the values
+        :param dict reward_dict: a dict of activity instance names as keys and associated new reward values as the values
         """
         pass
-    
+
     def ingest(self, input_dict):
         """
         Ingest a new input dataset
@@ -113,17 +112,17 @@ class OptimizerBase:
         fatal, validation_errors = self.get_input().ingest_validate(input_dict)
         if fatal:
             raise ValueError(validation_errors, "Input Data Failed Validation")
-        
+
         self._model = None
         self._output = None
         self._hist_mgr.end_tag("Ingest from input dictionary")
-        
+
         return validation_errors
 
     def build(self):
         """
         Build a new Optimizer Model
-        
+
         :return: None
         """
         if self.get_input() is None:
@@ -142,13 +141,13 @@ class OptimizerBase:
         self._hist_mgr.end_tag("Finding Model to use")
 
         self._hist_mgr.start_tag("Building Model")
-        
+
         data = self.get_input().to_data()
 
         self._model.build(data)
         self.get_input()._needs_rebuild = False
         self._hist_mgr.end_tag("Building Model")
-        
+
     def solve(self, solver="glpk", tee=False, timeout=None, retries=3, mipgap=None, keepfiles=True):
         """
         Solve the optimizer Model and gather input into the output class
@@ -158,6 +157,7 @@ class OptimizerBase:
         :param int timeout: By default there is no timeout
         :param int retries: Number of max attempts at running the solver
         :param float mipgap: Tolerance for solver
+        :param bool keepfiles: Set to true if pyomo files should be kept
         :return: None
         """
         if self.get_input() is None:
@@ -224,7 +224,6 @@ class OptimizerBase:
         return pd.DataFrame(
             self._hist_mgr.get_history(), columns=["datetime", "operation", "time_to_run_sec", "memory_gain_MB", "end_memory_MB"]
         )
-
 
 
 class InputBase:
@@ -339,6 +338,7 @@ class ModelBase:
         :param int retries: Number of max attempts at running the solver
         :param float mipgap: Tolerance for solver
         :param str constraints_dataset: Name of dataset where there are constraints
+        :param bool keepfiles: Set to true if pyomo files should be kept
         :return: None
         """
         temp_dir_name = "/tmp/solver"

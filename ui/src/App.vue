@@ -293,7 +293,7 @@ export default {
     vertical-align: text-bottom;
     height: 4vw;
   }
-  /* TO DO: Willl have to fix this */
+  /* TO DO: Will have to fix this */
   /* span.remove-button-class{
     background: url("../assets/x-icon.svg"); no-repeat top left;
     background-size: contain;
