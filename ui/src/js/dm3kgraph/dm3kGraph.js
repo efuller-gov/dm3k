@@ -1235,6 +1235,7 @@ function addDM3KContainsEdge(container, graph, parentBlock, childBlock, infoIcon
 }
 
 function addDM3KConstraintEdge(container, graph, allocatedLink1, allocatedLink2, constraintType) {
+    console.log("DRAW CONSTRAINT EDGE")
     //const edgeStyle = 'defaultEdge;verticalAlign=bottom;verticalLabelPosition=top;fontColor=#707070;strokeColor=blue;strokeWidth=2;';
     const edgeStyle = 'defaultEdge';
     // const infoIconSize = 15;
