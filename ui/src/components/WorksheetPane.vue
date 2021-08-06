@@ -534,34 +534,11 @@ export default {
 
             // update the "Constrain allocations" worksheet
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName1'), []);
-			// this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName1'), $('#startName1'), []);
             this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName2'), []);
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#stopName1'), []);
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#stopName2'), []);
-			// this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName2'), $('#startName2'), [$('#stopName1').children("option:selected").val()]);
 
         },
-        // worksheetUtil_updateAllocatedDropDown(graph, jQSelectorTarget, jQSelectorSource, excludeNamesList) {
-        //     console.log("CALLING worksheetUtil_updateAllocatedDropDown");
-        //     jQSelectorTarget.empty();
-        //     let resName = jQSelectorSource.children("option:selected").val();
-        //     // console.log('Looking for options based on resource name: '+resName);
-            
-        //     // want to look for allocations available to the resName
-        //     let updatedOptions = graph.getAllNamesOfAllocatedFrom(resName);
-
-        //     // get rid of the exclude list
-        //     //console.log('Options: ', updatedOptions)
-        //     excludeNamesList.forEach(function(excludeName) {
-        //         const i = updatedOptions.indexOf(excludeName);
-        //         if (i > -1) {
-        //             updatedOptions.splice(i, 1);
-        //         }
-        //     });
-
-        //     //console.log('updatedOptions',updatedOptions)
-        //     return updatedOptions.forEach(x => jQSelectorTarget.append('<option value="'+x+'">'+x+'</option>'))
-        // },
         updateDropDown(resList, jQuerySelector) {
             jQuerySelector.empty();
             return resList.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
