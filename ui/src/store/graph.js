@@ -20,7 +20,7 @@ export default new Vuex.Store({
       rewards : {},
       budgets : {},
       costs : {},
-      dm3kGraph: [], //this is the only thing you need...
+      dm3kGraph: [],
 },
   getters: {},
   mutations: {

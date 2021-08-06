@@ -32,7 +32,6 @@
                   let newResType = latest.resType
                   let newResName = latest.resName
                   let newBudgetNameList = latest.newBudgetNameList
-                  // this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
                   this.$store.state.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
                   latest.drawn = true
                 }
@@ -47,7 +46,6 @@
                   let existingResName = latest.existingResName
                   let newRewardName = latest.newRewardName
                   let costNum = 0 //REMOVE hardcoded workaround here??
-                  // this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                   this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                   latest.drawn = true
                 }
@@ -60,7 +58,6 @@
                 let actName = latest.actName
                 let existingResName = latest.existingResName
                 let newRewardName = latest.newRewardName
-                // this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
                 this.$store.state.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
             }
         },
@@ -68,7 +65,6 @@
             deep: true,
             handler(links) {
                 for (let latest of links.filter(x=>x.drawn==false)){
-                  // this.dm3kGraph.addContains(latest.resName, latest.ccName);
                   this.$store.state.dm3kGraph.addContains(latest.resName, latest.ccName);
                   latest.drawn = true
                 }
