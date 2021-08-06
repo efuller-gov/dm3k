@@ -282,10 +282,18 @@ class KnapsackComponentModel(ModelBase):
         self._data = data
         log.info("Building Pyomo model...")
         self._model = ConcreteModel()
-        self.__create_for_base_res_act_relationship()  # all indices, relationships, params and constraints to support any number of resources allocated to any number of activities
-        self.__create_for_contained_reward()  # all indices, relationships, params and constraints to support contained rewards
-        self.__create_for_if_not_constraint()  # all indices, relationships, params, and constraints to support IF-NOT constraints
-        self.__create_contained_if_constraint()  # all indices, relationships, params, and constraints to support Contained IF-THEN
+
+        # all indices, relationships, params and constraints to support any number of resources allocated to any number of activities
+        self.__create_for_base_res_act_relationship()
+
+        # all indices, relationships, params and constraints to support contained rewards
+        self.__create_for_contained_reward()
+
+        # all indices, relationships, params, and constraints to support IF-NOT constraints
+        self.__create_for_if_not_constraint()
+
+        # all indices, relationships, params, and constraints to support Contained IF-THEN
+        self.__create_contained_if_constraint()
 
         self.__create_objective()
 
@@ -466,6 +474,7 @@ class KnapsackComponentModel(ModelBase):
 
                 # create all ids, in case any ALLs occur in allocations
                 all_r_ids = []
+                all_a_ids = []
                 all_start_a_ids = []
                 all_end_a_ids = []
 
