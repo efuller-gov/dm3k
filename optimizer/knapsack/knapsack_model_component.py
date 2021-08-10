@@ -100,6 +100,7 @@ Model description:
 
 
 import logging
+import sys
 from collections import deque
 
 from pyomo.environ import Any, Binary, ConcreteModel, Constraint, NonNegativeReals, Objective, Param, Set, Var, maximize
@@ -298,7 +299,9 @@ class KnapsackComponentModel(ModelBase):
         self.__create_objective()
 
         log.info("....Pyomo model complete")
-        log.debug(self._model.pprint())
+
+        if "unittest" not in sys.modules:
+            log.debug(self._model.pprint())
 
     def __create_for_base_res_act_relationship(self):
         log.info("CREATING BASE COMPONENT:  Resource-Activity Allocation...")
