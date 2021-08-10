@@ -60,13 +60,13 @@ Within development mode, the system will hot reload any changes within the follo
 If hot reload does not occur, try the following...
 
 1. Ctrl-R in the browser.  This should force a hard reload.
-2. If #1 doesnt work, try restarting the ui container by running...
+2. If #1 doesn't work, try restarting the ui container by running...
 
     ```bash
     $ sudo docker restart dm3k_open_ui
     ```
 
-if you need to add new node_modules, you will need to make the change in 'package.json' and then re build the container, by running...
+if you need to add new node_modules, you will need to make the change in 'package.json' and then rebuild the container, by running...
 
 ```bash
 $ sudo docker-compose -f docker-compose-dev.yml down
@@ -79,7 +79,7 @@ $ sudo docker-compose -f docker-compose-dev.yml up
 >   $ sudo docker cp dm3k_open_ui:/app/yarn.lock .
 >   ```
 
-If you need to get inside of the ui container, run...
+If you need to get inside the ui container, run...
 
 ```bash
 $ sudo docker exec -ti dm3k_open_ui /bin/sh
@@ -112,14 +112,14 @@ If hot reload does not occur, try restarting the api container by running...
 $ sudo docker restart dm3k_open_api
 ```
 
-if you need to add new python packages, you will need to change either the api requirements.txt or the optimizer requirements.txt (depending on what you want) and then re build the container, by running...
+if you need to add new python packages, you will need to change either the api requirements.txt or the optimizer requirements.txt (depending on what you want) and then rebuild the container, by running...
 
 ```bash
 $ sudo docker-compose -f docker-compose-dev.yml down
 $ sudo docker-compose -f docker-compose-dev.yml up
 ```
 
-If you need to get inside of the api container, run...
+If you need to get inside the api container, run...
 
 ```bash
 $ sudo docker exec -ti dm3k_open_api bash

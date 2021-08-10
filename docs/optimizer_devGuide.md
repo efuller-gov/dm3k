@@ -30,7 +30,7 @@ The core classes are shown in the diagram below.
 
 The developers of this repo want to encourage the development of new and better optimizers and therefore provide a way to extend this system.
 
-For an example how to extend, refer to the Full House optimizer (located in /optimizer/full_house).  This is our original extension of the generic optimizer (located in /optimizer/knapsack).  The Full House was developed to be a faster way to solve a specific type of resource allocation problem; problems with 3 resources (1 parent and 2 children) and 2 activities (1 parent and 1 child) linked together with an "Contains IF-THEN" allocation constraint.  (*Full House comes from the 3 resources and 2 activities*)
+For an example how to extend, refer to the Full House optimizer (located in /optimizer/full_house).  This is our original extension of the generic optimizer (located in /optimizer/knapsack).  The Full House was developed to be a faster way to solve a specific type of resource allocation problem; problems with 3 resources (1 parent and 2 children) and 2 activities (1 parent and 1 child) linked together with a "Contains IF-THEN" allocation constraint.  (*Full House comes from the 3 resources and 2 activities*)
 
 If you wish to create your own optimizer, the following process defines how to extend the existing system:
 

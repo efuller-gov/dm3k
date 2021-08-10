@@ -4,8 +4,8 @@ The Open Decision Maker 3000 (OPEN-DM3K) is a generalized decision-engine that s
 
 OPEN-DM3K provides the user with:
 
-- an web-based UI to define their resource allocation problem.
-- an python optimizer that leverages linear optimization techniques to solve the user defined problem.
+- a web-based UI to define their resource allocation problem.
+- a python optimizer that leverages linear optimization techniques to solve the user defined problem.
 
 For more explanation of resource allocation problems and their component parts, see [*/docs/resource_allocation_101.md*](/docs/resource_allocation_101.md)
 

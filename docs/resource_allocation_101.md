@@ -2,7 +2,7 @@
 
 [Resource Allocation](https://www.britannica.com/topic/operations-research/Resource-allocation) problems involve the distribution of resources among competing activities in order to maximize a reward.
 
-The problem is to determine which/how much resources to allocate to which activity.  If more resources are available than needed, the solution indicates which resources are used and which are not.  Similarly, if there are more activities than can be done with available resources, the solution should indicate which activities are not performed, taking into account the associated costs and rewards.
+The problem is to determine which/how many resources to allocate to which activity.  If more resources are available than needed, the solution indicates which resources are used and which are not.  Similarly, if there are more activities than can be done with available resources, the solution should indicate which activities are not performed, taking into account the associated costs and rewards.
 
 Table of Contents:
 
@@ -57,7 +57,7 @@ The following sections further define all the components mentioned in the sectio
 
 **Resources** can have one or more **Resource Instances** of that resource (*e.g. a 'Backpack' resource type could have instances including 'Georges backpack', 'Lauras backpack', etc.*).  
 
-Each **Resource Instances** can have a different **Budget** amount for each Budget Type (*e.g. 'Georges backpack' is small and has a 'weight' budget amount = 10 lbs and a 'space' budget amount = 1 cuft*)
+Each **Resource Instances** can have a different **Budget** amount for each Budget Type (*e.g. 'Georges backpack' is small and has a 'weight' budget amount = 10 lbs and a 'space' budget amount = 1 cubic foot*)
 
 ### Activities ###
 
@@ -69,7 +69,7 @@ Each **Resource Instances** can have a different **Budget** amount for each Budg
 
 **Activities** can have one or more **Activity Instances** of that activity (*e.g. a 'Camping Item' activity type could have instances including 'sleeping bag', 'matches', 'cooking stove', etc.*).
 
-Each **Activity Instance** can have different **Cost** and **Reward** amounts. (*e.g. 'matches' have a 'weight' budget cost = 0.01 lbs, a 'space' cost amount = 0.001 cuft, and a reward = 10*)
+Each **Activity Instance** can have different **Cost** and **Reward** amounts. (*e.g. 'matches' have a 'weight' budget cost = 0.01 lbs, a 'space' cost amount = 0.001 cubic foot, and a reward = 10*)
 
 ### Can Be Allocated To Indications ###
 
@@ -91,6 +91,6 @@ Each **Contains Indication** can have one or more **Contains Indication Instance
 
 **Allocation Constraints** come in two flavors: "IF-NOT" and "Contains IF-THEN".
 
-"IF-NOT" allocation constraints prevent a **Resource Instances** from being allocated to more than one type of Activity.  (*e.g. if I am allocating grocery bags to different types of grocery items, and I dont want grocery items that are cleaning supplies to be in the same bag as food items...I can use an IF-NOT allocation constraint to enforce this*)
+"IF-NOT" allocation constraints prevent a **Resource Instances** from being allocated to more than one type of Activity.  (*e.g. if I am allocating grocery bags to different types of grocery items, and I don't want grocery items that are cleaning supplies to be in the same bag as food items...I can use an IF-NOT allocation constraint to enforce this*)
 
 "Contained IF-THEN" allocation constraints work in conjunction with **Contains Indications** to tie the **Can be Allocated To Indication** from a parent resource and activity to a **Can be Allocated To Indication** between the children resource and activity.  Tying the parent allocation to the child allocation prevents the child **Can be Allocated To Indication** from working unless the first **Can be Allocated To Indication** includes allocations by parent instances that contain these children.  (*e.g. if I am on a ship with turrets that can be pointed at a city (parent relationship: turret resource allocated to city activity), I can't hit buildings with shells from the gun on that turret in another city (child relationship: shells resource allocated to buildings activity.  **Note- shells have to be children to turret and buildings have to children to city for this to work**)*)

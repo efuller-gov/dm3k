@@ -85,7 +85,7 @@ The expected data params for the POST /api/vizdata endpoint include a single JSO
       * *budgets*: a list of strings representing one or more budget types for this class
       * *containsClasses*: a list of strings of other resource *className*s that are contained by this class
       * *canBeAllocatedToClasses*: a list of strings of other activity *className*s that this resource class can be allocated to
-    * *activityClasses*: a list of JSON objects, where each JSON object represents a activity class and has the following attributes:
+    * *activityClasses*: a list of JSON objects, where each JSON object represents an activity class and has the following attributes:
       * *className*: string name of the class
       * *rewards*: a list of strings representing one or more reward types for this class
       * *costs*: a list of strings representing one or more costs for this class. Costs are expressed as a budget type.
@@ -221,7 +221,7 @@ In the event that the problem is not defined correctly, a JSON object is returne
 * *reason*: "Validation Errors in input data"
 * *body*: a list of JSON objects where each JSON object represents a validation error, and each validation error has the following attributes:
   * *err_code*: an int code (see table below for explanation)
-  * *err_txt*: human readable string that describes the error in the input problem
+  * *err_txt*: human-readable string that describes the error in the input problem
   * *offender*: a string name of the area of the input problem that is causing the error.
   * *fix*: a string name of the process performed to fix the error
   * *is_fatal_error*: a boolean where True = error is fatal and caused the system to stop
