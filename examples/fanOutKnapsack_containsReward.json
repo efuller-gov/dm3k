@@ -1,5 +1,5 @@
 {
-    "datasetName": "fanOutKnapsack_ifNot",
+    "datasetName": "fanOutKnapsack_containsReward",
     "files": [
         {
             "fileName": "fanOutKnapsack_containsReward.json",

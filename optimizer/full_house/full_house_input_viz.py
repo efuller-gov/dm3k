@@ -13,9 +13,7 @@ This ingests the format from the DM3K-Viz tool
 # --------------------------------------------------------------------------
 
 
-import json
 import logging
-import os
 
 from optimizer.full_house.full_house_input import FullHouseInput
 
@@ -194,7 +192,7 @@ class FullHouseInputViz(FullHouseInput):
             "resource_families": {},
             "activity_children": {},
             "parent_budget_name": "",
-            "child_budget_name": ""
+            "child_budget_name": "",
         }
 
         # TODO - THIS IS VERY BRITTLE!!! IT ASSUMES THAT ONLY FULL HOUSE PROBLEMS WILL BE SPECIFIED!
@@ -314,7 +312,7 @@ class FullHouseInputViz(FullHouseInput):
             for pa in self._data["parent_possible_allocations"][pr]:
                 tu = (pr, pa)
                 val = self._get_instance_prop(dm3k_viz_data, parent_activity, pa, prop_name="cost", class_type="activity")
-                
+
                 # val can be a dictionary...full house can only take values
                 val = list(val.values())[0]
 
@@ -427,10 +425,10 @@ class FullHouseInputViz(FullHouseInput):
             for ca in self._data["child_possible_allocations"][cr]:
                 tu = (cr, ca)
                 val = self._get_instance_prop(dm3k_viz_data, child_activity, ca, prop_name="cost", class_type="activity")
-                
+
                 # val can be a dictionary...full house can only take values
                 val = list(val.values())[0]
-                
+
                 self._data["req_child_amt"][tu] = val
 
         log.debug("required child amount")

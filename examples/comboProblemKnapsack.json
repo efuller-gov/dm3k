@@ -1,5 +1,5 @@
 {
-    "datasetName": "comboProblem_fanInKnapsack_fanOutKnapsack_connected",
+    "datasetName": "comboProblemKnapsack",
     "files": [
     	{
     		"fileName": "comboProblemKnapsack.json",

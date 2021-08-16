@@ -14,23 +14,25 @@ Tests the full house model from internal interface
 
 
 import json
-import pandas
 import logging
 import os
 import sys
 import unittest
 from unittest import TestCase
 
+import pandas
+
 # ensure that optimizer directory is in path
-app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..')
+app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..")
 if app_directory not in sys.path:
     sys.path.append(app_directory)
 
-from optimizer.slim_optimizer_main import create_opt
+from optimizer.slim_optimizer_main import create_opt  # noqa: E402
 
 log = logging.getLogger(__name__)
 
-class TestKnapsackE2E(TestCase):
+
+class TestFullHouseAWD(TestCase):
     def setUp(self):
         log.info("Testing: " + self.__class__.__name__ + " " + self._testMethodName + "----------")
         self._opt = None
@@ -55,10 +57,10 @@ class TestKnapsackE2E(TestCase):
         self._opt = opt
 
         return input_dict, validation_errors
-    
+
     def _step2_build(self):
         self._opt.build()
-    
+
     def _step3_solve(self):
         self._opt.solve()
         results = self._opt.get_output()
@@ -77,7 +79,7 @@ class TestKnapsackE2E(TestCase):
 
         # ### STEP 2 - build the model
         self._step2_build()
-       
+
         # ### STEP 3 / 4  - solving and output
         results = self._step3_solve()
 
@@ -93,9 +95,9 @@ class TestKnapsackE2E(TestCase):
         log.debug("   Per Resource Budget Used...")
         log.debug(json.dumps(results.to_dict()["per_resource_budget_used"], indent=4))
         log.debug("   Complete Trace...")
-        pandas.set_option('display.max_rows', 1000)
+        pandas.set_option("display.max_rows", 1000)
         log.debug(results.get_trace_df())
-        pandas.reset_option('display.max_rows')
+        pandas.reset_option("display.max_rows")
 
         return input_dict, results
 

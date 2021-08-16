@@ -1535,11 +1535,11 @@ export class Dm3kSolutionVis{
         if (containerClass!= undefined){
             // Get contained instances by looking up in instanceTable of container object
             let containingTable = containerClass.instanceTable;
-            let containinedInstances = containingTable.filter(x=>x.childInstanceName==instanceName)
+            let containedInstances = containingTable.filter(x=>x.childInstanceName==instanceName)
             let parentClassLabel = containerClass.parentClassLabel
             // Get those containingInstances rewards
-            for (let i=0; i<containinedInstances.length; i++){
-                let parentInstanceName = containinedInstances[i].parentInstanceName;
+            for (let i=0; i<containedInstances.length; i++){
+                let parentInstanceName = containedInstances[i].parentInstanceName;
                 let parentClassInstanceTable = outlineInstances.filter(x=>x.classLabel==parentClassLabel)[0].instanceTable
                 instReward = parentClassInstanceTable.filter(x=>x.instanceName==parentInstanceName)[0].reward
                 cumReward = cumReward + instReward

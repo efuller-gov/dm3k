@@ -22,7 +22,7 @@ Presents a simple endpoint to check aliveness and the API version
 * **Error Response**: None
 * **Sample Call**:
 
-    ```python
+    ``` python
         import requests
         version_url = URL + '/api/version'   # URL is where you established the docker containers
         response = requests.get(version_url)
@@ -45,7 +45,7 @@ The Main endpoint to provide visual data to the optimizer.  The response is the 
 * **Sample Call**:
     python
 
-    ```python
+    ``` python
         import os
         import json
         import requests
@@ -79,18 +79,18 @@ The expected data params for the POST /api/vizdata endpoint include a single JSO
 * *datasetName*:  string name of the data set that you are posting
 * *files*: the list of files that represent this data set. (Typically only 1 file), where each file is a JSON object with the following attributes:
   * *fileName*: string name of the file
-  * *fileContents*: a JSON object with the following attrbutes:
+  * *fileContents*: a JSON object with the following attributes:
     * *resourceClasses*: a list of JSON objects, where each JSON object represents a resource class and consists of the following attributes:
       * *className*: string name of the class
       * *budgets*: a list of strings representing one or more budget types for this class
       * *containsClasses*: a list of strings of other resource *className*s that are contained by this class
       * *canBeAllocatedToClasses*: a list of strings of other activity *className*s that this resource class can be allocated to
-    * *activityClasses*: a list of JSON objects, where each JSON object represents a activity class and has the following attributes:
+    * *activityClasses*: a list of JSON objects, where each JSON object represents an activity class and has the following attributes:
       * *className*: string name of the class
       * *rewards*: a list of strings representing one or more reward types for this class
       * *costs*: a list of strings representing one or more costs for this class. Costs are expressed as a budget type.
       * *containsClasses*: a list of strings of other activity *className*s that are contained by this class
-    * *resouceInstances*: a list of JSON objects, where each JSON object represents an instance of a *resourceClass*.  A resourceInstance has the following attributes:
+    * *resourceInstances*: a list of JSON objects, where each JSON object represents an instance of a *resourceClass*.  A resourceInstance has the following attributes:
       * *className*: the string name of the resource class that this is an instance of
       * *instanceTable*: a list of JSON objects where each JSON object represents an instance of the resource class and has the following attributes:
         * *instanceName*: the string name of the instance
@@ -108,7 +108,7 @@ The expected data params for the POST /api/vizdata endpoint include a single JSO
         * *resourceInstanceName*: can be "ALL" or the *instanceName* of the resource Instance.  Where "ALL" means all instances of the *resourceClassName*
         * *activityInstanceName*: can be "ALL" or the *instanceName* of the activity Instance.  Where "ALL" means all instances of the *activityClassName*
     * *containsInstances*:  a list of JSON objects which establish which specific *resourceInstances* and *activityInstances* contain which other specific *resourceInstances* and *activityInstances*.  Each containsInstance has the following:
-      * *parentClassName*: string name of resouce/activity class which contains
+      * *parentClassName*: string name of resource/activity class which contains
       * *childClassName*: string name of resource/activity class which is contained
       * *parentType*: "resource" | "activity" - what type are the *parentClassName* and the *childClassName*
       * *instanceTable*: a list of JSON objects where each JSON object represents when a specific resource/activity instance contains a specific resource/activity instance and has the following attributes:
@@ -220,8 +220,8 @@ In the event that the problem is not defined correctly, a JSON object is returne
 
 * *reason*: "Validation Errors in input data"
 * *body*: a list of JSON objects where each JSON object represents a validation error, and each validation error has the following attributes:
-  * *err_code*: an int code (see table below for explaination)
-  * *err_txt*: human readable string that describes the error in the input problem
+  * *err_code*: an int code (see table below for explanation)
+  * *err_txt*: human-readable string that describes the error in the input problem
   * *offender*: a string name of the area of the input problem that is causing the error.
   * *fix*: a string name of the process performed to fix the error
   * *is_fatal_error*: a boolean where True = error is fatal and caused the system to stop
@@ -229,6 +229,6 @@ In the event that the problem is not defined correctly, a JSON object is returne
 Error Code  | Description
 ------------|-----------------------------
 1           | the necessary files do not exist
-2           | the formats of the files are not corret
+2           | the formats of the files are not correct
 3           | the data within the files is not internally consistent
 4           | the names within the files is not internally consistent

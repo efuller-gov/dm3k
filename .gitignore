@@ -10,7 +10,6 @@ virtualenv
 # extras
 logs
 *.log
-.idea
 results
 
 .DS_Store
