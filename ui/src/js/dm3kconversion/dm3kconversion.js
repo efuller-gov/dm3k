@@ -79,6 +79,7 @@ export class Dm3kConverter {
 
 	dm3kconversion_base(dm3kgraph) {
 		var output = {};
+		var final_output = {};
 		output['resourceClasses'] = dm3kgraph.getResouceClassDetails();
 		output['activityClasses'] = dm3kgraph.getActivityClassDetails();
 		output['resourceInstances'] = [];   
@@ -88,26 +89,29 @@ export class Dm3kConverter {
 		output['allocationConstraints'] = dm3kgraph.getAllocationConstraintDetails();
 
 		for (let ri of dm3kgraph.resourceInstances) {
-			//console.log(ri)
 			output['resourceInstances'] = output['resourceInstances'].concat(ri.getDetails());
 		}
 
 		for (let ai of dm3kgraph.activityInstances) {
-			//console.log(ai)
 			output['activityInstances'] = output['activityInstances'].concat(ai.getDetails());
 		}
 
 		for (let ci of dm3kgraph.containsInstances) {
-			//console.log(ci)
 			output['containsInstances'] = output['containsInstances'].concat(ci.getDetails());
 		}
 
 		for (let ai of dm3kgraph.allocatedToInstances) {
-			//console.log(ai)
 			output['allocationInstances'] = output['allocationInstances'].concat(ai.getDetails());
 		}
 
-		return output;
+		final_output['datasetName'] = ''
+		final_output['files'] = []
+		final_output['files'].push({
+			filename: '',
+			fileContents: output
+		})
+
+		return final_output;
 	}
 
 	dm3kconversion_reverse(dm3kgraph, inputJson) {
