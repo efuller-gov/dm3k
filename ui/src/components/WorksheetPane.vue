@@ -776,7 +776,7 @@ export default {
         },
         submitDM3K(){
 
-            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
+            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph)["files"][0]["fileContents"];
 
             // get dataset name from textbox
             var dsName = $("#diagramName").val();
