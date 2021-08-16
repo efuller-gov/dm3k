@@ -1,8 +1,7 @@
 """
 A component based way of solving the knapsack problem
 
-Assumptions:
-1) What is possible
+What are the characteristics of a knapsack problem
     - resource has "budgets" attribute  (TODO - do we want to change the input format to have "attributes" as key and
                                                 "budgets" to be under that
     - resource can have 1 or more budgets
@@ -19,72 +18,13 @@ Assumptions:
     - containing activities can have rewards, which are given if all children of group is allocated
     - allocated to links can be constrained with IF NOT (if you allocate a resource instance to an activity instance of one activity class,
         you may not allocated it an activity instance of another activity class)
+    - allocated to links can be constrained with IF CONTAINS (a child resource can only be allocated to a child activity, if a parent
+        resource, that contains the child resource, is allocated to a parent activity, that contains the child activity)
     - (FUTURE) allocated to links can be constrained with IF ONLY (if you allocate a resource instance to one activity,
         no other activities from a contained by group can be allocated to that resource instance
     - (FUTURE) force an activity to be allocated/not allocated to a resource
     - (FUTURE) force an activity to be allocated/not allocated to any resource
     - (FUTURE) Activities without rewards
-
-2) What do we assume is checked at the input level prior to getting to the model
-    -  all activity and resource instance names must be unique
-    -  there is a single reward for activities
-    -  should not have more than one instance of ALL:ALL
-    -  budgets and costs have consistent names across allocation paths
-
-    - (FUTURE)all budgets/costs in resource/activity classes have values for each instance
-
-Model description:
-1) INDICES
-    - model.pair_id_index = [0...total number of 'allocated to' arrows]
-    - model.res_id_index = [0...max number of resource instances]
-    - model.act_id_index = [0...max number of activity instances]
-    - model.budget_index = [0...total number of budgets across all resources]
-
-    - model.contains_pair_id_index = [0....total number of 'contains' arrows]   <--?
-
-2) VARIABLES
-    - model.ALLOCATED[<res_id>, <act_id>] = <1/0>   # indicates which res instance is allocated to which act instances
-    - model.ALLOCATED_AMT[<res_id>, <act_id>, <budget_id>] =<value>  # what value of each budget has been allocated
-    - model.PICKED[<act_id>] = <0/1>   # Indicates that a resource from each incoming 'allocated to' arrow was
-                                       #  allocated to this activity
-                                       # (Can this be expanded for contains?)
-
-
-3) SETS
-    - model.r_a_arcs = [(<res_id>, <act_id>),...]   # which resources can be allocated to which activities
-    - model.r_a_b_arcs = [(<res_id>, <act_id>, <budget_id>),...]   # r_a with which budgets
-    - model.r_b_arcs = [(<res_id>, <budget_id>),...]  # which resources have which budgets
-    - model.a_b_arcs = [(<act_id>, <budget_id>), ...]  # which activities have which budgets (costs)
-    - model.p_a_arcs = [(<pair_id>, <act_id>), ...]   # which activities are in which 'allocated to' arrow pairs
-
-    - model.allocatable_act_index = [<act_Id>, ...]  # which activities can be allocated to (need to exclude the non-allocated ones)
-
-4) PARAMS
-    - model.possible_allocation[<res_id>] = [<act_id>, ...]
-    - model.reverse_allocations[<pair_id>, <act_id>] = [<res_id>, ...]   # tracing back across allocated to arrows
-    - model.num_budgets[<act_id>] = <int>
-    - model.num_incoming_pairs[<act_id>] = <int>
-    - model.total_reverse_allocations[<act_id>] = [<res_id>, ...]    # across all pairs
-    - model.contained_activities[<act_id>] = [<act_id>, ...]
-    - model.num_contained_activities[<act_id>] = <int>
-
-    - model.reward[<act_id>] = <value>
-    - model.required_amount[<act_id>, <budget_id>] =  <value>    # how much does each act cost
-    - model.available_amount[<res_id>, <budget_id>] = <value>    # how much budget does each res have
-
-5) CONSTRAINTS
-    - required amount rule - in order for a resource to be allocated to an activity, a certain amt of budget is required
-    - available amount rule - each resource instance has a limited budget;  it cannot allocated more than that
-    - activity picked rule - an activity is picked (selected) if a resource was allocated to it along all the possible
-            incoming 'allocated to' arrows
-    - allocation limit rule - an activity cannot be allocated more than once per resource-activity pair
-            (i.e. per 'allocated to' arrow)
-
-    - activity picked contains rule - An activity is picked (selected) if no resource is allocated to it and if all activities it contains are picked
-
-
-6) OBJECTIVE
-    - Maximize the sum of all rewards of activities that are 'picked' (selected)
 
 """
 
@@ -104,6 +44,9 @@ log = logging.getLogger(__name__)
 # OBJECTIVES
 # -------------------------------------------------------------------------------
 def objective_rule(model):
+    """
+    Maximize the sum of all rewards of activities that are 'picked' (selected)
+    """
     return sum(model.PICKED[a_id] * model.reward[a_id] for a_id in model.act_id_index)
 
 
@@ -144,7 +87,7 @@ def act_picked_rule(model, a_id):
 
 def act_picked_contains_rule(model, a_id):
     """
-    An activity is picked (selected) if no resource is allocated to it and if all activities it contains are picked
+    An activity is picked (selected) if all the child activities contained by this activity are picked
 
     :param ConcreteModel model:
     :param a_id: the id number of the activity instance
@@ -190,9 +133,11 @@ def allocated_limit_rule(model, p_id, a_id):
 
 def if_not_limit_rule(model, r_id, a_id):
     """
-    when an IF-NOT constraint exists, if you allocate a resource instance to an activity instance of one activity class,
-        you may not allocated it an activity instance of another activity class
-
+    "IF-NOT" allocation constraints prevent a Resource Instances from being allocated to more than one class of Activity.  
+    
+    (e.g. if I am allocating grocery bags to different types of grocery items, and I don't want grocery items that are 
+    cleaning supplies to be in the same bag as food items...I can use an IF-NOT allocation constraint to enforce this)
+    
     :param ConcreteModel model:
     :param int r_id: the id number of the resource instance
     :param int a_id: the id number of the activity instance
