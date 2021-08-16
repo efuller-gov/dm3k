@@ -79,7 +79,6 @@
                     <label for="actType2"> I want </label>
                     <select class="chosen-select activity-select" id="actType2" style="margin-left: 0px;" @change="worksheetUtils_newActivityActivated">
                         <option selected style="font-weight: bold;">a new activity</option>
-                        <!-- <option value="custom input">custom input</option> -->
                     </select>
                     <label for="act-childName">to contain</label>
                     <select class="chosen-select" id="act-childName">
@@ -96,7 +95,6 @@
                     <label for="resType2"> I want </label>
                     <select class="chosen-select activity-select" id="resType2" style="margin-left: 0px;" @change="worksheetUtils_newResourceActivated">
                         <option selected style="font-weight: bold;">a new resource</option>
-                        <!-- <option value="custom input">custom input</option> -->
                     </select>
                     <label for="res-childName">to contain</label>
                     <select class="chosen-select" id="res-childName">
@@ -146,18 +144,14 @@
                 <img id="allocate-resources-helper-image" class="helper-img hide" src="../assets/allocate-resources.svg">
                 <img id="contains-helper-image" class="helper-img hide" src="../assets/contains-relationship.svg">
                 <img id="constrain-allocations-helper-image" class="helper-img hide" src="../assets/allocation-constraint.svg">
-				<!-- <img id="helper-image" :src="src[currentSrc]"> -->
-                <!-- <img id="helper-image" :src="resolve_img_url(picture_src)" /> -->
 				<p id="i-circle-explainer" class="explanatory-text">By clicking <img src="../assets/rounded-info-icon-gray.png" alt="circle-info" style="vertical-align:text-bottom;" height="20" width="auto">
 					on any item, see actions that can be taken to define further relationships and instances.</p>
             </div>
             <div id="helper-info-div">
 				<button @click="worksheetUtil_hideShowWorksheet()" id="hide-worksheet-button" class='zoom-button'>Hide worksheet</button>
 				<p class="title-text"><b>Load, save, and submit diagrams.</b></p>
-				<!-- <p>Load diagram from local machine</p> -->
 				<input @click.self="getConfigFile" type="button" class="done-button" value="Load existing diagram"><br><br><br>
 				<div style='height: 0px;width: 0px;overflow: hidden;'><input type="file" id="loadLocally" accept="application/json"></div>
-				<!-- <p>Save diagram to work on later</p> -->
 				<label for="diagramName">Save current diagram as </label>
 				<input type="text" class="long-input" id="diagramName" value="dm3kDiagram" ><br>
 				<input @click="saveLocally" type="button" class="done-button" value="Save file" id="saveLocally" style="margin-top: 10px;"><br><br>
@@ -356,7 +350,7 @@ export default {
                 alert('You must select a new activity type from the dropdown menu.')
                 return
             }
-            let model = this.$store.state.dm3kGraph.graph.getModel()
+            // let model = this.$store.state.dm3kGraph.graph.getModel()
             // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
             // if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
             //     // resetActivityPrompt();
@@ -392,9 +386,9 @@ export default {
                     }
             } else{
             // Allocate to new activity, and create new activity
-                if (model.getCell(newActName) != undefined){
-                    alert('Cannot create duplicate node. Please choose a new instance name.')
-                } else{
+                // if (model.getCell(newActName) != undefined){
+                //     alert('Cannot create duplicate node. Please choose a new instance name.')
+                // } else{
                     if (newActType.includes('[')){
                         let tmp = newActType.split('[')
                         tmp = newActType.split(']',2)
@@ -413,7 +407,7 @@ export default {
                     else {
                         alert(ans.details);
                     }
-                }
+                // }
             }
         },
         containsTab(){
@@ -527,54 +521,26 @@ export default {
 			// update the "Make contains relationship" worksheet
             this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource', 'activity'], $('#parentName2'), []);
             this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource', 'activity'], $('#childName2'), []);
-			// this.worksheetUtil_updateContainsDropDown(this.$store.state.dm3kGraph, $('#childName2'), $('#parentName2'), []);
 
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#act-childName'), [])
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#res-childName'), [])
 
             // update the "Constrain allocations" worksheet
 			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName1'), []);
-			this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName1'), $('#startName1'), []);
-			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName2'), []);
-			this.worksheetUtil_updateAllocatedDropDown(this.$store.state.dm3kGraph, $('#stopName2'), $('#startName2'), [$('#stopName1').children("option:selected").val()]);
+            this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['resource'], $('#startName2'), []);
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#stopName1'), []);
+			this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#stopName2'), []);
 
-			// this.worksheetUtil_populateExistingActivitiesFromGraph(g)
-
-        },
-        worksheetUtil_updateAllocatedDropDown(graph, jQSelectorTarget, jQSelectorSource, excludeNamesList) {
-            // console.log('worksheetUtil_updateAllocatedDropDown on '+jQSelectorTarget.attr('id'));
-            jQSelectorTarget.empty();
-            let resName = jQSelectorSource.children("option:selected").val();
-            // console.log('Looking for options based on resource name: '+resName);
-            
-            // want to look for allocations available to the resName
-            let updatedOptions = graph.getAllNamesOfAllocatedFrom(resName);
-
-            // get rid of the exclude list
-            //console.log('Options: ', updatedOptions)
-            excludeNamesList.forEach(function(excludeName) {
-                const i = updatedOptions.indexOf(excludeName);
-                if (i > -1) {
-                    updatedOptions.splice(i, 1);
-                }
-            });
-
-            //console.log('updatedOptions',updatedOptions)
-            return updatedOptions.forEach(x => jQSelectorTarget.append('<option value="'+x+'">'+x+'</option>'))
         },
         updateDropDown(resList, jQuerySelector) {
             jQuerySelector.empty();
             return resList.forEach(x => jQuerySelector.append('<option value="'+x+'">'+x+'</option>'))
         },
         worksheetUtil_updateDropDown(graph, typeList, jQuerySelector, excludeNamesList) {
-            // console.log('worksheetUtil_updateDropDown on '+jQuerySelector.attr('id'));
-
             jQuerySelector.empty();
             let updatedOptions = []
             typeList.forEach(function(typeName) {
-                //console.log('Looking for: '+typeName)
                 let options = graph.getAllNamesOfType(typeName);
-                //console.log('Options: ', options)
                 updatedOptions = updatedOptions.concat(options);
             });
             
@@ -594,7 +560,6 @@ export default {
                 $('#rewardName').removeAttr('disabled');
             }
             this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#act-childName'), [])
-			// worksheetUtil_updateDropDown(g, ['resource'], $('#res-childName'), [])
         },
         worksheetUtils_newResourceActivated(){
             $('#res-childName').removeAttr('disabled');
@@ -612,7 +577,6 @@ export default {
                 $('#rewardName').removeAttr('disabled');
             }
             this.worksheetUtil_updateDropDown(this.$store.state.dm3kGraph, ['activity'], $('#act-childName'), [])
-			// worksheetUtil_updateDropDown(g, ['resource'], $('#res-childName'), [])
         },
         resetDropdowns(){
             $('#resName2').empty()
@@ -636,7 +600,6 @@ export default {
                 // Load a file from local storage
                 $("#loadLocally").change(function(e) {
                     const file = e.target.files[0];
-                    console.log("--> LOAD LOCALLY ", e)
                     if (!file) {
                         return;
                     }
@@ -648,9 +611,6 @@ export default {
                         var inputJson = JSON.parse(inputJsonString);
                         this.inputJson = inputJson;
                         resolve(inputJson)
-                        // dm3kconversion_reverse(dm3kgraph, inputJson);
-                        // // update the worksheets and make sure all worksheets are enabled
-                        // this.updateAllDropDowns();
                         $('#allocate-resources-button').removeClass('disabled')
                         $('#contains-button').removeClass('disabled')
                         $('#constrain-allocations-button').removeClass('disabled')
@@ -687,15 +647,11 @@ export default {
             }
 
             // add activity class boxes and canBeAllocated to links
-            // console.log("...activity classes...")
-            // console.log(inputJson.activityClasses)
             for (let ac of inputJson.activityClasses) {
                 
                 let actName = ac.className;
-                // console.log(actName)
 
                 // determine which resources are allocated to this activity
-                
                 let resAllocList = []
                 for (let rc of inputJson.resourceClasses) {
                 var resName = rc.className;
@@ -705,7 +661,6 @@ export default {
                     }
                 }
                 }
-                // console.log(resAllocList)
 
                 // add the activity and add any allocated to links
                 for (let [i, ra] of resAllocList.entries()) {
@@ -722,19 +677,16 @@ export default {
                 }
             }
 
-            // console.log("...contains links - resources....");
             // add contains links - resources
             for (let rc of inputJson.resourceClasses) {
                 let resName = rc.className;
 
                 // NOTE - resources should always exist...so no need to do check like contains links - activities below
-
                 for (let ccName of rc.containsClasses) {
                     this.$store.state.dm3kGraph.addContains(resName, ccName);
                 }
             }
 
-            // console.log("...contains links - activities...");
             // add contains links - activities
             for (let ac of inputJson.activityClasses) {
                 let actName = ac.className;
@@ -763,9 +715,6 @@ export default {
                 }
                 
             }
-            
-            // console.log("...resource instances...");
-            // console.log(inputJson.resourceInstances)
 
             // Add resource instances
             for (let ri of inputJson.resourceInstances) {
@@ -778,14 +727,9 @@ export default {
                 }
             }
 
-            // console.log("...activity instances...");
-            // console.log(inputJson.activityInstances);
             // Add activity instances
             for (let ai of inputJson.activityInstances) {
-                // console.log(ai);
                 let ai_name = ai.className;
-                // console.log(ai_name);
-                // console.log(this.$store.state.dm3kGraph.activityInstances)
                 let ai_dm3k = this.$store.state.dm3kGraph.getActivityInstance(ai_name);
                 ai_dm3k.clearInstanceTable();
                 for (let ai_instance of ai.instanceTable) {
@@ -793,8 +737,6 @@ export default {
                 }
             }
 
-            // console.log("...allocation instances...")
-            // console.log(inputJson.allocationInstances)
             // add allocation instances
             for (let ati of inputJson.allocationInstances) {
                 let res_name = ati.resourceClassName;
@@ -833,14 +775,13 @@ export default {
             this.$root.$emit('show-solution-modal', e)
         },
         submitDM3K(){
+
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
 
             // get dataset name from textbox
             var dsName = $("#diagramName").val();
 
             let alg = $("#algType option:selected").val();
-
-            console.log("Algorithm: "+alg);
 
             var data_to_send = {
                     "datasetName": dsName,
@@ -869,24 +810,18 @@ export default {
                 if (statusCode != 200) {
                     alert("Failed Attempt to Submit to DM3K: " +
                             jsonMsg + "\n" +
-                            jsonMsg["body"] /*+ "\n" +
-                            body["internal_message"]*/ );
+                            jsonMsg["body"]
+                        );
                     body = $.parseJSON(jsonMsg["body"]);
                 }
                 else {
-                    // body = $.parseJSON(jsonMsg["body"]); // I think it is now returning a JSON object
-                    body = jsonMsg["body"] // I think it is now returning a JSON object
-                    // TODO: REMOVE EXAMPLE OUTPUT
-                    // this.$root.$emit('show-solution-modal', {body: this.exampleOutput, outputJson: outputJson})
-                    // this.$root.$emit('show-solution-modal', {body: body, outputJson: outputJson})
+                    body = jsonMsg["body"] 
                     this.emitSolnModal({body: body, outputJson: outputJson})
                 }
             })
             
-            // TODO: REMOVE HARDCODED CALL HERE TO OUTPUT
-            // this.emitSolnModal({body: this.exampleOutput, outputJson: outputJson})
             console.log({body: body, outputJson: outputJson})
-            // this.emitSolnModal({body: body, outputJson: outputJson})
+            console.log("JSON OUTPUT ", JSON.stringify(outputJson))
 
             post_request.fail(function(jqXHR, textStatus, errorThrown) {
                 console.log("Request to vizdata failed: "+textStatus);
@@ -1025,6 +960,11 @@ export default {
         this.changeHelperImg('create-resources')
         this.populateResourcesFromWB()
         this.populateActivitiesFromWB()
+        this.$root.$on('delete-res-act', e => {
+            console.log("-- update dropdowns AFTER deletion")
+            console.log("e ", e)
+            this.updateAllDropDowns();
+        })
     }
 }
 </script>

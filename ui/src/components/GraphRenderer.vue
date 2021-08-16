@@ -32,7 +32,6 @@
                   let newResType = latest.resType
                   let newResName = latest.resName
                   let newBudgetNameList = latest.newBudgetNameList
-                  // this.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
                   this.$store.state.dm3kGraph.addCompleteResource(newResType, newResName, newBudgetNameList)
                   latest.drawn = true
                 }
@@ -47,7 +46,6 @@
                   let existingResName = latest.existingResName
                   let newRewardName = latest.newRewardName
                   let costNum = 0 //REMOVE hardcoded workaround here??
-                  // this.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                   this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum)
                   latest.drawn = true
                 }
@@ -60,7 +58,6 @@
                 let actName = latest.actName
                 let existingResName = latest.existingResName
                 let newRewardName = latest.newRewardName
-                // this.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
                 this.$store.state.dm3kGraph.addAllocation(actName, existingResName, newRewardName)
             }
         },
@@ -68,7 +65,6 @@
             deep: true,
             handler(links) {
                 for (let latest of links.filter(x=>x.drawn==false)){
-                  // this.dm3kGraph.addContains(latest.resName, latest.ccName);
                   this.$store.state.dm3kGraph.addContains(latest.resName, latest.ccName);
                   latest.drawn = true
                 }
@@ -77,23 +73,31 @@
     },
     methods: {
         loadDm3kGraph() {
-          // this.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
           this.$store.state.dm3kGraph = new Dm3kGraph(document.querySelector('#graphContainer'))
         },
         zoomIn(){
-          // this.dm3kGraph.graph.zoomIn()
            this.$store.state.dm3kGraph.graph.zoomIn()
         },
         zoomOut(){
-          // this.dm3kGraph.graph.zoomOut()
           this.$store.state.dm3kGraph.graph.zoomOut()
         },
         addListener(){
           let container = document.getElementById('graphContainer')
           container.addEventListener('CircleIClicked', this.emitModal)
+          container.addEventListener('xIconClicked', this.deleteResAct)
         },
         emitModal(e){
           this.$root.$emit('show-instance-modal', e)
+        },
+        deleteResAct(e){
+          this.$root.$emit('delete-res-act', e)
+          
+          if (e.detail.type == 'Resource'){
+            this.$store.state.dm3kGraph.removeResource(e.detail.name, e.detail.budget[0])
+          }
+          if (e.detail.type == 'Activity'){
+            this.$store.state.dm3kGraph.removeActivity(e.detail.name, e.detail.cost,  e.detail.reward)
+          }
         },
         clearGraph(){
           this.$store.state.dm3kGraph.clearAll()
@@ -197,5 +201,5 @@
     padding: 10px;
     bottom: 0px;
   }
-
+  
 </style>
