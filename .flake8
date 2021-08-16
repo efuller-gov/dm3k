@@ -1,0 +1,11 @@
+[flake8]
+ignore = E203, E266, E501, W503, F403, F401
+max-line-length = 139
+select = B,C,E,F,W,T4,B9
+
+# E203 - whitespace before ‘:’
+# E266 - too many leading ‘#’ for block comment
+# E501 - line too long 
+# W503 - line break occurred before a binary operator
+# F403 - ‘from module import *’ used; unable to detect undefined names
+# F401 - module imported but unused
