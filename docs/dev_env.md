@@ -30,7 +30,20 @@ To comfirm the installation, run...
 $ sudo docker ps
 ```
 
-Output of this command should show 3 docker containers: dm3k_open_api, dm3k_open_ui, dm3k_open_nginx.  With status as not restarting.
+Output of this command should show 3 docker containers: dm3k_open_api, dm3k_open_ui, dm3k_open_nginx as shown below...
+
+STATUS                  |  PORTS                |   NAMES       
+------------------------|-----------------------|---------------
+Up 2 minutes (healthy)  | 0.0.0.0:80->80/tcp    | dm3k_open_nginx
+Up 2 minutes            | 5000/tcp              | dm3k_open_api
+Up 2 minutes            | 8080/tcp              | dm3k_open_ui
+
+
+To confirm the health of the optimizer, run the following command:
+
+```bash
+$ sudo docker exec -ti dm3k_open_api python -m unittest discover -v -s /app/tests
+```
 
 To stop OPEN-DM3K, run...
 
