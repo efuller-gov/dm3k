@@ -28,4 +28,10 @@ services:
     restart: always
     ports:
       - "80:80"
+    healthcheck:
+      test: curl --fail -s http://localhost/api/version || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
 
