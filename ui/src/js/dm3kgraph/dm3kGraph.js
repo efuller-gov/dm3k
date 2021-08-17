@@ -1452,7 +1452,6 @@ class ActivityInstance {
       **/
 
     constructor(type, label, costNameList) {
-         console.log("-- construct activity instance. costnameList: ", costNameList)
          this.type = type;
          this.label = label;
          this.costNameList = costNameList;
@@ -1491,7 +1490,6 @@ class ActivityInstance {
             "instanceTable": []
         }
         for (let instance of this.instanceTableData) {
-            console.log("this.instanceTableData ", this.instanceTableData)
             let details = {
                 
                 "instanceName": instance.name,
@@ -1507,7 +1505,6 @@ class ActivityInstance {
             
             detailList.instanceTable.push(details)
         }
-        console.log("-- activity detail list ", detailList)
         return detailList 
      }
 

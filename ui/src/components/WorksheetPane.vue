@@ -355,9 +355,7 @@ export default {
                 return
             }
             // Allocate to existing activity
-            // if ($("#actType").val() == 'a new activity'){
             if ($("#existing-allocation").hasClass('enabled')){
-                console.log("ALLOCATE TO EXISTING ACT")
                 let actName = $("#actTypeExisting").val();
                 let actCell = this.$store.state.dm3kGraph.getActivity(actName)
                 let actType = actCell.getId()
@@ -375,8 +373,6 @@ export default {
                 let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
                 let ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
                 // Have to add new cost to activityInstances and 
-                console.log("filter to affected activity Instance: ", this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label==actName))
-                console.log("additional budget name: ", additionalBudgetName)
                 this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label==actName)[0].costNameList.push(additionalBudgetName)
                 this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.forEach(x=>x["cost_"+additionalBudgetName]=1)
 
