@@ -23,7 +23,7 @@
                 <input type="text" id="resName"><br><br>
                 <label id ="resource-budget-label" for="budgetName">The resource is budgeted by</label>
                 <input type="text" id="budgetName"><br><br>
-                <input @click="addResource()" type="button" class="done-button" value="Done" id="addResource">
+                <input @click="addResource()" type="button" class="done-button" :class="isDisabled" value="Done" id="addResource">
             </div>
             <div id="allocate-resources-column" class="left_column hide">
                 <p><b>Allocate resources to activities.</b></p>
@@ -350,13 +350,7 @@ export default {
                 alert('You must select a new activity type from the dropdown menu.')
                 return
             }
-            // let model = this.$store.state.dm3kGraph.graph.getModel()
-            // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
-            // if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
-            //     // resetActivityPrompt();
-            //     alert('Choose either a new activity or an existing activity to allocate to. Do not select both.')
-            // }
-
+            
             // Allocate to existing activity
             if ($("#actType").val() == 'a new activity'){
                 let actName = $("#actTypeExisting").val();
@@ -935,6 +929,13 @@ export default {
                     'instance-body-text': '',
                 }
             ],
+        }
+    },
+    computed: {
+        isDisabled() {
+            console.log("Computed")
+            console.log(!$("#resName").val() || !$("#budgetName").val())
+            return (!$("#resName").val() || !$("#budgetName").val()) ? 'disabled' : '' 
         }
     },
     emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation', 'clear-graph','show-solution-modal'],
