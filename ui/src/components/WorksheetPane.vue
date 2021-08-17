@@ -331,8 +331,6 @@ export default {
             $('#addActivity').removeClass('hide')
         },
         addActivity(){
-            console.log("ADD ACTIVITY")
-            // Creating 2 resources, then allocating both to activity DOES not call 
             $('#constrain-allocations-button').removeClass('disabled')
             $('#actTypeExisting').removeClass('disabled')
 
@@ -378,7 +376,6 @@ export default {
 
                 if (ans.success) {
                         this.updateAllDropDowns();
-                        console.log("ADDED NEW ALLOCATION: ", this.$store.state.dm3kGraph)
                     }
                 else {
                     alert(ans.details);

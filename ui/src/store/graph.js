@@ -52,7 +52,6 @@ export default new Vuex.Store({
       // Add AllocationInstance when first create
       let ai = new AllocationInstance(activityObj['existingResName'], activityObj['actName']);
       let costNameList = state.dm3kGraph.resources.filter(x=>x.value == activityObj['existingResName'])[0].budgetNameList
-      console.log("-- in graph.js, new ActivityInstance. costNameList: ", costNameList)
       state.dm3kGraph.activityInstances.push(new ActivityInstance(activityObj['newActType'], activityObj['actName'], costNameList))
       state.dm3kGraph.allocatedToInstances.push(ai);
     },
