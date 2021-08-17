@@ -12,7 +12,7 @@ function worksheetUtils_helperParagraphTransitionTo(worksheetName){
         },
         {
             'worksheet': 'allocate-resources',
-            'pane-title-text': 'Continue by creating activites to allocate to resources.',
+            'pane-title-text': 'Continue by creating activities to allocate to resources.',
             'pane-body-text': '<b>Activities</b> are entities that get allocated to <b>resources</b>. When you define an activity, try '+
             'to find a category type that best describes it from the dropdown menu. In our backpack problem, we need to allocate to different backpacks.'+
             'Since we defined backpack as a resource, we will define a new <b>activity</b> to allocate called <b>textbook</b>. It can be best described as an <b>item</b>.',
@@ -22,7 +22,7 @@ function worksheetUtils_helperParagraphTransitionTo(worksheetName){
         {
             'worksheet': 'contains',
             'pane-title-text': 'Create hierarchy within your decision scenario.',
-            'pane-body-text': 'A <b>contains</b> relationship creates hierarchy among <b>activities</b> or <b>resources</b> that can be used in allocation logic among instances of activites or resources. '+
+            'pane-body-text': 'A <b>contains</b> relationship creates hierarchy among <b>activities</b> or <b>resources</b> that can be used in allocation logic among instances of activities or resources. '+
             'Note that <b>contains</b> relationships can only be established between activity-activity or resource-resource.',
             'instance-title-text': '',
             'instance-body-text': '',

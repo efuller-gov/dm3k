@@ -23,7 +23,7 @@
 			typeName:     <activityTypeName>,
 			rewards: [    <rewardName>, ...],
 			costs: [    <budgetName>,...],
-			containsClasses: [<otherActvityClassName>,...],
+			containsClasses: [<otherActivityClassName>,...],
 			allocatedWhen: {
 				<rewardName>: {
 					combine:     <AND|OR|NONE>,
@@ -159,7 +159,7 @@ export class Dm3kConverter {
 					ac.typeName,
 					ac.className,
 					ra,
-					ac.rewards[0], // TODO - need to make it work for mulitple rewards
+					ac.rewards[0], // TODO - need to make it work for multiple rewards
 					i,
 					ac.locX,
 					ac.locY,
@@ -191,9 +191,9 @@ export class Dm3kConverter {
 					ac.typeName, 
 					actName, 
 					ac.containsClasses[0],  // do the first one this way, then do rest in loop below
-					ac.rewards[0]) // TODO - need to make it work for mulitple rewards)
+					ac.rewards[0]) // TODO - need to make it work for multiple rewards)
 				for (let ccName of ac.containsClasses.slice(1)) {
-					console.log('Attempting to make a constains link between: '+actName+' and '+ccName);
+					console.log('Attempting to make a contains link between: '+actName+' and '+ccName);
 					dm3kgraph.addContains(actName, ccName);
 					console.log(dm3kgraph.containsLinks)
 				}
@@ -201,7 +201,7 @@ export class Dm3kConverter {
 			// else it is defined and therefore already available to add contains links to
 			else {   
 				for (let ccName of ac.containsClasses) {
-					console.log('Attempting to make a constains link between: '+actName+' and '+ccName);
+					console.log('Attempting to make a contains link between: '+actName+' and '+ccName);
 					dm3kgraph.addContains(actName, ccName);
 					console.log(dm3kgraph.containsLinks)
 				}
@@ -261,7 +261,7 @@ export class Dm3kConverter {
 			}
 		}
 
-		// add allocation contraints
+		// add allocation constraints
 		for (let allc of inputJson.allocationConstraints) {
 			let a1FromName = allc.allocationStart.resourceClass;
 			let a1ToName = allc.allocationStart.activityClass;

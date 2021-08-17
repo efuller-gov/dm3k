@@ -190,7 +190,7 @@ export class ActivityInstance {
                 
                 "instanceName": instance.name,
                 "cost" : {},    
-                "reward": Number(instance.reward)  // TODO - fix this when we have mulitple rewards
+                "reward": Number(instance.reward)  // TODO - fix this when we have multiple rewards
             }
             for (let item in instance) {
                 if (item.startsWith("cost")) {

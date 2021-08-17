@@ -1,5 +1,5 @@
 {
-    "datasetName": "multiProblem_fanInKnapsack_fanOutKnapsack_notConnected",
+    "datasetName": "multiProblemKnapsack",
     "files": [
     	{
     		"fileName": "multiProblemKnapsack.json",
