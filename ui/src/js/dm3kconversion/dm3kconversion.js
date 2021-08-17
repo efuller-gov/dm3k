@@ -107,7 +107,7 @@ export class Dm3kConverter {
 		final_output['datasetName'] = ''
 		final_output['files'] = []
 		final_output['files'].push({
-			filename: '',
+			fileName: '',
 			fileContents: output
 		})
 
