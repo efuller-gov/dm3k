@@ -14,15 +14,15 @@ log = logging.getLogger(__name__)
 URL = "http://localhost:5000"
 
 
-class TestBasicConnectionAPI(TestCase):
+class TestOptimizersListAPI(TestCase):
     def setUp(self):
         log.info("Testing: " + self.__class__.__name__ + " " + self._testMethodName + "----------")
 
     def tearDown(self):
         pass
 
-    def test_version(self):
-        version_url = URL + "/api/version"
+    def test_opt_list(self):
+        version_url = URL + "/api/optimizers"
         response = requests.get(version_url)
 
         log.debug("GET: " + str(version_url))
@@ -31,7 +31,7 @@ class TestBasicConnectionAPI(TestCase):
         log.debug("  response text: \n" + str(response.text))
         log.debug("  response json: \n" + str(response.json()))
 
-        self.assertEqual(response.json(), {"api_version": "1.0"})
+        self.assertEqual(response.json(), ["FullHouseViz", "KnapsackViz"])
 
 
 if __name__ == "__main__":

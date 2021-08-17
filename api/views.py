@@ -1,16 +1,6 @@
 """
 API Endpoints for open-dm3k API
 """
-# -------------------------------------------------------------------------
-# @license JHUAPL
-# Copyright (C) 2021 Johns Hopkins University Applied Physics Laboratory
-#
-# All Rights Reserved.
-# This material may only be used, modified, or reproduced by or for the
-# U.S. government pursuant to the license rights granted under FAR
-# clause 52.227-14 or DFARS clauses 252.227-7013/7014.
-# For any other permission, please contact the Legal Office at JHU/APL.
-# --------------------------------------------------------------------------
 
 import os
 import sys
@@ -25,6 +15,7 @@ if app_directory not in sys.path:
     sys.path.append(app_directory)
 
 from optimizer.slim_optimizer_main import create_opt  # noqa: E402
+from optimizer.slim_optimizer_main import algorithm_dict  # noqa: E402
 
 api = Blueprint("api", __name__)
 
@@ -37,6 +28,20 @@ def get_version():
     :return dict version: the version of the current API
     """
     return {"api_version": "1.0"}
+
+
+@api.route("/api/optimizers", methods=["GET"])
+def get_optimizers():
+    """
+    GET /api/optimizers
+
+    :return list of optimizers
+    """
+    opt_list = list(algorithm_dict.keys())
+    if "default" in opt_list:
+        opt_list.remove("default")
+
+    return jsonify(opt_list)
 
 
 @api.route("/api/vizdata", methods=["POST"])
