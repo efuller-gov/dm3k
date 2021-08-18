@@ -9,11 +9,14 @@ Table of Contents:
 [[_TOC_]]
 
 ## Defining a Problem ##
+
 Resource Allocation problems have the following components:
 
-* a set of resources available each with an amount of budget to distribute
-* a set of activities to be performed each consuming a specified amount of resources and providing some part of a reward
-* indications defining which resources can be allocated to which activities
+* a set of resources; where each resource has an amount of budget to distribute
+* a set of activities to be performed; where each activity consumes a specified amount of resources (aka cost) and provides some part of a reward
+* indications defining which resources can be allocated to which activities.
+
+> NOTE: the simpliest example of a resource allocation problem is a knapsack problem.  For example, I'm going on a camping trip with a few friends.  Each friend has a backpack (**the resources**) that each can carry a certain amount of weight (**the budget**).  We have a number of camping items that we need to take (**the activities**).  Each camping item has a weight (**the cost**) and a value to making our trip a success (**the reward**). In this problem I want to know what camping items to take and who is carrying each item.  Therefore specific camping items can be allocated to specific backpacks (**the indication of what can be allocated to**).
 
 In order to define more complex resource allocation problems, we also add the following additional components:
 
@@ -24,6 +27,8 @@ In order to define more complex resource allocation problems, we also add the fo
 > NOTE: For a good example of contains indications, see */example/AllocationOfStaffToTasksUserStoriesCustomers.json* <p>  In this example, contains relationships define how individual workers (resources) are grouped by speciality and by company AND define how tasks (activities) are grouped into user stories and grouped into customers that want a set of stories such that reward is only achieved if all of a customer's user stories are achieved.
 
 > NOTE: For a good example of constraints on allocations, see */example/AlienWorldDomination_wShip.json*  <p> In this example, constraints are used to ensure that the alien's can't shoot at a VIP (*missile resource allocation to VIP activity*) unless the turret that fires the missiles is pointed at the city in which the VIP is located (*turret resource allocation to City activity*).
+
+DM3K enables non-technical users to define resource allocation problems with our UI (for more information on how to define a problem in our UI see [*/docs/user_guide.md*](/docs/user_guide.md))
 
 ### Understanding Difference Between Types and Instances ###
 
