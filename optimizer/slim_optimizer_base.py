@@ -106,6 +106,7 @@ class OptimizerBase:
         :return: None
         """
         if self.get_input() is None:
+            log.error("You are attempting to build a model before ingesting data...you must do ingest method first")
             raise UnboundLocalError("You must ingest data prior to building the model")
 
         self._hist_mgr.start_tag("Finding Model to use")
@@ -144,7 +145,9 @@ class OptimizerBase:
             raise UnboundLocalError("You must ingest data prior to building the model")
 
         if self._model is None:
-            raise UnboundLocalError("You must build the model prior to solving it")
+            log.warning("You are attempting to solve the model before building it...will attempt to build model for you")
+            # instead of throwing error here, just build it for them if they did steps out of order
+            self.build()
 
         if self.get_input().needs_rebuild():
             self.build()
@@ -172,7 +175,9 @@ class OptimizerBase:
         :return dict output_dict: a dictionary containing the output of the modeling
         """
         if self._output is None:
-            raise UnboundLocalError("You must ingest, build the model, and solve it prior to getting results")
+            log.warning("You must ingest, build the model, and solve it prior to getting output...will attempt to solve for you")
+            # instead of throwing error here, just attempt to solve model for them if they did steps out of order
+            self.solve()
 
         return self._output.to_dict()
 
@@ -191,7 +196,9 @@ class OptimizerBase:
         :return _output: an instance of the OutputBase class or subclass
         """
         if self._output is None:
-            raise UnboundLocalError("You must ingest, build the model, and solve it prior to getting output")
+            log.warning("You must ingest, build the model, and solve it prior to getting output...will attempt to solve for you")
+            # instead of throwing error here, just attempt to solve model for them if they did steps out of order
+            self.solve()
 
         return self._output
 
