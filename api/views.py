@@ -54,8 +54,7 @@ def post_vizdata():
     """
 
     app.logger.info("Viz Data POST")
-    app.logger.debug(request.get_data())
-
+    
     input_dict = request.json
     app.logger.debug(input_dict)
 
