@@ -506,6 +506,9 @@ class FullHouseInputViz(FullHouseInput):
         """
         Add activity scores to the _data input dictionary
 
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+                used outside of the UI
+
         :param dict activity_scores: Dictionary of DU scores.  Keys are child_activities
         """
         if not activity_scores:  # this should catch None and empty dict {}

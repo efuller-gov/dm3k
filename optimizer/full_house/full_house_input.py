@@ -658,6 +658,9 @@ class FullHouseInput(InputBase):
         """
         Add activity scores to the _data input dictionary
 
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+                used outside of the UI
+
         :param dict activity_scores: Dictionary of DU scores.  Keys are child_activities
         """
         if activity_scores is None:
@@ -679,6 +682,9 @@ class FullHouseInput(InputBase):
         """
         Check to see if activity scores from data_access_layer and optimizer constraints align
         Then Fix them if you can
+
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+                used outside of the UI
 
         :param dict activity_scores: a dictionary of activity names as keys and activity scores as values
         :param bool dus_in_constraints_not_scores_check: Set to True if it should be an error if dus in constraints are
@@ -750,6 +756,9 @@ class FullHouseInput(InputBase):
     def modify(self, cmd_dict, timestamp, removed_data=None):
         """
         Apply the cmd to the input data, effectively modifying the input
+
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+                used outside of the UI
 
         :param dict cmd_dict: command
         :param DateTime timestamp: Used to lookup what was executed previous when running an undo command

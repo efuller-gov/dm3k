@@ -66,14 +66,6 @@ class OptimizerBase:
         self._model = None
         self._output = None
 
-    def update_rewards(self, reward_dict):
-        """
-        Update the reward values in the input
-
-        :param dict reward_dict: a dict of activity instance names as keys and associated new reward values as the values
-        """
-        pass
-
     def ingest(self, input_dict):
         """
         Ingest a new input dataset

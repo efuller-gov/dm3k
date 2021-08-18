@@ -66,11 +66,4 @@ class KnapsackInputViz(InputBase):
 
         return False, []
 
-    def add_scores(self, activity_scores):
-        pass  # TODO
-
-    def align_check_scores(self, activity_scores, dus_in_constraints_not_scores_check=False):
-        pass  # TODO
-
-    def modify(self, cmd_dict, timestamp):
-        pass  # TODO
+    
