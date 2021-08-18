@@ -130,6 +130,7 @@ class FullHouseInputViz(FullHouseInput):
             2           the formats of the constraints files are incorrect
             3           the data within the constraints files are not consistent with each other
             4           the data within the constraints files and the activity names are not consistent
+            5           unknown error
 
         And then Load the files in the constraints path into this input (capturing them in the self._data attribute)
 
@@ -142,9 +143,26 @@ class FullHouseInputViz(FullHouseInput):
                     "fix": <string name of process performed to fix the error  or None>,
                     "is_fatal_error": <boolean; True = error is fatal, False = error is fixable>
         """
-        log.debug("Opening Dataset: " + input_dict["datasetName"])
+        if "datasetName" in input_dict:
+            log.debug("Opening Dataset: " + input_dict["datasetName"])
+        else:
+            log.warning("'datasetName' is not in input_dict")
 
         # determine if correct files exist
+        if "files" not in input_dict:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'files' attribute is not in input_dict...the format of the input is not correct!",
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            ) 
+            
         file_data = input_dict["files"]
         if len(file_data) != 1:
             return (
@@ -152,7 +170,22 @@ class FullHouseInputViz(FullHouseInput):
                 [
                     {
                         "err_code": 1,
-                        "err_txt": "dm3k-viz.json file could not be found in constraints path",
+                        "err_txt": "system requires 'files' attribute to contain data from 1 file...you have submitted {} files...the necessary files do not exist!".format(len(file_data)),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
+
+        # assuming only 1 file is required
+        if "fileContents" not in file_data[0]:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'fileContents' attribute is not in input_dict['files'][0]...the format of the input is not correct!",
                         "offender": "**YOU**",
                         "fix": "Cant fix this!",
                         "is_fatal_error": True,
@@ -184,82 +217,215 @@ class FullHouseInputViz(FullHouseInput):
             "child_budget_name": "",
         }
 
-        # TODO - THIS IS VERY BRITTLE!!! IT ASSUMES THAT ONLY FULL HOUSE PROBLEMS WILL BE SPECIFIED!
-
         # a parent activity is an activity that contains another activity
         #   so go through all activityClasses and find the one that contains another activity
         #   when you find a contains, list all the instance names of that class
         #  FUTURE:
         #    - if no containing activity exists, and there is only 1 activity class, make a default containing activity
+        
+        if "activityClasses" not in dm3k_viz_data:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'activityClasses' attribute is not in input_dict['files'][0]['fileContents']...the format of the input is not correct!",
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
+        
         activity_classes = dm3k_viz_data["activityClasses"]
         parent_activity = None
 
-        for ac in activity_classes:
-            if len(ac["containsClasses"]) >= 1:
-                parent_activity = ac["className"]
-                log.debug("Found Parent_activity = " + parent_activity)
+        try:
 
-        if parent_activity is None:
-            self._add_to_validation_errors(
-                "Cannot find parent activity, no activity contains another activity",
-                is_fatal_error=True,
-                err_code=3,
-                offender="**YOU**",
-                fix=None,
+            for ac in activity_classes:
+                if len(ac["containsClasses"]) >= 1:
+                    parent_activity = ac["className"]
+                    log.debug("Found Parent_activity = " + parent_activity)
+
+            if parent_activity is None:
+                self._add_to_validation_errors(
+                    "Cannot find parent activity, no activity contains another activity",
+                    is_fatal_error=True,
+                    err_code=3,
+                    offender="**YOU**",
+                    fix=None,
+                )
+                return True, self._validation_errors  # this is a fatal error, just stop now
+
+            else:
+                self._data["parent_activities"] = self._get_all_instances(dm3k_viz_data, parent_activity, "activity")
+                log.debug("parent_activities")
+                log.debug(self._data["parent_activities"])
+        
+        except KeyError as e:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['activityClasses']...the format of the input is not correct!".format(e),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
             )
-            return True, self._validation_errors  # this is a fatal error, just stop now
 
-        else:
-            self._data["parent_activities"] = self._get_all_instances(dm3k_viz_data, parent_activity, "activity")
-            log.debug("parent_activities")
-            log.debug(self._data["parent_activities"])
+        except Exception as e:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 5,
+                        "err_txt": "Unknown Error '{0}:{1!r}' found in ingest-validate".format(type(e).__name__, e.args),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
 
         # the parent resource is a resource that can be allocated to the parent activity
         #   so go through all the resourceClasses and find the one that can be allocated to the parent activity class
         #   when you find the parent resource, list all the instance names of that class
+        
+        if "resourceClasses" not in dm3k_viz_data:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'resourceClasses' attribute is not in input_dict['files'][0]['fileContents']...the format of the input is not correct!",
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
+        
         resource_classes = dm3k_viz_data["resourceClasses"]
         parent_resource = None
 
-        for rc in resource_classes:
-            if parent_activity in rc["canBeAllocatedToClasses"]:
-                parent_resource = rc["className"]
-                log.debug("Found Parent Resource = " + parent_resource)
+        try: 
 
-        if parent_resource is None:
-            self._add_to_validation_errors(
-                "Cannot find parent resource, no resource can be allocated to the activity: " + parent_activity,
-                is_fatal_error=True,
-                err_code=3,
-                offender="**YOU**",
-                fix=None,
+            for rc in resource_classes:
+                if parent_activity in rc["canBeAllocatedToClasses"]:
+                    parent_resource = rc["className"]
+                    log.debug("Found Parent Resource = " + parent_resource)
+
+            if parent_resource is None:
+                self._add_to_validation_errors(
+                    "Cannot find parent resource, no resource can be allocated to the activity: " + parent_activity,
+                    is_fatal_error=True,
+                    err_code=3,
+                    offender="**YOU**",
+                    fix=None,
+                )
+                return True, self._validation_errors  # this is a fatal error, just stop now
+
+            else:
+                self._data["parent_resources"] = self._get_all_instances(dm3k_viz_data, parent_resource)
+                log.debug("parent_resources")
+                log.debug(self._data["parent_resources"])
+
+        except KeyError as e:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['resourceClasses']...the format of the input is not correct!".format(e),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
             )
-            return True, self._validation_errors  # this is a fatal error, just stop now
 
-        else:
-            self._data["parent_resources"] = self._get_all_instances(dm3k_viz_data, parent_resource)
-            log.debug("parent_resources")
-            log.debug(self._data["parent_resources"])
+        except Exception as e:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 5,
+                        "err_txt": "Unknown Error '{0}:{1!r}' found in ingest-validate".format(type(e).__name__, e.args),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
 
         # avail_parent amt is a dict of the total budget for each parent resource:
         #   keys are parent resource names,
         #   values are float amounts
         parent_res_instance = None
-        for ri in dm3k_viz_data["resourceInstances"]:
-            if ri["className"] == parent_resource:
-                parent_res_instance = ri
 
-        for pri in parent_res_instance["instanceTable"]:
+        if "resourceInstances" not in dm3k_viz_data:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'resourceInstances' attribute is not in input_dict['files'][0]['fileContents']...the format of the input is not correct!",
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
 
-            # budget is a dictionary...full house can only take values
-            budget = list(pri["budget"].values())[0]
+        try:
 
-            # need budget name for output
-            self._data["parent_budget_name"] = list(pri["budget"].keys())[0]
+            for ri in dm3k_viz_data["resourceInstances"]:
+                if ri["className"] == parent_resource:
+                    parent_res_instance = ri
 
-            self._data["avail_parent_amt"][pri["instanceName"]] = budget
+            for pri in parent_res_instance["instanceTable"]:
 
-        log.debug("avail_parent_amt")
-        log.debug(self._data["avail_parent_amt"])
+                # budget is a dictionary...full house can only take values...also full house can only take 1 budget (i.e. the [0])
+                budget = list(pri["budget"].values())[0]
+
+                # need budget name for output
+                self._data["parent_budget_name"] = list(pri["budget"].keys())[0]
+
+                self._data["avail_parent_amt"][pri["instanceName"]] = budget
+
+            log.debug("avail_parent_amt")
+            log.debug(self._data["avail_parent_amt"])
+
+        except KeyError as e:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['resourceInstances']...the format of the input is not correct!".format(e),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
+
+        except Exception as e:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 5,
+                        "err_txt": "Unknown Error '{0}:{1!r}' found in ingest-validate".format(type(e).__name__, e.args),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
 
         # parent possible allocations is a a dict containing the list of possible parent activity allocations for each
         # parent resource.
@@ -267,30 +433,75 @@ class FullHouseInputViz(FullHouseInput):
         #    values are lists of parent activity names
         # Use the allocation instances between the parent resource and activity to fill this
         parent_allocation_instance = None
-        for ai in dm3k_viz_data["allocationInstances"]:
-            if (ai["resourceClassName"] == parent_resource) and (ai["activityClassName"] == parent_activity):
-                parent_allocation_instance = ai
 
-        for pai in parent_allocation_instance["instanceTable"]:
-            if pai["resourceInstanceName"] == "ALL":
-                rin = self._data["parent_resources"]
-            else:
-                rin = [pai["resourceInstanceName"]]
+        if "allocationInstances" not in dm3k_viz_data:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'allocationInstances' attribute is not in input_dict['files'][0]['fileContents']...the format of the input is not correct!",
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
 
-            if pai["activityInstanceName"] == "ALL":
-                ain = self._data["parent_activities"]
-            else:
-                ain = [pai["activityInstanceName"]]
+        try:
 
-            for r in rin:
-                for a in ain:
-                    if r in self._data["parent_possible_allocations"]:
-                        self._data["parent_possible_allocations"][r].append(a)
-                    else:
-                        self._data["parent_possible_allocations"][r] = [a]
+            for ai in dm3k_viz_data["allocationInstances"]:
+                if (ai["resourceClassName"] == parent_resource) and (ai["activityClassName"] == parent_activity):
+                    parent_allocation_instance = ai
 
-        log.debug("parent possible allocations")
-        log.debug(self._data["parent_possible_allocations"])
+            for pai in parent_allocation_instance["instanceTable"]:
+                if pai["resourceInstanceName"] == "ALL":
+                    rin = self._data["parent_resources"]
+                else:
+                    rin = [pai["resourceInstanceName"]]
+
+                if pai["activityInstanceName"] == "ALL":
+                    ain = self._data["parent_activities"]
+                else:
+                    ain = [pai["activityInstanceName"]]
+
+                for r in rin:
+                    for a in ain:
+                        if r in self._data["parent_possible_allocations"]:
+                            self._data["parent_possible_allocations"][r].append(a)
+                        else:
+                            self._data["parent_possible_allocations"][r] = [a]
+
+            log.debug("parent possible allocations")
+            log.debug(self._data["parent_possible_allocations"])
+
+        except KeyError as e:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['allocationInstances']...the format of the input is not correct!".format(e),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
+
+        except Exception as e:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 5,
+                        "err_txt": "Unknown Error '{0}:{1!r}' found in ingest-validate".format(type(e).__name__, e.args),
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
 
         # req_parent_amt is a dict of required cost for each parent activity instance
         #  keys are tuples (prn,pan) where prn is the parent resource name and pan is the parent activity name,
@@ -363,7 +574,7 @@ class FullHouseInputViz(FullHouseInput):
 
         for cri in child_res_instance["instanceTable"]:
 
-            # budget is a dictionary...full house can only take values
+            # budget is a dictionary...full house can only take values...also full house can only take 1 budget (i.e. the [0])
             budget = list(cri["budget"].values())[0]
 
             # need budget name for output
