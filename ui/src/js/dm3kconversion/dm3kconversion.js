@@ -80,7 +80,7 @@ export class Dm3kConverter {
 	dm3kconversion_base(dm3kgraph) {
 		var output = {};
 		var final_output = {};
-		output['resourceClasses'] = dm3kgraph.getResouceClassDetails();
+		output['resourceClasses'] = dm3kgraph.getResourceClassDetails();
 		output['activityClasses'] = dm3kgraph.getActivityClassDetails();
 		output['resourceInstances'] = [];   
 		output['activityInstances'] = []; 
@@ -107,7 +107,7 @@ export class Dm3kConverter {
 		final_output['datasetName'] = ''
 		final_output['files'] = []
 		final_output['files'].push({
-			filename: '',
+			fileName: '',
 			fileContents: output
 		})
 

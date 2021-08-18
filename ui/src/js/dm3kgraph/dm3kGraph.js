@@ -514,12 +514,9 @@ export class Dm3kGraph {
     // TODO remove this as cost won't directly be set anymore?
     addCost(costName, actName, costNum) {
         // find the activity
-        // console.log('------> addCost for ', costName)
         let act = this.getActivity(actName);
         let newCost = addDM3KCost(this.graph, costName, act, costNum);
         this.costs[(actName + '_' + costName)] = newCost;
-
-
     }
 
     addReward(rewardName, actName) {
@@ -1381,7 +1378,7 @@ class ContainsInstance {
     }
 }
 
- class ResourceInstance {
+class ResourceInstance {
 
      /**
       *  Define resource instance for storage and assignment to activities via UI.
@@ -1442,7 +1439,7 @@ class ContainsInstance {
         }
         return detailList 
     }
- }
+}
 
 class ActivityInstance {
 
@@ -1452,7 +1449,6 @@ class ActivityInstance {
       **/
 
     constructor(type, label, costNameList) {
-
          this.type = type;
          this.label = label;
          this.costNameList = costNameList;

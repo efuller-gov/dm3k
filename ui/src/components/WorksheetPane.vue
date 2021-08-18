@@ -338,6 +338,8 @@ export default {
             var newActName = $("#actName").val();
             var existingResName = $("#resName2").val();
             var newRewardName = $("#rewardName").val();
+            var additionalBudgetName = this.$store.state.dm3kGraph.resourceInstances.filter(x=>x.label==existingResName)[0].budgetLabel;
+
             if ($('#new-allocation').hasClass('enabled') & ( (newActType=='none') | (newActName=='') ) ){
                 alert('Please fill all fields required to create an activity.')
                 return
@@ -350,15 +352,8 @@ export default {
                 alert('You must select a new activity type from the dropdown menu.')
                 return
             }
-            // let model = this.$store.state.dm3kGraph.graph.getModel()
-            // If user tries to add both a new and existing activity. This shouldn't happen, but just in case...
-            // if ($("#actType").val() != 'a new activity' && $("#actTypeExisting").val() != 'an existing activity') {
-            //     // resetActivityPrompt();
-            //     alert('Choose either a new activity or an existing activity to allocate to. Do not select both.')
-            // }
-
             // Allocate to existing activity
-            if ($("#actType").val() == 'a new activity'){
+            if ($("#existing-allocation").hasClass('enabled')){
                 let actName = $("#actTypeExisting").val();
                 let actCell = this.$store.state.dm3kGraph.getActivity(actName)
                 let actType = actCell.getId()
@@ -374,40 +369,34 @@ export default {
                     return
                 }
                 let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
-                let  ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
+                let ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
+                // Have to add new cost to activityInstances and 
+                this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label==actName)[0].costNameList.push(additionalBudgetName)
+                this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.forEach(x=>x["cost_"+additionalBudgetName]=1)
+
                 if (ans.success) {
                         this.updateAllDropDowns();
-                        // var layout = new mxGraphLayout(this.$store.state.dm3kGraph.graph);
-                        // executeLayout(this.$store.state.dm3kGraph.graph, layout);
-                        // resetActivityPrompt();
                     }
-                    else {
-                        alert(ans.details);
-                    }
+                else {
+                    alert(ans.details);
+                }
             } else{
-            // Allocate to new activity, and create new activity
-                // if (model.getCell(newActName) != undefined){
-                //     alert('Cannot create duplicate node. Please choose a new instance name.')
-                // } else{
-                    if (newActType.includes('[')){
-                        let tmp = newActType.split('[')
-                        tmp = newActType.split(']',2)
+                // Allocate to new activity, and create new activity
+                if (newActType.includes('[')){
+                    let tmp = newActType.split('[')
+                    tmp = newActType.split(']',2)
 
-                        newActType = tmp[0].split('[')[1];
-                        newActName = tmp[1]
-                    }
-                    let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
-                    let ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
-                    if (ans.success) {
-                        this.updateAllDropDowns();
-                        // var layout = new mxGraphLayout(dm3kgraph.graph);
-                        // executeLayout(dm3kgraph.graph, layout);
-                        // resetActivityPrompt();
-                    }
-                    else {
-                        alert(ans.details);
-                    }
-                // }
+                    newActType = tmp[0].split('[')[1];
+                    newActName = tmp[1]
+                }
+                let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
+                let ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
+                if (ans.success) {
+                    this.updateAllDropDowns();
+                }
+                else {
+                    alert(ans.details);
+                }
             }
         },
         containsTab(){
