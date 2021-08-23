@@ -287,15 +287,6 @@ export default {
     vertical-align: text-bottom;
     height: 4vw;
   }
-  /* TO DO: Willl have to fix this */
-  /* span.remove-button-class{
-    background: url("../assets/x-icon.svg"); no-repeat top left;
-    background-size: contain;
-    cursor: pointer;
-    display: inline-block;
-    height: 10px;
-    width: 10px;
-  } */
   input[type=text]{
     border-style: solid;
     border: none;
