@@ -23,6 +23,7 @@
             <div class="modal-content">
                 <img id='soln-explainer-graphic' onclick="location.href='./'" src="../assets/output-explainer.png">
                 <p id="soln-title">Optimal Allocation Plan</p>
+                <p id="soln-subtitle">* Try resizing your browser ratio for a better fit. *</p>
                 <button @click="toggleSolnGraphicExplainer()" id="soln-explainer-btn">Show me how to read this</button>
                 <div id="soln-table-top-aligned-content">
                     Size and sort activity instance columns by

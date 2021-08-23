@@ -356,6 +356,12 @@ export default {
     font-weight: bold;
     margin-top: 2vw;
   }
+   #soln-subtitle {
+    /* font-weight: bold; */
+    font-size: 0.8vw;
+    font-style: italic;
+    margin-top: -0.2vw;
+  }
   #soln-explainer-btn{
     float: right;
     font-size: 0.7vw;
