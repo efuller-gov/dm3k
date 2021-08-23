@@ -3,9 +3,9 @@
         <div id="menu">
             <div id="worksheet_menu_column">
                 <div id='zoom-buttons'>
+                    <img id="mag" src="../assets/mag.svg" alt="">
 					<button @click="zoomIn" id="zoomIn" class='zoom-button'>+</button>
 					<button @click="zoomOut" id="zoomOut" class='zoom-button'>-</button>
-					<!-- <b class="title-text">Version name</b> -->
 				</div>
                 <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
                 <button @click="allocateResourcesTab()" id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
@@ -23,7 +23,7 @@
                 <input type="text" id="resName"><br><br>
                 <label id ="resource-budget-label" for="budgetName">The resource is budgeted by</label>
                 <input type="text" id="budgetName"><br><br>
-                <input @click="addResource()" type="button" class="done-button" :class="isDisabled" value="Done" id="addResource">
+                <input @click="addResource()" type="button" class="done-button" value="Done" id="addResource">
             </div>
             <div id="allocate-resources-column" class="left_column hide">
                 <p><b>Allocate resources to activities.</b></p>
@@ -232,7 +232,6 @@ export default {
 			$('#activity-def-bottom-container').addClass('hide')
 			$('#activity-submenu-container').addClass('hide')
 			$('#actType').addClass('hide')
-			// $('#actTypeExisting').addClass('hide')
 			$('#addActivity').addClass('hide')
 			$('.activity-choice').removeClass('enabled')
         },
@@ -929,13 +928,7 @@ export default {
                     'instance-body-text': '',
                 }
             ],
-        }
-    },
-    computed: {
-        isDisabled() {
-            console.log("Computed")
-            console.log(!$("#resName").val() || !$("#budgetName").val())
-            return (!$("#resName").val() || !$("#budgetName").val()) ? 'disabled' : '' 
+            mag_icon: require("../assets/x-icon.svg"),
         }
     },
     emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation', 'clear-graph','show-solution-modal'],
@@ -971,7 +964,12 @@ export default {
 </script>
 
 <style scoped>
-.hide{
-    display: none;
-}
+    .hide{
+        display: none;
+    }
+    #mag{
+        height: 20px;
+        margin-right: 10px;
+        margin-left: 5px;
+    }
 </style>

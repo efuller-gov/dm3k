@@ -132,12 +132,6 @@ export default {
     display: inline;
     text-align: center;
   }
-  .plus-minus-button {
-    width: 120px;
-    display: inline-block;
-    vertical-align: bottom;
-    background: #f7f6f6;
-  }
   .error_txt {
     background-color:red;
     text-align: center;
