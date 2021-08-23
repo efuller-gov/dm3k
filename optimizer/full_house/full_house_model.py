@@ -7,24 +7,14 @@ pr = parent resource
 pa = parent activity
 
 """
-# -------------------------------------------------------------------------
-# @license JHUAPL
-# Copyright (C) 2021 Johns Hopkins University Applied Physics Laboratory
-#
-# All Rights Reserved.
-# This material may only be used, modified, or reproduced by or for the
-# U.S. government pursuant to the license rights granted under FAR
-# clause 52.227-14 or DFARS clauses 252.227-7013/7014.
-# For any other permission, please contact the Legal Office at JHU/APL.
-# --------------------------------------------------------------------------
-
 
 import logging
 from collections import defaultdict
 
+from pyomo.environ import Any, Binary, ConcreteModel, Constraint, NonNegativeReals, Objective, Param, Set, Var, maximize
+
 from optimizer.full_house.full_house_input import FullHouseInput
 from optimizer.slim_optimizer_base import ModelBase
-from pyomo.environ import Any, Binary, ConcreteModel, Constraint, NonNegativeReals, Objective, Param, Set, Var, maximize
 
 log = logging.getLogger(__name__)
 
@@ -421,7 +411,7 @@ class FullHouseModel(ModelBase):
             "per_resource_budget_used": {},
         }
         allocations = {}
-        
+
         picked_parent_combos = []
         picked_child_combos = []
         not_picked_parent_combos = []
@@ -436,7 +426,6 @@ class FullHouseModel(ModelBase):
                         ca = self._rev_ca[child_activity]
                         parent_activities = self._model.list_pa_that_link_pr_cr_ca[(pr, cr, ca)]
                         child_picked = self._model.CHILD_ALLOCATED[(cr, ca)].value
-                        du_val = self._model.child_score[ca]
                         for pa in parent_activities:
                             parent_picked = self._model.PARENT_ALLOCATED[(pr, pa)].value
                             picked = parent_picked * child_picked
@@ -445,14 +434,14 @@ class FullHouseModel(ModelBase):
                             if picked:
                                 if (parent_resource, parent_activity) not in picked_parent_combos:
                                     picked_parent_combos.append((parent_resource, parent_activity))
-                                
+
                                 if (child_resource, child_activity) not in picked_child_combos:
                                     picked_child_combos.append((child_resource, child_activity))
                             else:
                                 if (parent_resource, parent_activity) not in not_picked_parent_combos:
                                     if (parent_resource, parent_activity) not in picked_parent_combos:
                                         not_picked_parent_combos.append((parent_resource, parent_activity))
-                                
+
                                 if (child_resource, child_activity) not in not_picked_child_combos:
                                     if (child_resource, child_activity) not in picked_child_combos:
                                         not_picked_child_combos.append((child_resource, child_activity))
@@ -500,7 +489,7 @@ class FullHouseModel(ModelBase):
                 result["per_resource_budget_used"][res_name1][budget_name1] = self._model.PARENT_AMT[(pr, pa)].value
 
             # Full trace
-            act1_value = 0   # parent activities have no value
+            act1_value = 0  # parent activities have no value
             result["full_trace"]["resource"].append(res_name1)
             result["full_trace"]["activity"].append(act_name1)
             # assume there are two budgets and its oriented [parent_budget, child_budget]
@@ -512,7 +501,7 @@ class FullHouseModel(ModelBase):
 
         # handle all child metrics
         budget_name2 = self._data["child_budget_name"]
-        for (res_name2, act_name2) in picked_child_combos:  
+        for (res_name2, act_name2) in picked_child_combos:
             cr = self._rev_cr[res_name2]
             ca = self._rev_ca[act_name2]
 
@@ -539,11 +528,11 @@ class FullHouseModel(ModelBase):
 
             # handle resource score, parent activities have no value
             ca = self._rev_ca[act_name2]
-            act2_value = self._model.child_score[ca]
+            act2_val = self._model.child_score[ca]
             if res_name2 in result["per_resource_score"]:
-                result["per_resource_score"][res_name2] += act2_value
+                result["per_resource_score"][res_name2] += act2_val
             else:
-                result["per_resource_score"][res_name2] = act2_value
+                result["per_resource_score"][res_name2] = act2_val
 
             # handle budget used...only 1 budget
             if res_name2 in result["per_resource_budget_used"]:
@@ -557,14 +546,13 @@ class FullHouseModel(ModelBase):
             result["full_trace"]["activity"].append(act_name2)
             # assume there are two budgets and its oriented [parent_budget, child_budget]
             result["full_trace"]["budget_used"].append([0.0, self._model.CHILD_AMT[(cr, ca)].value])
-            result["full_trace"]["value"].append(act2_value)
+            result["full_trace"]["value"].append(act2_val)
             result["full_trace"]["selected"].append(1.0)
             result["full_trace"]["picked"].append(1.0)
             result["full_trace"]["allocated"].append(1.0)
-                            
-                            
+
         # do non picked full_trace
-        act1_value = 0 
+        act1_value = 0
         for (res_name1, act_name1) in not_picked_parent_combos:
             result["full_trace"]["resource"].append(res_name1)
             result["full_trace"]["activity"].append(act_name1)
@@ -576,7 +564,7 @@ class FullHouseModel(ModelBase):
 
         for (res_name2, act_name2) in not_picked_child_combos:
             ca = self._rev_ca[act_name2]
-            act2_value = self._model.child_score[ca] 
+            act2_value = self._model.child_score[ca]
             result["full_trace"]["resource"].append(res_name2)
             result["full_trace"]["activity"].append(act_name2)
             result["full_trace"]["budget_used"].append([0.0, 0.0])
@@ -584,7 +572,7 @@ class FullHouseModel(ModelBase):
             result["full_trace"]["selected"].append(0.0)
             result["full_trace"]["picked"].append(0.0)
             result["full_trace"]["allocated"].append(0.0)
-        
+
         # fill class and return
         output.set_results(result)
         output.set_allocations(allocations)

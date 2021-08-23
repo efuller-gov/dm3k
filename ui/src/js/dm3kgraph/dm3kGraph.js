@@ -41,7 +41,7 @@ export class Dm3kGraph {
         this.containsLinks = [];
         this.constraints = [];
 
-        // intialize the dicts that contain the dm3k object types
+        // initialize the dicts that contain the dm3k object types
         // TODO
         this.resourceInstances = [];
         this.activityInstances = [];
@@ -66,7 +66,7 @@ export class Dm3kGraph {
         this.containsLinks = [];
         this.constraints = [];
 
-        // intialize the dicts that contain the dm3k object types
+        // initialize the dicts that contain the dm3k object types
         // TODO
         this.resourceInstances = [];
         this.activityInstances = [];
@@ -78,7 +78,7 @@ export class Dm3kGraph {
         this.costs = {};
     }
 
-    getResouceClassDetails() {
+    getResourceClassDetails() {
         var classList = [];
         for (let res of this.resources) {
             let resName = res.getValue();
@@ -514,12 +514,9 @@ export class Dm3kGraph {
     // TODO remove this as cost won't directly be set anymore?
     addCost(costName, actName, costNum) {
         // find the activity
-        // console.log('------> addCost for ', costName)
         let act = this.getActivity(actName);
         let newCost = addDM3KCost(this.graph, costName, act, costNum);
         this.costs[(actName + '_' + costName)] = newCost;
-
-
     }
 
     addReward(rewardName, actName) {
@@ -746,7 +743,7 @@ export class Dm3kGraph {
         let nameArray = []
         for (const key of Object.keys(this.graph.model.cells)) {
             let cell = this.graph.model.cells[key];
-            // named items should be vertexs and be a child of the default parent
+            // named items should be vertices and be a child of the default parent
             if (cell.isVertex() && (cell.getParent() == this.graph.getDefaultParent())) {
                 nameArray.push(cell.getValue())
             }
@@ -1262,7 +1259,7 @@ function addDM3KConstraintEdge(container, graph, allocatedLink1, allocatedLink2,
         // properties for label
         graph.setCellStyles(mxConstants.STYLE_FONTCOLOR, 'blue', [edge])
         graph.setCellStyles(mxConstants.STYLE_FONTSIZE, 9, [edge]) // fontsize in pixels
-        graph.setCellStyles(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_TOP, [edge]) // how is label aligned verically, set to top
+        graph.setCellStyles(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_TOP, [edge]) // how is label aligned vertically, set to top
         graph.setCellStyles(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_LEFT, [edge]) // how is label aligned horizontally, set to left
         graph.setCellStyles(mxConstants.STYLE_LABEL_POSITION, mxConstants.ALIGN_RIGHT, [edge]) // how is the label position horizontally aligned
         graph.setCellStyles(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_TOP, [edge])
@@ -1381,7 +1378,7 @@ class ContainsInstance {
     }
 }
 
- class ResourceInstance {
+class ResourceInstance {
 
      /**
       *  Define resource instance for storage and assignment to activities via UI.
@@ -1442,7 +1439,7 @@ class ContainsInstance {
         }
         return detailList 
     }
- }
+}
 
 class ActivityInstance {
 
@@ -1452,7 +1449,6 @@ class ActivityInstance {
       **/
 
     constructor(type, label, costNameList) {
-
          this.type = type;
          this.label = label;
          this.costNameList = costNameList;
@@ -1495,7 +1491,7 @@ class ActivityInstance {
                 
                 "instanceName": instance.name,
                 "cost" : {},    
-                "reward": Number(instance.reward)  // TODO - fix this when we have mulitple rewards
+                "reward": Number(instance.reward)  // TODO - fix this when we have multiple rewards
             }
             for (let item in instance) {
                 if (item.startsWith("cost")) {

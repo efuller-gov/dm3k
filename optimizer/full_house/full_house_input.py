@@ -4,17 +4,6 @@ This ingests spreadsheet constraints for full house problems.
 input_base needs to hold the modifications (adjusting constraints after they have been loaded).
 
 """
-# -------------------------------------------------------------------------
-# @license JHUAPL
-# Copyright (C) 2021 Johns Hopkins University Applied Physics Laboratory
-#
-# All Rights Reserved.
-# This material may only be used, modified, or reproduced by or for the
-# U.S. government pursuant to the license rights granted under FAR
-# clause 52.227-14 or DFARS clauses 252.227-7013/7014.
-# For any other permission, please contact the Legal Office at JHU/APL.
-# --------------------------------------------------------------------------
-
 
 import difflib
 import glob
@@ -25,10 +14,10 @@ from collections import defaultdict
 from pprint import pformat
 from typing import Any, AnyStr, Dict, List, Union
 
-import optimizer.util.util
 import pandas as pd
+
 from optimizer.slim_optimizer_base import InputBase
-from optimizer.util.util import fh_append, fh_extend, full_house_input_keys
+from optimizer.util.util import fh_append, fh_extend, full_house_input_dict_keys, full_house_input_keys, full_house_input_list_keys
 
 log = logging.getLogger(__name__)
 
@@ -348,12 +337,18 @@ class FullHouseInput(InputBase):
                     if basename == "container_child_resource":
                         log.debug("Container %s has the following child resources %s", container_name, file_dict[container_name])
                         fh_extend(
-                            fh_dict["resource_families"], container_name, file_dict[container_name], type_resources="child_resources",
+                            fh_dict["resource_families"],
+                            container_name,
+                            file_dict[container_name],
+                            type_resources="child_resources",
                         )
                     else:  # container_parent_resource
                         log.debug("Container %s has the following parent resources %s", container_name, file_dict[container_name])
                         fh_extend(
-                            fh_dict["resource_families"], container_name, file_dict[container_name], type_resources="parent_resources",
+                            fh_dict["resource_families"],
+                            container_name,
+                            file_dict[container_name],
+                            type_resources="parent_resources",
                         )
             elif basename == "force_forbid":
                 try:
@@ -604,7 +599,9 @@ class FullHouseInput(InputBase):
         for cr, cas in self._data["child_possible_allocations"].copy().items():
             if len(cas) == 0:
                 self._add_to_validation_errors(
-                    "Child resource {} has no allocations".format(cr), err_code=3, is_fatal_error=False,
+                    "Child resource {} has no allocations".format(cr),
+                    err_code=3,
+                    is_fatal_error=False,
                 )
                 log.info("Removing child resource %s from input", cr)
                 self._data["child_possible_allocations"].pop(cr)
@@ -622,7 +619,9 @@ class FullHouseInput(InputBase):
         for pr, pas in self._data["parent_possible_allocations"].copy().items():
             if len(pas) == 0:
                 self._add_to_validation_errors(
-                    "Parent resource {} has no allocations".format(pr), err_code=3, is_fatal_error=False,
+                    "Parent resource {} has no allocations".format(pr),
+                    err_code=3,
+                    is_fatal_error=False,
                 )
                 log.info("Removing parent resource %s from input", pr)
                 self._data["parent_possible_allocations"].pop(pr)
@@ -659,6 +658,9 @@ class FullHouseInput(InputBase):
         """
         Add activity scores to the _data input dictionary
 
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+                used outside of the UI
+
         :param dict activity_scores: Dictionary of DU scores.  Keys are child_activities
         """
         if activity_scores is None:
@@ -680,6 +682,9 @@ class FullHouseInput(InputBase):
         """
         Check to see if activity scores from data_access_layer and optimizer constraints align
         Then Fix them if you can
+
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+                used outside of the UI
 
         :param dict activity_scores: a dictionary of activity names as keys and activity scores as values
         :param bool dus_in_constraints_not_scores_check: Set to True if it should be an error if dus in constraints are
@@ -751,6 +756,9 @@ class FullHouseInput(InputBase):
     def modify(self, cmd_dict, timestamp, removed_data=None):
         """
         Apply the cmd to the input data, effectively modifying the input
+
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+                used outside of the UI
 
         :param dict cmd_dict: command
         :param DateTime timestamp: Used to lookup what was executed previous when running an undo command
@@ -1024,10 +1032,16 @@ class FullHouseInput(InputBase):
                 self.modify(modify_cmd, timestamp, removed_data=removed_data)
             family = self._data["resource_families"].pop(container)
             fh_extend(
-                removed_data["resource_families"], container, family["parent_resources"], type_resources="parent_resources",
+                removed_data["resource_families"],
+                container,
+                family["parent_resources"],
+                type_resources="parent_resources",
             )
             fh_extend(
-                removed_data["resource_families"], container, family["child_resources"], type_resources="child_resources",
+                removed_data["resource_families"],
+                container,
+                family["child_resources"],
+                type_resources="child_resources",
             )
             if not self._data["resource_families"]:
                 log.warning("There are no more containers in the current problem")
@@ -1186,9 +1200,9 @@ class FullHouseInput(InputBase):
                 return_dict["resource_families"][container]["child_resources"]
             )
 
-        for key in dm3k.slim_optimizer.util.util.full_house_input_dict_keys():
+        for key in full_house_input_dict_keys():
             if key != "resource_families":
                 self._data[key].update(return_dict[key])
 
-        for key in dm3k.slim_optimizer.util.util.full_house_input_list_keys():
+        for key in full_house_input_list_keys():
             self._data[key].extend(return_dict[key])

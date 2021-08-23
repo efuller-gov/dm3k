@@ -1,3 +1,0 @@
-# UI Development Guide #
-
-TODO

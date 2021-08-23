@@ -3,17 +3,6 @@ This provides a common framework to track the history of steps within an optimiz
  including the time and memory required to load, solve, etc.
 
 """
-# -------------------------------------------------------------------------
-# @license JHUAPL
-# Copyright (C) 2021 Johns Hopkins University Applied Physics Laboratory
-#
-# All Rights Reserved.
-# This material may only be used, modified, or reproduced by or for the
-# U.S. government pursuant to the license rights granted under FAR
-# clause 52.227-14 or DFARS clauses 252.227-7013/7014.
-# For any other permission, please contact the Legal Office at JHU/APL.
-# --------------------------------------------------------------------------
-
 
 import logging
 from datetime import datetime

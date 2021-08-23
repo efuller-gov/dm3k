@@ -1,29 +1,34 @@
 # Resource Allocation 101 #
 
-[Resource Allocation](https://www.britannica.com/topic/operations-research/Resource-allocation) problems involve the distribution of resources amoung competing activities in order to maximize a reward.
+[Resource Allocation](https://www.britannica.com/topic/operations-research/Resource-allocation) problems involve the distribution of resources among competing activities in order to maximize a reward.
 
-The problem is to determine which/how much resources to allocate to which activity.  If more resources are available than needed, the solution indicates which resources are used and which are not.  Similarly, if there are more activities than can be done with available resources, the solution should indicate which activities are not performed, taking into account the associated costs and rewards.
+The problem is to determine which/how many resources to allocate to which activity.  If more resources are available than needed, the solution indicates which resources are used and which are not.  Similarly, if there are more activities than can be done with available resources, the solution should indicate which activities are not performed, taking into account the associated costs and rewards.
 
 Table of Contents:
 
 [[_TOC_]]
 
 ## Defining a Problem ##
+
 Resource Allocation problems have the following components:
 
-* a set of resources available each with an amount of budget to distribute
-* a set of activities to be performed each consuming a specified amount of resources and providing some part of a reward
-* indications defining which resources can be allocated to which activities
+* a set of resources; where each resource has an amount of budget to distribute
+* a set of activities to be performed; where each activity consumes a specified amount of resources (aka cost) and provides some part of a reward
+* indications defining which resources can be allocated to which activities.
+
+> NOTE: the simpliest example of a resource allocation problem is a knapsack problem.  For example, I'm going on a camping trip with a few friends.  Each friend has a backpack (**the resources**) that each can carry a certain amount of weight (**the budget**).  We have a number of camping items that we need to take (**the activities**).  Each camping item has a weight (**the cost**) and a value to making our trip a success (**the reward**). In this problem I want to know what camping items to take and who is carrying each item.  Therefore specific camping items can be allocated to specific backpacks (**the indication of what can be allocated to**).
 
 In order to define more complex resource allocation problems, we also add the following additional components:
 
 * indications defining which resources contain other resources (*this is important for understanding the total budget allocation for groups of resources*)
 * indications defining which activities contain other activities (*this is important when rewards are associated with parent activities; such that rewards are only attained if all children activities of that parent are performed*)
-* constraints on when an allocation of a resource to an activity can or can not be performed (*this is important when you have multiple resource and activity types that are interelated in the real world*)
+* constraints on when an allocation of a resource to an activity can or can not be performed (*this is important when you have multiple resource and activity types that are interrelated in the real world*)
 
 > NOTE: For a good example of contains indications, see */example/AllocationOfStaffToTasksUserStoriesCustomers.json* <p>  In this example, contains relationships define how individual workers (resources) are grouped by speciality and by company AND define how tasks (activities) are grouped into user stories and grouped into customers that want a set of stories such that reward is only achieved if all of a customer's user stories are achieved.
 
-> NOTE: For a good example of constraints on allocations, see */example/AlienWorldDomination_wShip.json*  <p> In this example, constraints are used to ensure that the alien's can't shoot at a VIP (*missile resource allocation to VIP activity*) unless the turrret that fires the missiles is pointed at the city in which the VIP is located (*turret resource allocation to City activity*).
+> NOTE: For a good example of constraints on allocations, see */example/AlienWorldDomination_wShip.json*  <p> In this example, constraints are used to ensure that the alien's can't shoot at a VIP (*missile resource allocation to VIP activity*) unless the turret that fires the missiles is pointed at the city in which the VIP is located (*turret resource allocation to City activity*).
+
+DM3K enables non-technical users to define resource allocation problems with our UI (for more information on how to define a problem in our UI see [*/docs/user_guide.md*](/docs/user_guide.md))
 
 ### Understanding Difference Between Types and Instances ###
 
@@ -57,7 +62,7 @@ The following sections further define all the components mentioned in the sectio
 
 **Resources** can have one or more **Resource Instances** of that resource (*e.g. a 'Backpack' resource type could have instances including 'Georges backpack', 'Lauras backpack', etc.*).  
 
-Each **Resource Instances** can have a different **Budget** amount for each Budget Type (*e.g. 'Georges backpack' is small and has a 'weight' budget amount = 10 lbs and a 'space' budget amount = 1 cuft*)
+Each **Resource Instances** can have a different **Budget** amount for each Budget Type (*e.g. 'Georges backpack' is small and has a 'weight' budget amount = 10 lbs and a 'space' budget amount = 1 cubic foot*)
 
 ### Activities ###
 
@@ -69,7 +74,7 @@ Each **Resource Instances** can have a different **Budget** amount for each Budg
 
 **Activities** can have one or more **Activity Instances** of that activity (*e.g. a 'Camping Item' activity type could have instances including 'sleeping bag', 'matches', 'cooking stove', etc.*).
 
-Each **Activity Instance** can have different **Cost** and **Reward** amounts. (*e.g. 'matches' have a 'weight' budget cost = 0.01 lbs, a 'space' cost amount = 0.001 cuft, and a reward = 10*)
+Each **Activity Instance** can have different **Cost** and **Reward** amounts. (*e.g. 'matches' have a 'weight' budget cost = 0.01 lbs, a 'space' cost amount = 0.001 cubic foot, and a reward = 10*)
 
 ### Can Be Allocated To Indications ###
 
@@ -83,7 +88,7 @@ Some resources and activity types are in container (parent-child) relationships,
 
 **Contains Indications** link a parent type to a child type and define that 1 or more instances of the parent type contain 1 or more instances of the child type.
 
-Each **Contains Indication** can have one or more **Contains Indication Instances**.  These instances define that ALL parent instances or a specific parent instance can be allocated to ALL child instances or a specific child instance.  (*e.g. the 'camping stove', 'matches', 'pot', and 'spagetti'  activity instances are contained by the 'Cooking' activity instance in the newly created 'Camping Activities' Type*)
+Each **Contains Indication** can have one or more **Contains Indication Instances**.  These instances define that ALL parent instances or a specific parent instance can be allocated to ALL child instances or a specific child instance.  (*e.g. the 'camping stove', 'matches', 'pot', and 'spaghetti'  activity instances are contained by the 'Cooking' activity instance in the newly created 'Camping Activities' Type*)
 
 ### Allocation Constraints ###
 
@@ -91,6 +96,6 @@ Each **Contains Indication** can have one or more **Contains Indication Instance
 
 **Allocation Constraints** come in two flavors: "IF-NOT" and "Contains IF-THEN".
 
-"IF-NOT" allocation constraints prevent a **Resource Instances** from being allocated to more than one type of Activity.  (*e.g. if I am allocating grocery bags to different types of grocery items, and I dont want grocery items that are cleaning supplies to be in the same bag as food items...I can use an IF-NOT allocation constraint to enforce this*)
+"IF-NOT" allocation constraints prevent a **Resource Instances** from being allocated to more than one type of Activity.  (*e.g. if I am allocating grocery bags to different types of grocery items, and I don't want grocery items that are cleaning supplies to be in the same bag as food items...I can use an IF-NOT allocation constraint to enforce this*)
 
-"Contained IF-THEN" allocation constraints work in conjunction with **Contains Indications** to tie the **Can be Allocated To Indication** from a parent resource and activity to a **Can be Allocated To Indication** between the children resouce and activity.  Tying the parent allocation to the child allocation prevents the child **Can be Allocated To Indication** from working unless the first **Can be Allocated To Indication** includes allocations by parent instances that contain these children.  (*e.g. if I am on a ship with turrets that can be pointed at a city (parent relationship: turret resource allocated to city activity), I can't hit buildings with shells from the gun on that turret in another city (child relationship: shells resource allocated to buildings activity.  **Note- shells have to be children to turret and buildings have to children to city for this to work**)*)
+"Contained IF-THEN" allocation constraints work in conjunction with **Contains Indications** to tie the **Can be Allocated To Indication** from a parent resource and activity to a **Can be Allocated To Indication** between the children resource and activity.  Tying the parent allocation to the child allocation prevents the child **Can be Allocated To Indication** from working unless the first **Can be Allocated To Indication** includes allocations by parent instances that contain these children.  (*e.g. if I am on a ship with turrets that can be pointed at a city (parent relationship: turret resource allocated to city activity), I can't hit buildings with shells from the gun on that turret in another city (child relationship: shells resource allocated to buildings activity.  **Note- shells have to be children to turret and buildings have to children to city for this to work**)*)

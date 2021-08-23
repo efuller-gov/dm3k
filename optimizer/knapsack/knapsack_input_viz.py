@@ -1,21 +1,8 @@
 """"
 This ingests the format from the DM3K-Viz tool
 """
-# -------------------------------------------------------------------------
-# @license JHUAPL
-# Copyright (C) 2021 Johns Hopkins University Applied Physics Laboratory
-#
-# All Rights Reserved.
-# This material may only be used, modified, or reproduced by or for the
-# U.S. government pursuant to the license rights granted under FAR
-# clause 52.227-14 or DFARS clauses 252.227-7013/7014.
-# For any other permission, please contact the Legal Office at JHU/APL.
-# --------------------------------------------------------------------------
 
-
-import json
 import logging
-import os
 
 from optimizer.slim_optimizer_base import InputBase
 
@@ -47,9 +34,27 @@ class KnapsackInputViz(InputBase):
                     "fix": <string name of process performed to fix the error  or None>,
                     "is_fatal_error": <boolean; True = error is fatal, False = error is fixable>
         """
-        log.debug("Opening Dataset: " + input_dict["datasetName"])
+        if "datasetName" in input_dict:
+            log.debug("Opening Dataset: " + input_dict["datasetName"])
+        else:
+            log.warning("'datasetName' is not in input_dict")
 
         # determine if correct files exist
+
+        if "files" not in input_dict:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'files' attribute is not in input_dict...the format of the input is not correct!",
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            ) 
+
         file_data = input_dict["files"]
         if len(file_data) != 1:
             return (
@@ -57,7 +62,7 @@ class KnapsackInputViz(InputBase):
                 [
                     {
                         "err_code": 1,
-                        "err_txt": "dm3k-viz.json file could not be found in constraints path",
+                        "err_txt": "system requires 'files' attribute to contain data from 1 file...you have submitted {} files...the necessary files do not exist!".format(len(file_data)),
                         "offender": "**YOU**",
                         "fix": "Cant fix this!",
                         "is_fatal_error": True,
@@ -66,7 +71,23 @@ class KnapsackInputViz(InputBase):
             )
 
         # --- INGEST ---
-        json_data = file_data[0]["fileContents"]   # this type of input only has one file type
+
+        # assuming only 1 file is required
+        if "fileContents" not in file_data[0]:
+            return (
+                True,
+                [
+                    {
+                        "err_code": 2,
+                        "err_txt": "'fileContents' attribute is not in input_dict['files'][0]...the format of the input is not correct!",
+                        "offender": "**YOU**",
+                        "fix": "Cant fix this!",
+                        "is_fatal_error": True,
+                    }
+                ],
+            )
+
+        json_data = file_data[0]["fileContents"]  # this type of input only has one file type
         log.debug("Incoming constraints keys: " + str(list(json_data.keys())))
         self._data = json_data
 
@@ -79,11 +100,4 @@ class KnapsackInputViz(InputBase):
 
         return False, []
 
-    def add_scores(self, activity_scores):
-        pass  # TODO
-
-    def align_check_scores(self, activity_scores, dus_in_constraints_not_scores_check=False):
-        pass  # TODO
-
-    def modify(self, cmd_dict, timestamp):
-        pass  # TODO
+    

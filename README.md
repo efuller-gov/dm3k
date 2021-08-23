@@ -1,13 +1,15 @@
 # OPEN DECISION MAKER 3000
 
-The Open Decision Maker 3000 (OPEN-DM3K) is a generalized decision-engine that solves complex resource allocation problems. 
+The Open Decision Maker 3000 (OPEN-DM3K) is a generalized decision-engine that solves complex resource allocation problems.
+
+> **NOTE** - For more explanation of resource allocation problems and their component parts, see [*/docs/resource_allocation_101.md*](/docs/resource_allocation_101.md)
 
 OPEN-DM3K provides the user with:
 
-- an web-based UI to define their resource allocation problem.
-- an python optimizer that leverages linear optimization techniques to solve the user defined problem.
+- a web-based UI to define their resource allocation problem.
+- a python optimizer that leverages linear optimization techniques to solve the user defined problem.
 
-For more explaination of resource allocation problems and their component parts, see [*/docs/resource_allocation_101.md*](/docs/resource_allocation_101.md)
+![block diargam](./docs/pictures/DM3K_Block_Diagram.png)
 
 ## Installation
 
@@ -18,7 +20,7 @@ Installation assumes you have...
 - docker (v19.03+)  see https://docs.docker.com/get-docker/
 - docker-compose (v1.27+)  see https://docs.docker.com/compose/install/
 
-### Installation Proceedure
+### Installation Procedure
 
 from the main directory of the repo run...
 ```bash
@@ -70,7 +72,6 @@ Please make sure to update tests as appropriate.
 For developers guide, see 
 
 - [*/docs/dev_env.md*](/docs/dev_env.md) or
-- [*/docs/ui_devGuide.md*](/docs/ui_devGuide.md)  or
 - [*/docs/api_devGuide.md*](/docs/api_devGuide.md) or 
 - [*/docs/optimizer_devGuide.md*](/docs/optimizer_devGuide.md)
 

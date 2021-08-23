@@ -337,6 +337,8 @@ export default {
             var newActName = $("#actName").val();
             var existingResName = $("#resName2").val();
             var newRewardName = $("#rewardName").val();
+            var additionalBudgetName = this.$store.state.dm3kGraph.resourceInstances.filter(x=>x.label==existingResName)[0].budgetLabel;
+
             if ($('#new-allocation').hasClass('enabled') & ( (newActType=='none') | (newActName=='') ) ){
                 alert('Please fill all fields required to create an activity.')
                 return
@@ -351,7 +353,7 @@ export default {
             }
             
             // Allocate to existing activity
-            if ($("#actType").val() == 'a new activity'){
+            if ($("#existing-allocation").hasClass('enabled')){
                 let actName = $("#actTypeExisting").val();
                 let actCell = this.$store.state.dm3kGraph.getActivity(actName)
                 let actType = actCell.getId()
@@ -367,40 +369,34 @@ export default {
                     return
                 }
                 let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
-                let  ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
+                let ans = this.$store.state.dm3kGraph.addCompleteActivity(actType, actName, existingResName, newRewardName, costNum);
+                // Have to add new cost to activityInstances and 
+                this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label==actName)[0].costNameList.push(additionalBudgetName)
+                this.$store.state.dm3kGraph.activityInstances.filter(x=>x.label==actName)[0].instanceTableData.forEach(x=>x["cost_"+additionalBudgetName]=1)
+
                 if (ans.success) {
                         this.updateAllDropDowns();
-                        // var layout = new mxGraphLayout(this.$store.state.dm3kGraph.graph);
-                        // executeLayout(this.$store.state.dm3kGraph.graph, layout);
-                        // resetActivityPrompt();
                     }
-                    else {
-                        alert(ans.details);
-                    }
+                else {
+                    alert(ans.details);
+                }
             } else{
-            // Allocate to new activity, and create new activity
-                // if (model.getCell(newActName) != undefined){
-                //     alert('Cannot create duplicate node. Please choose a new instance name.')
-                // } else{
-                    if (newActType.includes('[')){
-                        let tmp = newActType.split('[')
-                        tmp = newActType.split(']',2)
+                // Allocate to new activity, and create new activity
+                if (newActType.includes('[')){
+                    let tmp = newActType.split('[')
+                    tmp = newActType.split(']',2)
 
-                        newActType = tmp[0].split('[')[1];
-                        newActName = tmp[1]
-                    }
-                    let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
-                    let ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
-                    if (ans.success) {
-                        this.updateAllDropDowns();
-                        // var layout = new mxGraphLayout(dm3kgraph.graph);
-                        // executeLayout(dm3kgraph.graph, layout);
-                        // resetActivityPrompt();
-                    }
-                    else {
-                        alert(ans.details);
-                    }
-                // }
+                    newActType = tmp[0].split('[')[1];
+                    newActName = tmp[1]
+                }
+                let costNum = Object.keys(this.$store.state.dm3kGraph.costs).length
+                let ans = this.$store.state.dm3kGraph.addCompleteActivity(newActType, newActName, existingResName, newRewardName, costNum);
+                if (ans.success) {
+                    this.updateAllDropDowns();
+                }
+                else {
+                    alert(ans.details);
+                }
             }
         },
         containsTab(){
@@ -662,7 +658,7 @@ export default {
                     ac.typeName,
                     ac.className,
                     ra,
-                    ac.rewards[0], // TODO - need to make it work for mulitple rewards
+                    ac.rewards[0], // TODO - need to make it work for multiple rewards
                     i,
                     ac.locX,
                     ac.locY,
@@ -691,7 +687,7 @@ export default {
                     ac.typeName, 
                     actName, 
                     ac.containsClasses[0],  // do the first one this way, then do rest in loop below
-                    ac.rewards[0]) // TODO - need to make it work for mulitple rewards)
+                    ac.rewards[0]) // TODO - need to make it work for multiple rewards)
                 for (let ccName of ac.containsClasses.slice(1)) {
                     console.log('Attempting to make a contains link between: '+actName+' and '+ccName);
                     this.$store.state.dm3kGraph.addContains(actName, ccName);
@@ -752,7 +748,7 @@ export default {
                 }
             }
 
-            // add allocation contraints
+            // add allocation constraints
             for (let allc of inputJson.allocationConstraints) {
                 let a1FromName = allc.allocationStart.resourceClass;
                 let a1ToName = allc.allocationStart.activityClass;
@@ -769,7 +765,7 @@ export default {
         },
         submitDM3K(){
 
-            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
+            let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph)["files"][0]["fileContents"];
 
             // get dataset name from textbox
             var dsName = $("#diagramName").val();
@@ -906,7 +902,7 @@ export default {
                 },
                 {
                     'worksheet': 'allocate-resources',
-                    'pane-title-text': 'Continue by creating activites to allocate to resources.',
+                    'pane-title-text': 'Continue by creating activities to allocate to resources.',
                     'pane-body-text': '<b>Activities</b> are entities that get allocated to <b>resources</b>. When you define an activity, try '+
                     'to find a category type that best describes it from the dropdown menu. In our backpack problem, we need to allocate to different backpacks.'+
                     'Since we defined backpack as a resource, we will define a new <b>activity</b> to allocate called <b>textbook</b>. It can be best described as an <b>item</b>.',
@@ -916,7 +912,7 @@ export default {
                 {
                     'worksheet': 'contains',
                     'pane-title-text': 'Create hierarchy within your decision scenario.',
-                    'pane-body-text': 'A <b>contains</b> relationship creates hierarchy among <b>activities</b> or <b>resources</b> that can be used in allocation logic among instances of activites or resources. '+
+                    'pane-body-text': 'A <b>contains</b> relationship creates hierarchy among <b>activities</b> or <b>resources</b> that can be used in allocation logic among instances of activities or resources. '+
                     'Note that <b>contains</b> relationships can only be established between activity-activity or resource-resource.',
                     'instance-title-text': '',
                     'instance-body-text': '',
