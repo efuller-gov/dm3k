@@ -1178,14 +1178,6 @@ export class Dm3kSolutionVis{
             .style("fill", res_base_color)
             .style("stroke", res_base_color)
             .style('stroke-width', '1px')
-            // commented out fill opacity by how much budget was used
-            // .style('stroke-width', '3px')
-            // .style("fill-opacity", function (d) {
-            //     let total_budget_used = table.filter(x=>x.resource_class==d.class).map(x=>x.budget_used).reduce(reducer);
-            //     let total_budget = instances_per_resource_class.filter(x=>x.class==d.class)[0].total_budget;
-            //     console.log("fill_opacity ", total_budget_used/total_budget)
-            //     return total_budget_used/total_budget;
-            // })
             .on('mouseover', function (d) {
                 let total_budget_used = table.filter(x=>x.resource_class==d.class).map(x=>x.budget_used).reduce(reducer);
                 let res_class_info = outline.resourceClasses.filter(x=>x.classLabel==d.class)[0];
