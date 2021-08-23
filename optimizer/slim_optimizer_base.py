@@ -4,12 +4,12 @@ requires filling in certain pieces: particularly the *model*, *input*, and *outp
 classes.
 """
 from __future__ import annotations  # needed for the self-referential type hints
-from abc import ABC, abstractmethod
 
 import logging
 import os
 import threading
 import time
+from abc import ABC, abstractmethod
 from datetime import datetime
 
 import pandas as pd
@@ -35,7 +35,7 @@ if not os.path.exists(LOG_DIR):
 
 
 class OptimizerBase(ABC):
-    def __init__(self, input_class:InputBase, model_class:ModelBase, output_class:OutputBase):
+    def __init__(self, input_class: InputBase, model_class: ModelBase, output_class: OutputBase):
         """
         Create the Optimizer itself.
 
@@ -67,9 +67,8 @@ class OptimizerBase(ABC):
         self._input = None
         self._model = None
         self._output = None
-        self._needs_rebuild = True
 
-    def ingest(self, input_dict:dict):
+    def ingest(self, input_dict: dict):
         """
         Ingest a new input dataset
 
@@ -129,7 +128,6 @@ class OptimizerBase(ABC):
         data = self.get_input().to_data()
 
         self._model.build(data)
-        self._needs_rebuild = False
         self._hist_mgr.end_tag("Building Model")
 
     def solve(self, solver="glpk", tee=False, timeout=None, retries=3, mipgap=None, keepfiles=True):
@@ -150,9 +148,6 @@ class OptimizerBase(ABC):
         if self._model is None:
             log.warning("You are attempting to solve the model before building it...will attempt to build model for you")
             # instead of throwing error here, just build it for them if they did steps out of order
-            self.build()
-
-        if self._needs_rebuild:
             self.build()
 
         self._hist_mgr.start_tag("Solving Model")
@@ -223,7 +218,7 @@ class InputBase(ABC):
         self._data = {}
 
     @abstractmethod
-    def ingest_validate(self, input_dict:dict):
+    def ingest_validate(self, input_dict: dict):
         """
         Validate the constraints and activity scores to determine if following Errors are found
 
@@ -245,14 +240,14 @@ class InputBase(ABC):
                     "is_fatal_error": <boolean; True = error is fatal, False = error is fixable>
         """
 
-    def get_info(self, info_name:str):
+    def get_info(self, info_name: str):
         """
         Returns a given field of the input dictionary
 
         :param str info_name: Name of particular input field that is wanted
         :return: One field from _data dictionary
         """
-        return self._data[info_name]
+        return self._data.get(info_name)
 
     def list_info_avail(self):
         """
@@ -261,7 +256,6 @@ class InputBase(ABC):
         :return list:
         """
         return list(self._data.keys())
-
 
     def to_data(self) -> dict:
         """
