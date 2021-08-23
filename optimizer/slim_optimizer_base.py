@@ -3,6 +3,8 @@ The base optimizer class attempts to make it easy to create new optimizers, whic
 requires filling in certain pieces: particularly the *model*, *input*, and *output*
 classes.
 """
+from __future__ import annotations  # needed for the self-referential type hints
+from abc import ABC, abstractmethod
 
 import logging
 import os
@@ -32,8 +34,8 @@ if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
 
-class OptimizerBase:
-    def __init__(self, input_class, model_class, output_class):
+class OptimizerBase(ABC):
+    def __init__(self, input_class:InputBase, model_class:ModelBase, output_class:OutputBase):
         """
         Create the Optimizer itself.
 
@@ -65,8 +67,9 @@ class OptimizerBase:
         self._input = None
         self._model = None
         self._output = None
+        self._needs_rebuild = True
 
-    def ingest(self, input_dict):
+    def ingest(self, input_dict:dict):
         """
         Ingest a new input dataset
 
@@ -126,7 +129,7 @@ class OptimizerBase:
         data = self.get_input().to_data()
 
         self._model.build(data)
-        self.get_input()._needs_rebuild = False
+        self._needs_rebuild = False
         self._hist_mgr.end_tag("Building Model")
 
     def solve(self, solver="glpk", tee=False, timeout=None, retries=3, mipgap=None, keepfiles=True):
@@ -149,7 +152,7 @@ class OptimizerBase:
             # instead of throwing error here, just build it for them if they did steps out of order
             self.build()
 
-        if self.get_input().needs_rebuild():
+        if self._needs_rebuild:
             self.build()
 
         self._hist_mgr.start_tag("Solving Model")
@@ -168,7 +171,7 @@ class OptimizerBase:
         self._output = self._model.fill_output(self._output_class)
         self._hist_mgr.end_tag("Gathering Output")
 
-    def get_results(self):
+    def get_results(self) -> dict:
         """
         Return the results from the last solve step
 
@@ -181,7 +184,7 @@ class OptimizerBase:
 
         return self._output.to_dict()
 
-    def get_input(self):
+    def get_input(self) -> InputBase:
         """
         Return the input
 
@@ -189,7 +192,7 @@ class OptimizerBase:
         """
         return self._input
 
-    def get_output(self):
+    def get_output(self) -> OutputBase:
         """
         Return the output from the last solve step
 
@@ -202,7 +205,7 @@ class OptimizerBase:
 
         return self._output
 
-    def get_history_df(self):
+    def get_history_df(self) -> pd.DataFrame:
         """
         Get the history of operations and metrics on their runtime and memory usage
 
@@ -213,14 +216,14 @@ class OptimizerBase:
         )
 
 
-class InputBase:
+class InputBase(ABC):
     def __init__(self):
-        self._needs_rebuild = True
 
         # this attribute needs to be a dict that can be dumped by json.dump
         self._data = {}
 
-    def ingest_validate(self, input_dict):
+    @abstractmethod
+    def ingest_validate(self, input_dict:dict):
         """
         Validate the constraints and activity scores to determine if following Errors are found
 
@@ -241,9 +244,8 @@ class InputBase:
                     "fix": <string name of process performed to fix the error  or None>,
                     "is_fatal_error": <boolean; True = error is fatal, False = error is fixable>
         """
-        raise NotImplementedError("validate NOT implemented!  Subclasses must implement this function")
 
-    def get_info(self, info_name):
+    def get_info(self, info_name:str):
         """
         Returns a given field of the input dictionary
 
@@ -260,15 +262,8 @@ class InputBase:
         """
         return list(self._data.keys())
 
-    def needs_rebuild(self):
-        """
-        Has the input changed such that the model needs to be rebuilt
 
-        :return bool needs_rebuild: True = Yes, rebuild it
-        """
-        return self._needs_rebuild
-
-    def to_data(self):
+    def to_data(self) -> dict:
         """
         Whatever data format the model needs
 
@@ -278,7 +273,7 @@ class InputBase:
         return self._data
 
 
-class ModelBase:
+class ModelBase(ABC):
     """
     The ModelBase serves as a template for the meat of new optimizers.  These will typically extend the base class and
     build a new pyomo model using input constraints.  One must identify how to turn the input constraints into appropriate
@@ -293,7 +288,8 @@ class ModelBase:
         self.kill_glpsol_if_stuck = False
         self.new_timeout = None
 
-    def can_solve(self, input_instance):
+    @abstractmethod
+    def can_solve(self, input_instance) -> bool:
         """
         In the event the system can leverage multiple models, this function is used to determine if this model
         can solve the input.
@@ -301,8 +297,8 @@ class ModelBase:
         :param input_instance: a instance of the InputBase class
         :return: Boolean, True = yes, this model can solve it.  False = something about input cannot be solved by model
         """
-        raise NotImplementedError("NOT implemented!  Subclasses must implement this function")
 
+    @abstractmethod
     def build(self, data):
         """
         Build the pyomo model in self._model
@@ -311,7 +307,6 @@ class ModelBase:
                      basis)
         :return: None
         """
-        raise NotImplementedError("NOT implemented!  Subclasses must implement this function")
 
     def solve(self, solver="glpk", tee=False, timeout=None, retries=3, mipgap=None, constraints_dataset="unknown", keepfiles=True):
         """
@@ -457,7 +452,8 @@ class ModelBase:
         """
         return self._model
 
-    def fill_output(self, output_class):
+    @abstractmethod
+    def fill_output(self, output_class) -> OutputBase:
         """
         Return the output of the model after it has been solved by instantiating an object of the output class.
 
@@ -467,10 +463,9 @@ class ModelBase:
         :param output_class: the OutputBase or subclass of output base
         :return output: an instance of the output_class
         """
-        raise NotImplementedError("NOT implemented!  Subclasses must implement this function")
 
 
-class OutputBase:
+class OutputBase(ABC):
     def __init__(self):
         """
         Create a new object to hold output from an optimizer solution
