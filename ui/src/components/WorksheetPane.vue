@@ -823,11 +823,14 @@ export default {
             });
         },
         saveLocally(){
+            if ($("#diagramName").val() == ""){
+                alert("Cannot save file to blank name. Please insert a filename.")
+                return;
+            }
             console.log("Saving a file to local...")
             // capture all of graph in outputjson
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
             let outputJsonString = JSON.stringify(outputJson,null,4);
-            console.log(outputJsonString);
 
             // get dataset name from textbox
             let dsName = $("#diagramName").val();
