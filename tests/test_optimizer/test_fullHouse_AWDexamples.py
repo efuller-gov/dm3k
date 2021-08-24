@@ -38,11 +38,11 @@ class TestFullHouseAWD(TestCase):
         with open(path_to_file, "r") as f:
             input_dict = json.load(f)
 
-        config = {"optimizer": "FullHouseViz"}
+        # config = {"optimizer": "FullHouseViz"}
 
         log.debug("WORKING ON DATASET=" + input_dict["datasetName"])
 
-        opt, validation_errors = create_opt(input_dict, config)
+        opt, validation_errors = create_opt(input_dict, "FullHouseViz")
         self._opt = opt
 
         return input_dict, validation_errors

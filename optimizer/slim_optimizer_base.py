@@ -56,7 +56,6 @@ class OptimizerBase(ABC):
             output_class: python class that extends class OutputBase below
 
         """
-        self._input_class = input_class
         self._model_class = model_class
         self._output_class = output_class
 
@@ -64,7 +63,7 @@ class OptimizerBase(ABC):
 
         self._input_instance = None
         self._constraints_dataset = ""
-        self._input = None
+        self._input = input_class()
         self._model = None
         self._output = None
 
@@ -90,8 +89,7 @@ class OptimizerBase(ABC):
                     e.args[0] = list of validation errors...at least one of these caused the fatal error
         """
         self._hist_mgr.start_tag("Ingest from input dictionary")
-        self._input = self._input_class()
-        fatal, validation_errors = self.get_input().ingest_validate(input_dict)
+        fatal, validation_errors = self._input.ingest_validate(input_dict)
         if fatal:
             raise ValueError(validation_errors, "Input Data Failed Validation")
 
@@ -107,7 +105,8 @@ class OptimizerBase(ABC):
 
         :return: None
         """
-        if self.get_input() is None:
+        data = self._input.to_data()
+        if not data:
             log.error("You are attempting to build a model before ingesting data...you must do ingest method first")
             raise UnboundLocalError("You must ingest data prior to building the model")
 
@@ -115,18 +114,15 @@ class OptimizerBase(ABC):
         if isinstance(self._model_class, list):
             for mc in self._model_class:
                 self._model = mc()
-                if self._model.can_solve(self.get_input()):
+                if self._model.can_solve(self._input):
                     break
         else:
             self._model = self._model_class()
 
-        log.debug("Building with Class: %s", str(self._model.__class__.__name__))
+        log.debug(f"Building with Class: {self._model.__class__.__name__}")
         self._hist_mgr.end_tag("Finding Model to use")
 
         self._hist_mgr.start_tag("Building Model")
-
-        data = self.get_input().to_data()
-
         self._model.build(data)
         self._hist_mgr.end_tag("Building Model")
 
@@ -142,8 +138,6 @@ class OptimizerBase(ABC):
         :param bool keepfiles: Set to true if pyomo files should be kept
         :return: None
         """
-        if self.get_input() is None:
-            raise UnboundLocalError("You must ingest data prior to building the model")
 
         if self._model is None:
             log.warning("You are attempting to solve the model before building it...will attempt to build model for you")
@@ -178,14 +172,6 @@ class OptimizerBase(ABC):
             self.solve()
 
         return self._output.to_dict()
-
-    def get_input(self) -> InputBase:
-        """
-        Return the input
-
-        :return _input: an instance of the InputBase class or subclass
-        """
-        return self._input
 
     def get_output(self) -> OutputBase:
         """

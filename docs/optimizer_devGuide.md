@@ -1,8 +1,8 @@
 # Optimizer Development and Extension Guide #
 
-The optimizer is one of the core pieces of functionality of Open-DM3K.  It takes in the problem definition, performs integer programming optimization of the problem, and returns the results of the optimization.
+The optimizer is one of the core elements of Open-DM3K.  It takes in the problem definition, performs integer programming optimization of the problem, and returns the results of the optimization.
 
-This document describes the component parts of the optimizer and how others can add new optimizers to the existing system.
+This document describes the component parts of the optimizer and how to add new optimizers to the existing system.
 
 Table of Contents:
 

@@ -38,11 +38,9 @@ class TestKnapsackE2E(TestCase):
         with open(path_to_file, "r") as f:
             input_dict = json.load(f)
 
-        config = {"optimizer": "KnapsackViz"}
-
         log.debug("WORKING ON DATASET=" + input_dict["datasetName"])
 
-        opt, validation_errors = create_opt(input_dict, config)
+        opt, validation_errors = create_opt(input_dict, "KnapsackViz")
         self._opt = opt
 
         return input_dict, validation_errors

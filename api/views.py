@@ -14,8 +14,8 @@ app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 if app_directory not in sys.path:
     sys.path.append(app_directory)
 
-from optimizer.slim_optimizer_main import create_opt  # noqa: E402
 from optimizer.slim_optimizer_main import algorithm_dict  # noqa: E402
+from optimizer.slim_optimizer_main import create_opt  # noqa: E402
 
 api = Blueprint("api", __name__)
 
@@ -54,13 +54,11 @@ def post_vizdata():
     """
 
     app.logger.info("Viz Data POST")
-    
+
     input_dict = request.json
     app.logger.debug(input_dict)
 
-    config = {"optimizer": input_dict["algorithm"]}
-
-    opt, validation_errors = create_opt(input_dict, config)
+    opt, validation_errors = create_opt(input_dict, input_dict["algorithm"])
 
     if len(validation_errors) > 0:
         app.logger.warning("VALIDATION ERRORS...")
