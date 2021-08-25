@@ -133,11 +133,11 @@ def allocated_limit_rule(model, p_id, a_id):
 
 def if_not_limit_rule(model, r_id, a_id):
     """
-    "IF-NOT" allocation constraints prevent a Resource Instances from being allocated to more than one class of Activity.  
-    
-    (e.g. if I am allocating grocery bags to different types of grocery items, and I don't want grocery items that are 
+    "IF-NOT" allocation constraints prevent a Resource Instances from being allocated to more than one class of Activity.
+
+    (e.g. if I am allocating grocery bags to different types of grocery items, and I don't want grocery items that are
     cleaning supplies to be in the same bag as food items...I can use an IF-NOT allocation constraint to enforce this)
-    
+
     :param ConcreteModel model:
     :param int r_id: the id number of the resource instance
     :param int a_id: the id number of the activity instance
@@ -190,7 +190,7 @@ def if_contains_picked(model, a_id):
 # -------------------------------------------------------------------------------
 # MODEL
 # -------------------------------------------------------------------------------
-class KnapsackComponentModel(ModelBase):
+class KnapsackModel(ModelBase):
     def __init__(self):
         super().__init__()
         self._data = None

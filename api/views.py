@@ -74,7 +74,7 @@ def post_vizdata():
 
     opt.build()
     opt.solve()
-    results = opt.get_output()
+    results = opt.get_results()
 
     all_results = results.to_dict()
     all_results["allocations"] = results.get_allocations()

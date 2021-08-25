@@ -188,7 +188,7 @@ class OptimizerBase(ABC):
 
     def get_history_df(self) -> pd.DataFrame:
         """
-        Get the history of operations and metrics on their runtime and memory usage
+        Get the history of operations and metrics on their runtime and memory usage.  This can be used to test the performance of optimizers.
 
         :return pandas.DataFrame history_df: pandas DataFrame with information about runtime and memory events
         """
@@ -445,70 +445,47 @@ class ModelBase(ABC):
         """
 
 
+VALUE_KEY = "objective_value"
+ALLOC_KEY = "allocations"
+TRACE_KEY = "full_trace"
+
+
 class OutputBase(ABC):
     def __init__(self):
         """
-        Create a new object to hold output from an optimizer solution
+        Create a new object to hold output from an optimizer solution, which is basically a dictionary of results with some convenience methods.
 
         """
-        self._solved_objective_value = None
         self._result = {}
-        self._allocations = {}
 
-    def set_objective_value(self, value):
+    @property
+    def result(self):
         """
-        Provide an objective value
-
-        :param float value: a float objective value from the model solution
-        :return: None
-        """
-        self._solved_objective_value = value
-
-    def set_results(self, results):
-        """
-        Provide the solution results
-
-        :param dict results: a dictionary of output of the optimizer solution
-                        (exact format is based on which optimizer is used)
-        :return: None
-        """
-        self._result = results
-
-    def set_allocations(self, allocations):
-        """
-        Provide an the allocations from the model solution
-
-        :param dict allocations: a dictionary with keys equal to resource names and values equal to lists of activities
-                                that each resource is mapped to
-        :return: None
-        """
-        self._allocations = allocations
-
-    def to_dict(self):
-        """
-        Provide the optimizer output in a python dict
+        Provide the optimizer output as a python dict
 
         :return dict results: a dictionary of output of the optimizer solution
-                                (exact format is based on which optimizer is used)
+                                Keys must include 'objective_value', 'allocations', and 'full_trace' (additional fields can be added by each optimizer)
         """
         return self._result
 
-    def get_objective_value(self):
+    @property
+    def objective_value(self):
         """
         Provide the value of the objective function of the optimizer
 
         :return float objective_value: the value of the objective of the optimizer
         """
-        return self._solved_objective_value
+        return self._result[VALUE_KEY]
 
-    def get_allocations(self):
+    @property
+    def allocations(self):
         """
         Provide the mapping of resources to activities from the optimizer solution
 
         :return dict allocations: a dictionary with keys equal to resource names and values equal to lists of activities that
                              each resource is mapped to
         """
-        return self._allocations
+        return self._result[ALLOC_KEY]
 
     def get_trace_df(self, sort_results=True, ascending=False):
         """
