@@ -74,13 +74,8 @@ def post_vizdata():
 
     opt.build()
     opt.solve()
-    results = opt.get_results()
-
-    all_results = results.to_dict()
-    all_results["allocations"] = results.get_allocations()
-    all_results["objective_value"] = results.get_objective_value()
 
     # TODO - we should update this
-    response = {"body": all_results, "reason": "OK", "statusCode": 200}
+    response = {"body": opt.get_results(), "reason": "OK", "statusCode": 200}
 
     return jsonify(response)

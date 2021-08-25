@@ -1,13 +1,11 @@
 """
-A component based way of solving the knapsack problem
+A component-based way of solving the knapsack problem
 
 What are the characteristics of a knapsack problem
-    - resource has "budgets" attribute  (TODO - do we want to change the input format to have "attributes" as key and
-                                                "budgets" to be under that
-    - resource can have 1 or more budgets
+    - a resource can have 1 or more budgets
     - multiple activities
-    - each activity has "rewards" attribute and some have "costs" attribute (TODO - same as resource above)
-    - activities can only have 1 reward   **INPUT CHECK**
+    - each activity has "rewards" attribute and some have "costs" attribute
+    - activity can only have 1 reward   **INPUT CHECK**
     - resource classes can be allocated to 1 or more activity classes (allocated activity classes have "costs" )
     - a resource instance can be allocated to one or more activity instances (as long as total budget for resource
         is not violated)
@@ -17,14 +15,15 @@ What are the characteristics of a knapsack problem
     - activities can be contained by other activities
     - containing activities can have rewards, which are given if all children of group is allocated
     - allocated to links can be constrained with IF NOT (if you allocate a resource instance to an activity instance of one activity class,
-        you may not allocated it an activity instance of another activity class)
+        you may not allocate it an activity instance of another activity class)
     - allocated to links can be constrained with IF CONTAINS (a child resource can only be allocated to a child activity, if a parent
-        resource, that contains the child resource, is allocated to a parent activity, that contains the child activity)
-    - (FUTURE) allocated to links can be constrained with IF ONLY (if you allocate a resource instance to one activity,
-        no other activities from a contained by group can be allocated to that resource instance
-    - (FUTURE) force an activity to be allocated/not allocated to a resource
-    - (FUTURE) force an activity to be allocated/not allocated to any resource
-    - (FUTURE) Activities without rewards
+        resource that contains the child resource is allocated to a parent activity that contains the child activity)
+
+The following constraints use abbreviations:
+a_id = activity id
+ca_id = child activity id
+r_id = resource id
+b_id = budget_id
 
 """
 
@@ -118,7 +117,7 @@ def available_amount_rule(model, r_id, b_id):
 
 def allocated_limit_rule(model, p_id, a_id):
     """
-    An activity may not be allocated more than once, per resource-activity pair
+    An activity may not be allocated more than once by a resource-activity pair
 
     :param ConcreteModel model:
     :param int p_id: the id number of the resource-activity pair
@@ -880,12 +879,10 @@ class KnapsackModel(ModelBase):
         :return output: an instance of the output_class
         """
         output = output_class()
-        # output class needs 3 things
-        #  1) an objective value
-        output.set_objective_value(self._model.objective.expr())
 
-        #  2) a result - a dictionary of scores
+        # start with a dict skeleton with objective value filled in
         result = {
+            "objective_value": self._model.objective.expr(),
             "full_trace": {"resource": [], "activity": [], "budget_used": [], "value": [], "selected": [], "picked": [], "allocated": []},
             "allocated_amt": {},
             "per_resource_score": {},
@@ -965,8 +962,8 @@ class KnapsackModel(ModelBase):
             result["full_trace"]["picked"].append(self._model.PICKED[a_id].value)
             result["full_trace"]["allocated"].append(self._model.ALLOCATED[(r_id, a_id)].value)
 
-        output.set_results(result)
-        output.set_allocations(allocations)
+        result["allocations"] = allocations
+        output.result = result
 
         return output
 

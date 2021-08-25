@@ -171,19 +171,10 @@ class OptimizerBase(ABC):
             # instead of throwing error here, just attempt to solve model for them if they did steps out of order
             self.solve()
 
-        return self._output.to_dict()
+        return self._output.result
 
-    def get_output(self) -> OutputBase:
-        """
-        Return the output from the last solve step
-
-        :return _output: an instance of the OutputBase class or subclass
-        """
-        if self._output is None:
-            log.warning("You must ingest, build the model, and solve it prior to getting output...will attempt to solve for you")
-            # instead of throwing error here, just attempt to solve model for them if they did steps out of order
-            self.solve()
-
+    @property
+    def output(self):
         return self._output
 
     def get_history_df(self) -> pd.DataFrame:
@@ -445,6 +436,7 @@ class ModelBase(ABC):
         """
 
 
+# required output keys
 VALUE_KEY = "objective_value"
 ALLOC_KEY = "allocations"
 TRACE_KEY = "full_trace"
@@ -468,6 +460,10 @@ class OutputBase(ABC):
         """
         return self._result
 
+    @result.setter
+    def result(self, result_dict):
+        self._result = result_dict
+
     @property
     def objective_value(self):
         """
@@ -489,12 +485,12 @@ class OutputBase(ABC):
 
     def get_trace_df(self, sort_results=True, ascending=False):
         """
-        Return a dataframe of the "full_trace" dictionary
+        Return a dataframe of the "full_trace" dictionary.
 
         :param bool sort_results: If the DataFrame should be sorted.  Default is true
         :param bool ascending: Set to false so that the highest value is on top
         :return: the full_trace dictionary in a DataFrame format
         """
-        df = pd.DataFrame(self.to_dict()["full_trace"])
+        df = pd.DataFrame(self.result[TRACE_KEY])
         df.selected = df.selected.astype(bool)
         return df.sort_values(by=["selected", "value"], ascending=ascending) if sort_results else df
