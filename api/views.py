@@ -65,7 +65,6 @@ def post_vizdata():
         for e in validation_errors:
             app.logger.warning(e)
 
-        # TODO - we should update this
         err_response = {"body": validation_errors, "reason": "Validation Errors in input data", "statusCode": 400}
 
         return jsonify(err_response)
@@ -75,7 +74,6 @@ def post_vizdata():
     opt.build()
     opt.solve()
 
-    # TODO - we should update this
     response = {"body": opt.get_results(), "reason": "OK", "statusCode": 200}
 
     return jsonify(response)
