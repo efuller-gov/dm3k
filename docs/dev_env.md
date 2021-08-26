@@ -16,6 +16,8 @@ Installation assumes you have...
 - docker (v19.03+)  see https://docs.docker.com/get-docker/
 - docker-compose (v1.27+)  see https://docs.docker.com/compose/install/
 
+*Note*: if your user is added to the docker group, you can omit `sudo` from the following commands. 
+
 ### Installation Procedure
 
 from the main directory of the repo run...
@@ -39,7 +41,7 @@ Up 2 minutes            | 5000/tcp              | dm3k_open_api
 Up 2 minutes            | 8080/tcp              | dm3k_open_ui
 
 
-To confirm the health of the optimizer, run the following command:
+To confirm the health of the optimizer, you can run unit tests:
 
 ```bash
 $ sudo docker exec -ti dm3k_open_api python -m unittest discover -v -s /app/tests
