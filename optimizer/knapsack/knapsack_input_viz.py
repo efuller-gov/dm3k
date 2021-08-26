@@ -10,6 +10,71 @@ log = logging.getLogger(__name__)
 
 
 class KnapsackInputViz(InputBase):
+    """
+        The structure of the json input is:
+    "datasetName": "fanInKnapsack",
+        "files": [
+            {
+                    "fileName": "fanInKnapsack.json",
+                    "fileContents": {
+                            "resourceClasses": [
+                                    {"className": "Funding",
+                                     "locX": 100,
+                                     "locY": 0,
+                                     "typeName": "resource",
+                                     "budgets": ["money"],
+                                     "containsClasses": [],
+                                     "canBeAllocatedToClasses": ["Startups"]},
+                                     ...],
+                            "activityClasses": [
+                                    {"className": "Startups",
+                                     "locX": 550,
+                                     "locY": 0,
+                                     "typeName": "person/place/thing",
+                                     "rewards": ["value"],
+                                     "costs": ["money", "people"],
+                                     "containsClasses": [],
+                                     "allocatedWhen": {}
+                                     },
+                                     ...],
+                            "resourceInstances": [
+                                    {"className": "Funding",
+                                     "instanceTable": [
+                                            {"instanceName": "funding_Resource_instance_0",
+                                             "budget": {
+                                                             "money": 3.2}}
+                                                    ]},
+                                    ...],
+
+                            "activityInstances": [
+                                    {"className": "Startups",
+                                     "instanceTable": [
+                                            {"instanceName": "startup_Activity_instance_0",
+                                             "cost": {
+                                                             "money": 1.2,
+                                 "people": 3
+                                                     },
+                                             ]}},
+                    ...],
+
+                            "allocationInstances": [
+                                    {"resourceClassName": "Funding",
+                                     "activityClassName": "Startups",
+                                     "instanceTable": [
+                                            {"resourceInstanceName": "ALL",
+                                             "activityInstanceName": "ALL"
+                                            }
+                                      ]},
+                            ...],
+
+                            "containsInstances": [],
+                            "allocationConstraints": []
+                        }
+                     }]
+
+        **Note:** some fields are to support the UI (e.g. locX, locY) and others are to allow for functionality to be extended in the future.
+    """
+
     def __init__(self):
         super().__init__()
 
@@ -40,6 +105,7 @@ class KnapsackInputViz(InputBase):
             log.warning("'datasetName' is not in input_dict")
 
         # determine if correct files exist
+        # fileName / fileContents support having other cases with multiple files, but the viz input currently needs to be in one file
 
         if "files" not in input_dict:
             return (
@@ -49,11 +115,11 @@ class KnapsackInputViz(InputBase):
                         "err_code": 2,
                         "err_txt": "'files' attribute is not in input_dict...the format of the input is not correct!",
                         "offender": "**YOU**",
-                        "fix": "Cant fix this!",
+                        "fix": "can't fix this!",
                         "is_fatal_error": True,
                     }
                 ],
-            ) 
+            )
 
         file_data = input_dict["files"]
         if len(file_data) != 1:
@@ -62,9 +128,11 @@ class KnapsackInputViz(InputBase):
                 [
                     {
                         "err_code": 1,
-                        "err_txt": "system requires 'files' attribute to contain data from 1 file...you have submitted {} files...the necessary files do not exist!".format(len(file_data)),
+                        "err_txt": "system requires 'files' attribute to contain data from 1 file...you have submitted {} files...the necessary files do not exist!".format(
+                            len(file_data)
+                        ),
                         "offender": "**YOU**",
-                        "fix": "Cant fix this!",
+                        "fix": "can't fix this!",
                         "is_fatal_error": True,
                     }
                 ],
@@ -81,7 +149,7 @@ class KnapsackInputViz(InputBase):
                         "err_code": 2,
                         "err_txt": "'fileContents' attribute is not in input_dict['files'][0]...the format of the input is not correct!",
                         "offender": "**YOU**",
-                        "fix": "Cant fix this!",
+                        "fix": "can't fix this!",
                         "is_fatal_error": True,
                     }
                 ],
@@ -99,5 +167,3 @@ class KnapsackInputViz(InputBase):
         #    4) names for budgets and costs should be consistent across all allocations
 
         return False, []
-
-    

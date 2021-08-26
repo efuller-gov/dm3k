@@ -169,10 +169,10 @@ def if_contains_rule(model, r_id, a_id):
 
 def if_contains_picked(model, a_id):
     """
-    When an contained IF-THEN constraint exists, you may have a allocatedTo link without a reward, since the reward of selecting an allocation
-    to a activity without a reward may be to open up the ability to allocated to an activity with a reward.
+    When an contained IF-THEN constraint exists, you may have an allocatedTo link without a reward, since selecting an allocation
+    to an activity without a reward may open up the ability to allocate to an activity with a reward.
 
-    for example, there may be no reward for allocating a missile launcher to a geographic region...but that allocation is necessary to shot
+    for example, there may be no reward for allocating a missile launcher to a geographic region...but that allocation is necessary to shoot
     missiles at VIPs in that geographic region.
 
     Therefore the activities without rewards will be not PICKED
