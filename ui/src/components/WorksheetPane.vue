@@ -3,9 +3,9 @@
         <div id="menu">
             <div id="worksheet_menu_column">
                 <div id='zoom-buttons'>
+                    <img id="mag" src="../assets/mag.svg" alt="">
 					<button @click="zoomIn" id="zoomIn" class='zoom-button'>+</button>
 					<button @click="zoomOut" id="zoomOut" class='zoom-button'>-</button>
-					<!-- <b class="title-text">Version name</b> -->
 				</div>
                 <button @click="createResourceTab()" id="create-resources-button" type="button" class="menu-button enabled">Create resources</button>
                 <button @click="allocateResourcesTab()" id="allocate-resources-button" type="button" class="menu-button disabled">Allocate resources to activities</button>
@@ -232,7 +232,6 @@ export default {
 			$('#activity-def-bottom-container').addClass('hide')
 			$('#activity-submenu-container').addClass('hide')
 			$('#actType').addClass('hide')
-			// $('#actTypeExisting').addClass('hide')
 			$('#addActivity').addClass('hide')
 			$('.activity-choice').removeClass('enabled')
         },
@@ -352,6 +351,7 @@ export default {
                 alert('You must select a new activity type from the dropdown menu.')
                 return
             }
+            
             // Allocate to existing activity
             if ($("#existing-allocation").hasClass('enabled')){
                 let actName = $("#actTypeExisting").val();
@@ -819,11 +819,14 @@ export default {
             });
         },
         saveLocally(){
+            if ($("#diagramName").val() == ""){
+                alert("Cannot save file to blank name. Please insert a filename.")
+                return;
+            }
             console.log("Saving a file to local...")
             // capture all of graph in outputjson
             let outputJson = this.dm3kConverter.dm3kconversion_base(this.$store.state.dm3kGraph);
             let outputJsonString = JSON.stringify(outputJson,null,4);
-            console.log(outputJsonString);
 
             // get dataset name from textbox
             let dsName = $("#diagramName").val();
@@ -924,6 +927,7 @@ export default {
                     'instance-body-text': '',
                 }
             ],
+            mag_icon: require("../assets/x-icon.svg"),
         }
     },
     emits: ['add-resource', 'add-existing-allocation', 'add-new-allocation', 'clear-graph','show-solution-modal'],
@@ -959,7 +963,12 @@ export default {
 </script>
 
 <style scoped>
-.hide{
-    display: none;
-}
+    .hide{
+        display: none;
+    }
+    #mag{
+        height: 20px;
+        margin-right: 10px;
+        margin-left: 5px;
+    }
 </style>

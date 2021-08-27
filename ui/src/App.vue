@@ -132,12 +132,6 @@ export default {
     display: inline;
     text-align: center;
   }
-  .plus-minus-button {
-    width: 120px;
-    display: inline-block;
-    vertical-align: bottom;
-    background: #f7f6f6;
-  }
   .error_txt {
     background-color:red;
     text-align: center;
@@ -293,15 +287,6 @@ export default {
     vertical-align: text-bottom;
     height: 4vw;
   }
-  /* TO DO: Will have to fix this */
-  /* span.remove-button-class{
-    background: url("../assets/x-icon.svg"); no-repeat top left;
-    background-size: contain;
-    cursor: pointer;
-    display: inline-block;
-    height: 10px;
-    width: 10px;
-  } */
   input[type=text]{
     border-style: solid;
     border: none;
@@ -370,6 +355,12 @@ export default {
     font-size: 0.98vw;
     font-weight: bold;
     margin-top: 2vw;
+  }
+   #soln-subtitle {
+    /* font-weight: bold; */
+    font-size: 0.8vw;
+    font-style: italic;
+    margin-top: -0.2vw;
   }
   #soln-explainer-btn{
     float: right;
