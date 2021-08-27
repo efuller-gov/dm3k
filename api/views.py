@@ -14,8 +14,8 @@ app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 if app_directory not in sys.path:
     sys.path.append(app_directory)
 
-from optimizer.slim_optimizer_main import create_opt  # noqa: E402
 from optimizer.slim_optimizer_main import algorithm_dict  # noqa: E402
+from optimizer.slim_optimizer_main import create_opt  # noqa: E402
 
 api = Blueprint("api", __name__)
 
@@ -54,20 +54,17 @@ def post_vizdata():
     """
 
     app.logger.info("Viz Data POST")
-    
+
     input_dict = request.json
     app.logger.debug(input_dict)
 
-    config = {"optimizer": input_dict["algorithm"]}
-
-    opt, validation_errors = create_opt(input_dict, config)
+    opt, validation_errors = create_opt(input_dict, input_dict["algorithm"])
 
     if len(validation_errors) > 0:
         app.logger.warning("VALIDATION ERRORS...")
         for e in validation_errors:
             app.logger.warning(e)
 
-        # TODO - we should update this
         err_response = {"body": validation_errors, "reason": "Validation Errors in input data", "statusCode": 400}
 
         return jsonify(err_response)
@@ -76,13 +73,7 @@ def post_vizdata():
 
     opt.build()
     opt.solve()
-    results = opt.get_output()
 
-    all_results = results.to_dict()
-    all_results["allocations"] = results.get_allocations()
-    all_results["objective_value"] = results.get_objective_value()
-
-    # TODO - we should update this
-    response = {"body": all_results, "reason": "OK", "statusCode": 200}
+    response = {"body": opt.get_results(), "reason": "OK", "statusCode": 200}
 
     return jsonify(response)

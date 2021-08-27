@@ -3,11 +3,13 @@ The base optimizer class attempts to make it easy to create new optimizers, whic
 requires filling in certain pieces: particularly the *model*, *input*, and *output*
 classes.
 """
+from __future__ import annotations  # needed for the self-referential type hints
 
 import logging
 import os
 import threading
 import time
+from abc import ABC, abstractmethod
 from datetime import datetime
 
 import pandas as pd
@@ -32,8 +34,8 @@ if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 
 
-class OptimizerBase:
-    def __init__(self, input_class, model_class, output_class):
+class OptimizerBase(ABC):
+    def __init__(self, input_class: InputBase, model_class: ModelBase, output_class: OutputBase):
         """
         Create the Optimizer itself.
 
@@ -54,7 +56,6 @@ class OptimizerBase:
             output_class: python class that extends class OutputBase below
 
         """
-        self._input_class = input_class
         self._model_class = model_class
         self._output_class = output_class
 
@@ -62,11 +63,11 @@ class OptimizerBase:
 
         self._input_instance = None
         self._constraints_dataset = ""
-        self._input = None
+        self._input = input_class()
         self._model = None
         self._output = None
 
-    def ingest(self, input_dict):
+    def ingest(self, input_dict: dict):
         """
         Ingest a new input dataset
 
@@ -88,8 +89,7 @@ class OptimizerBase:
                     e.args[0] = list of validation errors...at least one of these caused the fatal error
         """
         self._hist_mgr.start_tag("Ingest from input dictionary")
-        self._input = self._input_class()
-        fatal, validation_errors = self.get_input().ingest_validate(input_dict)
+        fatal, validation_errors = self._input.ingest_validate(input_dict)
         if fatal:
             raise ValueError(validation_errors, "Input Data Failed Validation")
 
@@ -105,7 +105,8 @@ class OptimizerBase:
 
         :return: None
         """
-        if self.get_input() is None:
+        data = self._input.to_data()
+        if not data:
             log.error("You are attempting to build a model before ingesting data...you must do ingest method first")
             raise UnboundLocalError("You must ingest data prior to building the model")
 
@@ -113,20 +114,16 @@ class OptimizerBase:
         if isinstance(self._model_class, list):
             for mc in self._model_class:
                 self._model = mc()
-                if self._model.can_solve(self.get_input()):
+                if self._model.can_solve(self._input):
                     break
         else:
             self._model = self._model_class()
 
-        log.debug("Building with Class: %s", str(self._model.__class__.__name__))
+        log.debug(f"Building with Class: {self._model.__class__.__name__}")
         self._hist_mgr.end_tag("Finding Model to use")
 
         self._hist_mgr.start_tag("Building Model")
-
-        data = self.get_input().to_data()
-
         self._model.build(data)
-        self.get_input()._needs_rebuild = False
         self._hist_mgr.end_tag("Building Model")
 
     def solve(self, solver="glpk", tee=False, timeout=None, retries=3, mipgap=None, keepfiles=True):
@@ -141,15 +138,10 @@ class OptimizerBase:
         :param bool keepfiles: Set to true if pyomo files should be kept
         :return: None
         """
-        if self.get_input() is None:
-            raise UnboundLocalError("You must ingest data prior to building the model")
 
         if self._model is None:
             log.warning("You are attempting to solve the model before building it...will attempt to build model for you")
             # instead of throwing error here, just build it for them if they did steps out of order
-            self.build()
-
-        if self.get_input().needs_rebuild():
             self.build()
 
         self._hist_mgr.start_tag("Solving Model")
@@ -168,7 +160,7 @@ class OptimizerBase:
         self._output = self._model.fill_output(self._output_class)
         self._hist_mgr.end_tag("Gathering Output")
 
-    def get_results(self):
+    def get_results(self) -> dict:
         """
         Return the results from the last solve step
 
@@ -179,32 +171,15 @@ class OptimizerBase:
             # instead of throwing error here, just attempt to solve model for them if they did steps out of order
             self.solve()
 
-        return self._output.to_dict()
+        return self._output.result
 
-    def get_input(self):
-        """
-        Return the input
-
-        :return _input: an instance of the InputBase class or subclass
-        """
-        return self._input
-
-    def get_output(self):
-        """
-        Return the output from the last solve step
-
-        :return _output: an instance of the OutputBase class or subclass
-        """
-        if self._output is None:
-            log.warning("You must ingest, build the model, and solve it prior to getting output...will attempt to solve for you")
-            # instead of throwing error here, just attempt to solve model for them if they did steps out of order
-            self.solve()
-
+    @property
+    def output(self):
         return self._output
 
-    def get_history_df(self):
+    def get_history_df(self) -> pd.DataFrame:
         """
-        Get the history of operations and metrics on their runtime and memory usage
+        Get the history of operations and metrics on their runtime and memory usage.  This can be used to test the performance of optimizers.
 
         :return pandas.DataFrame history_df: pandas DataFrame with information about runtime and memory events
         """
@@ -213,14 +188,14 @@ class OptimizerBase:
         )
 
 
-class InputBase:
+class InputBase(ABC):
     def __init__(self):
-        self._needs_rebuild = True
 
         # this attribute needs to be a dict that can be dumped by json.dump
         self._data = {}
 
-    def ingest_validate(self, input_dict):
+    @abstractmethod
+    def ingest_validate(self, input_dict: dict):
         """
         Validate the constraints and activity scores to determine if following Errors are found
 
@@ -241,16 +216,15 @@ class InputBase:
                     "fix": <string name of process performed to fix the error  or None>,
                     "is_fatal_error": <boolean; True = error is fatal, False = error is fixable>
         """
-        raise NotImplementedError("validate NOT implemented!  Subclasses must implement this function")
 
-    def get_info(self, info_name):
+    def get_info(self, info_name: str):
         """
         Returns a given field of the input dictionary
 
         :param str info_name: Name of particular input field that is wanted
         :return: One field from _data dictionary
         """
-        return self._data[info_name]
+        return self._data.get(info_name)
 
     def list_info_avail(self):
         """
@@ -260,15 +234,7 @@ class InputBase:
         """
         return list(self._data.keys())
 
-    def needs_rebuild(self):
-        """
-        Has the input changed such that the model needs to be rebuilt
-
-        :return bool needs_rebuild: True = Yes, rebuild it
-        """
-        return self._needs_rebuild
-
-    def to_data(self):
+    def to_data(self) -> dict:
         """
         Whatever data format the model needs
 
@@ -278,7 +244,7 @@ class InputBase:
         return self._data
 
 
-class ModelBase:
+class ModelBase(ABC):
     """
     The ModelBase serves as a template for the meat of new optimizers.  These will typically extend the base class and
     build a new pyomo model using input constraints.  One must identify how to turn the input constraints into appropriate
@@ -293,7 +259,8 @@ class ModelBase:
         self.kill_glpsol_if_stuck = False
         self.new_timeout = None
 
-    def can_solve(self, input_instance):
+    @abstractmethod
+    def can_solve(self, input_instance) -> bool:
         """
         In the event the system can leverage multiple models, this function is used to determine if this model
         can solve the input.
@@ -301,8 +268,8 @@ class ModelBase:
         :param input_instance: a instance of the InputBase class
         :return: Boolean, True = yes, this model can solve it.  False = something about input cannot be solved by model
         """
-        raise NotImplementedError("NOT implemented!  Subclasses must implement this function")
 
+    @abstractmethod
     def build(self, data):
         """
         Build the pyomo model in self._model
@@ -311,7 +278,6 @@ class ModelBase:
                      basis)
         :return: None
         """
-        raise NotImplementedError("NOT implemented!  Subclasses must implement this function")
 
     def solve(self, solver="glpk", tee=False, timeout=None, retries=3, mipgap=None, constraints_dataset="unknown", keepfiles=True):
         """
@@ -457,7 +423,8 @@ class ModelBase:
         """
         return self._model
 
-    def fill_output(self, output_class):
+    @abstractmethod
+    def fill_output(self, output_class) -> OutputBase:
         """
         Return the output of the model after it has been solved by instantiating an object of the output class.
 
@@ -467,82 +434,63 @@ class ModelBase:
         :param output_class: the OutputBase or subclass of output base
         :return output: an instance of the output_class
         """
-        raise NotImplementedError("NOT implemented!  Subclasses must implement this function")
 
 
-class OutputBase:
+# required output keys
+VALUE_KEY = "objective_value"
+ALLOC_KEY = "allocations"
+TRACE_KEY = "full_trace"
+
+
+class OutputBase(ABC):
     def __init__(self):
         """
-        Create a new object to hold output from an optimizer solution
+        Create a new object to hold output from an optimizer solution, which is basically a dictionary of results with some convenience methods.
 
         """
-        self._solved_objective_value = None
         self._result = {}
-        self._allocations = {}
 
-    def set_objective_value(self, value):
+    @property
+    def result(self):
         """
-        Provide an objective value
-
-        :param float value: a float objective value from the model solution
-        :return: None
-        """
-        self._solved_objective_value = value
-
-    def set_results(self, results):
-        """
-        Provide the solution results
-
-        :param dict results: a dictionary of output of the optimizer solution
-                        (exact format is based on which optimizer is used)
-        :return: None
-        """
-        self._result = results
-
-    def set_allocations(self, allocations):
-        """
-        Provide an the allocations from the model solution
-
-        :param dict allocations: a dictionary with keys equal to resource names and values equal to lists of activities
-                                that each resource is mapped to
-        :return: None
-        """
-        self._allocations = allocations
-
-    def to_dict(self):
-        """
-        Provide the optimizer output in a python dict
+        Provide the optimizer output as a python dict
 
         :return dict results: a dictionary of output of the optimizer solution
-                                (exact format is based on which optimizer is used)
+                                Keys must include 'objective_value', 'allocations', and 'full_trace' (additional fields can be added by each optimizer)
         """
         return self._result
 
-    def get_objective_value(self):
+    @result.setter
+    def result(self, result_dict):
+        self._result = result_dict
+
+    @property
+    def objective_value(self):
         """
         Provide the value of the objective function of the optimizer
 
         :return float objective_value: the value of the objective of the optimizer
         """
-        return self._solved_objective_value
+        return self._result[VALUE_KEY]
 
-    def get_allocations(self):
+    @property
+    def allocations(self):
         """
         Provide the mapping of resources to activities from the optimizer solution
 
         :return dict allocations: a dictionary with keys equal to resource names and values equal to lists of activities that
                              each resource is mapped to
         """
-        return self._allocations
+        return self._result[ALLOC_KEY]
 
     def get_trace_df(self, sort_results=True, ascending=False):
         """
-        Return a dataframe of the "full_trace" dictionary
+        Return a dataframe of the "full_trace" dictionary.
 
         :param bool sort_results: If the DataFrame should be sorted.  Default is true
         :param bool ascending: Set to false so that the highest value is on top
         :return: the full_trace dictionary in a DataFrame format
         """
-        df = pd.DataFrame(self.to_dict()["full_trace"])
+        df = pd.DataFrame(self.result[TRACE_KEY])
         df.selected = df.selected.astype(bool)
         return df.sort_values(by=["selected", "value"], ascending=ascending) if sort_results else df

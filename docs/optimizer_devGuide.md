@@ -1,8 +1,8 @@
 # Optimizer Development and Extension Guide #
 
-The optimizer is one of the core pieces of functionality of Open-DM3K.  It takes in the problem definition, performs integer programming optimization of the problem, and returns the results of the optimization.
+The optimizer is one of the core elements of Open-DM3K.  It takes in the problem definition, performs integer programming optimization of the problem, and returns the results of the optimization.
 
-This document describes the component parts of the optimizer and how others can add new optimizers to the existing system.
+This document describes the component parts of the optimizer and how to add new optimizers to the existing system.
 
 Table of Contents:
 
@@ -24,11 +24,11 @@ The core classes are shown in the diagram below.
 
 **ModelBase** is the base class for the optimizer model and serves as a template for the meat of new optimizers.  These will typically extend the base class and build a new pyomo model using input data.  Within this class exists code to identify how to turn the input data into appropriate pyomo constraints.  Extensions of this class will have to implement the: *can_solve*, *build*, and *fill_output* methods.
 
-**OutputBase** is the base class for holding output from an optimizer solution.  It provides a layer between the standardized output and the optimizer solution.  For Open-DM3K and additional future extensions, this class does not need to be extended.  Only if users modify the UI will this class need to be extended to support the new data or data format in a future UI.
+**OutputBase** is the base class for holding output from an optimizer solution.  It provides a layer between the standardized output and the optimizer solution.  For Open-DM3K and many extensions, this class does not need to be extended.  However, it can be subclassed to support further modifications to the output format and/or UI.  
 
 ## How to Extend the Optimizer ##
 
-The developers of this repo want to encourage the development of new and better optimizers and therefore provide a way to extend this system.
+We want to encourage the development of new and better optimizers and therefore provide a way to extend this system.
 
 For an example how to extend, refer to the Full House optimizer (located in /optimizer/full_house).  This is our original extension of the generic optimizer (located in /optimizer/knapsack).  The Full House was developed to be a faster way to solve a specific type of resource allocation problem; problems with 3 resources (1 parent and 2 children) and 2 activities (1 parent and 1 child) linked together with a "Contains IF-THEN" allocation constraint.  (*Full House comes from the 3 resources and 2 activities*)
 

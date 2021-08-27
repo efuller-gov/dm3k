@@ -1,5 +1,5 @@
 """
-This is the main model for full house problems.  It turns constraints data into a pyomo model that can be solved.
+This is the main model for 'full house' problems that have 3 resource types and 2 activity types.  It turns constraints data into a pyomo model that can be solved.
 rc = resource container
 cr = child resource
 ca = child activity
@@ -23,6 +23,9 @@ log = logging.getLogger(__name__)
 # OBJECTIVES
 # -------------------------------------------------------------------------------
 def objective_rule(model):
+    """
+    Maximize the sum of all rewards of activities that are 'picked' (selected)
+    """
     return sum(model.CHILD_ALLOCATED[cr, ca] * model.child_score[ca] for (cr, ca) in model.cr_ca_arcs)
 
 
@@ -399,12 +402,8 @@ class FullHouseModel(ModelBase):
         :return output: an instance of the output_class
         """
         output = output_class()
-        # output class needs 3 things
-        #  1) an objective value
-        output.set_objective_value(self._model.objective.expr())
-
-        #  2) a result - a dictionary of scores
         result = {
+            "objective_value": self._model.objective.expr(),
             "full_trace": {"resource": [], "activity": [], "budget_used": [], "value": [], "selected": [], "picked": [], "allocated": []},
             "allocated_amt": {},
             "per_resource_score": {},
@@ -573,8 +572,7 @@ class FullHouseModel(ModelBase):
             result["full_trace"]["picked"].append(0.0)
             result["full_trace"]["allocated"].append(0.0)
 
-        # fill class and return
-        output.set_results(result)
-        output.set_allocations(allocations)
+        result["allocations"] = allocations
+        output.result = result
 
         return output

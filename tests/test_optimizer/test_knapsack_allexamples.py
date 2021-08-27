@@ -38,11 +38,9 @@ class TestKnapsackE2E(TestCase):
         with open(path_to_file, "r") as f:
             input_dict = json.load(f)
 
-        config = {"optimizer": "KnapsackViz"}
-
         log.debug("WORKING ON DATASET=" + input_dict["datasetName"])
 
-        opt, validation_errors = create_opt(input_dict, config)
+        opt, validation_errors = create_opt(input_dict, "KnapsackViz")
         self._opt = opt
 
         return input_dict, validation_errors
@@ -52,8 +50,7 @@ class TestKnapsackE2E(TestCase):
 
     def _step3_solve(self):
         self._opt.solve()
-        results = self._opt.get_output()
-        return results
+        return self._opt.output
 
     def _all_steps(self, data_filename):
         # ### STEP 1  - load data into system
@@ -70,25 +67,25 @@ class TestKnapsackE2E(TestCase):
         self._step2_build()
 
         # ### STEP 3 / 4  - solving and output
-        results = self._step3_solve()
+        output = self._step3_solve()
 
         # check results
         log.debug("RESULTS...")
-        log.debug("   Objective= " + str(results.get_objective_value()))
+        log.debug("   Objective= " + str(output.objective_value))
         log.debug("   Allocations...")
-        log.debug(json.dumps(results.get_allocations(), indent=4))
+        log.debug(json.dumps(output.allocations, indent=4))
         log.debug("   Allocated Amount...")
-        log.debug(json.dumps(results.to_dict()["allocated_amt"], indent=4))
+        log.debug(json.dumps(output.result["allocated_amt"], indent=4))
         log.debug("   Per Resource Score...")
-        log.debug(json.dumps(results.to_dict()["per_resource_score"], indent=4))
+        log.debug(json.dumps(output.result["per_resource_score"], indent=4))
         log.debug("   Per Resource Budget Used...")
-        log.debug(json.dumps(results.to_dict()["per_resource_budget_used"], indent=4))
+        log.debug(json.dumps(output.result["per_resource_budget_used"], indent=4))
         log.debug("   Complete Trace...")
         pandas.set_option("display.max_rows", 1000)
-        log.debug(results.get_trace_df())
+        log.debug(output.get_trace_df())
         pandas.reset_option("display.max_rows")
 
-        return input_dict, results
+        return input_dict, output
 
     def _find_instance(self, name, input_json, which="activityInstances"):
         ret_inst = None
@@ -99,15 +96,15 @@ class TestKnapsackE2E(TestCase):
         self.assertIsNotNone(ret_inst, msg="Could not find allocated item in input[" + which + "]")
         return ret_inst
 
-    def _check_objective(self, results, predicted_obj_value):
-        self.assertEqual(results.get_objective_value(), predicted_obj_value)
+    def _check_objective(self, output, predicted_obj_value):
+        self.assertEqual(output.objective_value, predicted_obj_value)
 
-    def _check_selected_and_filled(self, results, input_json):
+    def _check_selected_and_filled(self, output, input_json):
         # checks that all activities selected have received all the budget(s) they need
 
         # first get all allocated activities
         allocated_activities = []
-        allocations = results.get_allocations()
+        allocations = output.allocations
         for res in allocations:
             for act in allocations[res]:
                 if act not in allocated_activities:
@@ -123,7 +120,7 @@ class TestKnapsackE2E(TestCase):
             need_amt_per_act[act] = need_amt
 
         # then determine the allocated amounts per activity
-        allocated_amts = results.to_dict()["allocated_amt"]
+        allocated_amts = output.result["allocated_amt"]
         alloc_amt_per_act = {}
         for res in allocated_amts:
             for act in allocated_amts[res]:
@@ -137,7 +134,7 @@ class TestKnapsackE2E(TestCase):
             self.assertIn(act, alloc_amt_per_act)  # if act is not in alloc_amt per act, error
             self.assertDictEqual(need_amt_per_act[act], alloc_amt_per_act[act])
 
-    def _check_budget_used(self, results, input_json):
+    def _check_budget_used(self, output, input_json):
         # checks that budget used per resource does not exceed the budget
 
         # get all input budgets
@@ -148,142 +145,143 @@ class TestKnapsackE2E(TestCase):
                 input_budgets[res_name] = res_inst["budget"]
 
         # make sure total resource budget used is less
-        total_res_budget_used = results.to_dict()["per_resource_budget_used"]
+        total_res_budget_used = output.result["per_resource_budget_used"]
 
         for res_name in total_res_budget_used:
             for budget_name in total_res_budget_used[res_name]:
                 budget_used = total_res_budget_used[res_name][budget_name]
                 self.assertLessEqual(budget_used, input_budgets[res_name][budget_name])
 
-    def _check_all(self, results, input_dict, predicted_obj_value):
+    def _check_all(self, output, input_dict, predicted_obj_value):
 
         # this type of input only has one file type
         input_data = input_dict["files"][0]["fileContents"]
 
-        self._check_objective(results, predicted_obj_value)
-        self._check_selected_and_filled(results, input_data)
-        self._check_budget_used(results, input_data)
+        self.assertEqual(output.objective_value, predicted_obj_value)
+
+        self._check_selected_and_filled(output, input_data)
+        self._check_budget_used(output, input_data)
 
     # ---------------------------------------------
     #  TESTS AGAINST INPUT FILES
     # ---------------------------------------------
 
     def test_end2end_simpleKnapsack(self):
-        input_dict, results = self._all_steps("simpleKnapsack.json")
-        self._check_all(results, input_dict, 1)
+        input_dict, output = self._all_steps("simpleKnapsack.json")
+        self._check_all(output, input_dict, 1)
 
-        self.assertEqual(results.to_dict()["per_resource_score"]["backpack_Resource_instance_0"], 1)
-        self.assertEqual(results.get_trace_df().iloc[0]["activity"], "item_Activity_instance_0")
-        self.assertTrue(results.get_trace_df().iloc[0]["selected"])
+        self.assertEqual(output.result["per_resource_score"]["backpack_Resource_instance_0"], 1)
+        self.assertEqual(output.get_trace_df().iloc[0]["activity"], "item_Activity_instance_0")
+        self.assertTrue(output.get_trace_df().iloc[0]["selected"])
 
     def test_end2end_simpleKnapsack_contains_reward(self):
-        input_dict, results = self._all_steps("simpleKnapsack_containsReward.json")
-        self._check_all(results, input_dict, 7)
+        input_dict, output = self._all_steps("simpleKnapsack_containsReward.json")
+        self._check_all(output, input_dict, 7)
 
     def test_end2end_multiBudgetKnapsack(self):
-        input_dict, results = self._all_steps("multiBudgetKnapsack.json")
-        self._check_all(results, input_dict, 4)
+        input_dict, output = self._all_steps("multiBudgetKnapsack.json")
+        self._check_all(output, input_dict, 4)
 
-        self.assertEqual(results.to_dict()["per_resource_score"]["node_Resource_instance_0"], 2)
-        self.assertEqual(results.to_dict()["per_resource_score"]["node_Resource_instance_1"], 2)
-        self.assertEqual(results.get_trace_df().iloc[0]["activity"], "job_Activity_instance_2")
-        self.assertTrue(results.get_trace_df().iloc[0]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[1]["activity"], "job_Activity_instance_1")
-        self.assertTrue(results.get_trace_df().iloc[1]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[2]["activity"], "job_Activity_instance_3")
-        self.assertTrue(results.get_trace_df().iloc[2]["selected"])
+        self.assertEqual(output.result["per_resource_score"]["node_Resource_instance_0"], 2)
+        self.assertEqual(output.result["per_resource_score"]["node_Resource_instance_1"], 2)
+        self.assertEqual(output.get_trace_df().iloc[0]["activity"], "job_Activity_instance_2")
+        self.assertTrue(output.get_trace_df().iloc[0]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[1]["activity"], "job_Activity_instance_1")
+        self.assertTrue(output.get_trace_df().iloc[1]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[2]["activity"], "job_Activity_instance_3")
+        self.assertTrue(output.get_trace_df().iloc[2]["selected"])
 
     def test_end2end_fanOutKnapsack(self):
-        input_dict, results = self._all_steps("fanOutKnapsack.json")
-        self._check_all(results, input_dict, 6)
+        input_dict, output = self._all_steps("fanOutKnapsack.json")
+        self._check_all(output, input_dict, 6)
 
-        self.assertEqual(results.to_dict()["per_resource_score"]["bag_Resource_instance_0"], 3)
-        self.assertEqual(results.to_dict()["per_resource_score"]["bag_Resource_instance_1"], 3)
-        self.assertEqual(results.get_trace_df().iloc[0]["activity"], "food_Activity_instance_4")
-        self.assertEqual(results.get_trace_df().iloc[0]["resource"], "bag_Resource_instance_0")
-        self.assertTrue(results.get_trace_df().iloc[0]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[1]["activity"], "clean_Activity_instance_4")
-        self.assertEqual(results.get_trace_df().iloc[1]["resource"], "bag_Resource_instance_1")
-        self.assertTrue(results.get_trace_df().iloc[1]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[2]["activity"], "food_Activity_instance_0")
-        self.assertEqual(results.get_trace_df().iloc[2]["resource"], "bag_Resource_instance_0")
-        self.assertTrue(results.get_trace_df().iloc[2]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[3]["activity"], "clean_Activity_instance_0")
-        self.assertEqual(results.get_trace_df().iloc[3]["resource"], "bag_Resource_instance_1")
-        self.assertTrue(results.get_trace_df().iloc[3]["selected"])
+        self.assertEqual(output.result["per_resource_score"]["bag_Resource_instance_0"], 3)
+        self.assertEqual(output.result["per_resource_score"]["bag_Resource_instance_1"], 3)
+        self.assertEqual(output.get_trace_df().iloc[0]["activity"], "food_Activity_instance_4")
+        self.assertEqual(output.get_trace_df().iloc[0]["resource"], "bag_Resource_instance_0")
+        self.assertTrue(output.get_trace_df().iloc[0]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[1]["activity"], "clean_Activity_instance_4")
+        self.assertEqual(output.get_trace_df().iloc[1]["resource"], "bag_Resource_instance_1")
+        self.assertTrue(output.get_trace_df().iloc[1]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[2]["activity"], "food_Activity_instance_0")
+        self.assertEqual(output.get_trace_df().iloc[2]["resource"], "bag_Resource_instance_0")
+        self.assertTrue(output.get_trace_df().iloc[2]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[3]["activity"], "clean_Activity_instance_0")
+        self.assertEqual(output.get_trace_df().iloc[3]["resource"], "bag_Resource_instance_1")
+        self.assertTrue(output.get_trace_df().iloc[3]["selected"])
 
     def test_end2end_fanInKnapsack(self):
-        input_dict, results = self._all_steps("fanInKnapsack.json")
-        self._check_all(results, input_dict, 6)
+        input_dict, output = self._all_steps("fanInKnapsack.json")
+        self._check_all(output, input_dict, 6)
 
-        self.assertEqual(results.to_dict()["per_resource_score"]["funding_Resource_instance_0"], 2)
-        self.assertEqual(results.to_dict()["per_resource_score"]["funding_Resource_instance_1"], 4)
-        self.assertEqual(results.to_dict()["per_resource_score"]["staff_Resource_instance_0"], 4)
-        self.assertEqual(results.to_dict()["per_resource_score"]["staff_Resource_instance_1"], 2)
+        self.assertEqual(output.result["per_resource_score"]["funding_Resource_instance_0"], 2)
+        self.assertEqual(output.result["per_resource_score"]["funding_Resource_instance_1"], 4)
+        self.assertEqual(output.result["per_resource_score"]["staff_Resource_instance_0"], 4)
+        self.assertEqual(output.result["per_resource_score"]["staff_Resource_instance_1"], 2)
 
-        self.assertEqual(results.get_trace_df().iloc[0]["resource"], "funding_Resource_instance_1")
-        self.assertEqual(results.get_trace_df().iloc[0]["activity"], "startup_Activity_instance_2")
-        self.assertTrue(results.get_trace_df().iloc[0]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[1]["resource"], "funding_Resource_instance_1")
-        self.assertEqual(results.get_trace_df().iloc[1]["activity"], "startup_Activity_instance_4")
-        self.assertTrue(results.get_trace_df().iloc[1]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[0]["resource"], "funding_Resource_instance_1")
+        self.assertEqual(output.get_trace_df().iloc[0]["activity"], "startup_Activity_instance_2")
+        self.assertTrue(output.get_trace_df().iloc[0]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[1]["resource"], "funding_Resource_instance_1")
+        self.assertEqual(output.get_trace_df().iloc[1]["activity"], "startup_Activity_instance_4")
+        self.assertTrue(output.get_trace_df().iloc[1]["selected"])
 
-        self.assertEqual(results.get_trace_df().iloc[2]["resource"], "staff_Resource_instance_0")
-        self.assertEqual(results.get_trace_df().iloc[2]["activity"], "startup_Activity_instance_2")
-        self.assertTrue(results.get_trace_df().iloc[2]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[3]["resource"], "staff_Resource_instance_0")
-        self.assertEqual(results.get_trace_df().iloc[3]["activity"], "startup_Activity_instance_4")
-        self.assertTrue(results.get_trace_df().iloc[3]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[2]["resource"], "staff_Resource_instance_0")
+        self.assertEqual(output.get_trace_df().iloc[2]["activity"], "startup_Activity_instance_2")
+        self.assertTrue(output.get_trace_df().iloc[2]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[3]["resource"], "staff_Resource_instance_0")
+        self.assertEqual(output.get_trace_df().iloc[3]["activity"], "startup_Activity_instance_4")
+        self.assertTrue(output.get_trace_df().iloc[3]["selected"])
 
-        self.assertEqual(results.get_trace_df().iloc[4]["resource"], "funding_Resource_instance_0")
-        self.assertEqual(results.get_trace_df().iloc[4]["activity"], "startup_Activity_instance_1")
-        self.assertTrue(results.get_trace_df().iloc[4]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[5]["resource"], "funding_Resource_instance_0")
-        self.assertEqual(results.get_trace_df().iloc[5]["activity"], "startup_Activity_instance_3")
-        self.assertTrue(results.get_trace_df().iloc[5]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[4]["resource"], "funding_Resource_instance_0")
+        self.assertEqual(output.get_trace_df().iloc[4]["activity"], "startup_Activity_instance_1")
+        self.assertTrue(output.get_trace_df().iloc[4]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[5]["resource"], "funding_Resource_instance_0")
+        self.assertEqual(output.get_trace_df().iloc[5]["activity"], "startup_Activity_instance_3")
+        self.assertTrue(output.get_trace_df().iloc[5]["selected"])
 
-        self.assertEqual(results.get_trace_df().iloc[6]["resource"], "staff_Resource_instance_1")
-        self.assertEqual(results.get_trace_df().iloc[6]["activity"], "startup_Activity_instance_1")
-        self.assertTrue(results.get_trace_df().iloc[6]["selected"])
-        self.assertEqual(results.get_trace_df().iloc[7]["resource"], "staff_Resource_instance_1")
-        self.assertEqual(results.get_trace_df().iloc[7]["activity"], "startup_Activity_instance_3")
-        self.assertTrue(results.get_trace_df().iloc[7]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[6]["resource"], "staff_Resource_instance_1")
+        self.assertEqual(output.get_trace_df().iloc[6]["activity"], "startup_Activity_instance_1")
+        self.assertTrue(output.get_trace_df().iloc[6]["selected"])
+        self.assertEqual(output.get_trace_df().iloc[7]["resource"], "staff_Resource_instance_1")
+        self.assertEqual(output.get_trace_df().iloc[7]["activity"], "startup_Activity_instance_3")
+        self.assertTrue(output.get_trace_df().iloc[7]["selected"])
 
     def test_end2end_multiProblemKnapsack(self):
-        input_dict, results = self._all_steps("multiProblemKnapsack.json")
-        self._check_all(results, input_dict, 12)
+        input_dict, output = self._all_steps("multiProblemKnapsack.json")
+        self._check_all(output, input_dict, 12)
 
-        self.assertEqual(results.to_dict()["per_resource_score"]["funding_Resource_instance_0"], 2)
-        self.assertEqual(results.to_dict()["per_resource_score"]["funding_Resource_instance_1"], 4)
-        self.assertEqual(results.to_dict()["per_resource_score"]["staff_Resource_instance_0"], 4)
-        self.assertEqual(results.to_dict()["per_resource_score"]["staff_Resource_instance_1"], 2)
+        self.assertEqual(output.result["per_resource_score"]["funding_Resource_instance_0"], 2)
+        self.assertEqual(output.result["per_resource_score"]["funding_Resource_instance_1"], 4)
+        self.assertEqual(output.result["per_resource_score"]["staff_Resource_instance_0"], 4)
+        self.assertEqual(output.result["per_resource_score"]["staff_Resource_instance_1"], 2)
 
-        self.assertEqual(results.to_dict()["per_resource_score"]["bag_Resource_instance_0"], 3)
-        self.assertEqual(results.to_dict()["per_resource_score"]["bag_Resource_instance_1"], 3)
+        self.assertEqual(output.result["per_resource_score"]["bag_Resource_instance_0"], 3)
+        self.assertEqual(output.result["per_resource_score"]["bag_Resource_instance_1"], 3)
 
     def test_end2end_comboProblemKnapsack(self):
-        input_dict, results = self._all_steps("comboProblemKnapsack.json")
-        self._check_all(results, input_dict, 13)
+        input_dict, output = self._all_steps("comboProblemKnapsack.json")
+        self._check_all(output, input_dict, 13)
 
     def test_end2end_fanOutKnapsack_ifNot(self):
-        input_dict, results = self._all_steps("fanOutKnapsack_ifNot.json")
-        self._check_all(results, input_dict, 11)
+        input_dict, output = self._all_steps("fanOutKnapsack_ifNot.json")
+        self._check_all(output, input_dict, 11)
 
     def test_end2end_fanOutKnapsack_ifNot_multi(self):
-        input_dict, results = self._all_steps("fanOutKnapsack_ifNot_multi.json")
-        self._check_all(results, input_dict, 32)
+        input_dict, output = self._all_steps("fanOutKnapsack_ifNot_multi.json")
+        self._check_all(output, input_dict, 32)
 
     def test_end2end_fanOutKnapsack_ifNot_multi_combo(self):
-        input_dict, results = self._all_steps("fanOutKnapsack_ifNot_multi_combo.json")
-        self._check_all(results, input_dict, 31)
+        input_dict, output = self._all_steps("fanOutKnapsack_ifNot_multi_combo.json")
+        self._check_all(output, input_dict, 31)
 
     def test_end2end_simple_AWD(self):
-        input_dict, results = self._all_steps("SimpleAlienWorldDomination.json")
-        self._check_all(results, input_dict, 6)
+        input_dict, output = self._all_steps("SimpleAlienWorldDomination.json")
+        self._check_all(output, input_dict, 6)
 
     def test_end2end_AWD_with_ship(self):
-        input_dict, results = self._all_steps("AlienWorldDomination_wShip.json")
-        self._check_all(results, input_dict, 6)
+        input_dict, output = self._all_steps("AlienWorldDomination_wShip.json")
+        self._check_all(output, input_dict, 6)
 
 
 if __name__ == "__main__":
