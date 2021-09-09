@@ -94,8 +94,13 @@ Each **Contains Indication** can have one or more **Contains Indication Instance
 
 **Allocation Constraints** enable the user to constrain the ability of a **Can be Allocated To Indication**.  These constraints link two separate **Can be Allocated To Indications** to each other.
 
-**Allocation Constraints** come in two flavors: "IF-NOT" and "Contains IF-THEN".
+**Allocation Constraints** come in three flavors:
+"Contains IF-THEN". "IF-NOT", and "IF ONLY". 
+
+
+"Contained IF-THEN" allocation constraints work in conjunction with **Contains Indications** to tie the **Can be Allocated To Indication** from a parent resource and activity to a **Can be Allocated To Indication** between the children resource and activity.  Tying the parent allocation to the child allocation prevents the child **Can be Allocated To Indication** from working unless the first **Can be Allocated To Indication** includes allocations by parent instances that contain these children.  (*e.g. if I am on a ship with turrets that can be pointed at a city (parent relationship: turret resource allocated to city activity), I can't hit buildings with shells from the gun on that turret in another city (child relationship: shells resource allocated to buildings activity.  **Note- this assumes shells are a child resource of turret, and buildings a child activity of cities**).
 
 "IF-NOT" allocation constraints prevent a **Resource Instances** from being allocated to more than one type of Activity.  (*e.g. if I am allocating grocery bags to different types of grocery items, and I don't want grocery items that are cleaning supplies to be in the same bag as food items, I can use an IF-NOT allocation constraint to enforce this*).
 
-"Contained IF-THEN" allocation constraints work in conjunction with **Contains Indications** to tie the **Can be Allocated To Indication** from a parent resource and activity to a **Can be Allocated To Indication** between the children resource and activity.  Tying the parent allocation to the child allocation prevents the child **Can be Allocated To Indication** from working unless the first **Can be Allocated To Indication** includes allocations by parent instances that contain these children.  (*e.g. if I am on a ship with turrets that can be pointed at a city (parent relationship: turret resource allocated to city activity), I can't hit buildings with shells from the gun on that turret in another city (child relationship: shells resource allocated to buildings activity.  **Note- this assumes shells are a child resource of turret, and buildings a child activity of cities**).
+"IF-ONLY" allocation constraints are essentially the opposite of "IF-NOT";
+they require a resource type to be allocated to one activity type before it can be allocated to another.  For example, a parent might impose on a knapsack problem the condition that before any dessert type items can be allocated, at least one health food type item must be allocated.  *Note*: this allocation constraint is not present in any of the current examples.

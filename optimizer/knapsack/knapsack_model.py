@@ -170,12 +170,10 @@ def if_contains_rule(model, r_id, a_id):
 def if_contains_picked(model, a_id):
     """
     When an contained IF-THEN constraint exists, you may have an allocatedTo link without a reward, since selecting an allocation
-    to an activity without a reward may open up the ability to allocate to an activity with a reward.
+    to an activity without a reward may open up the ability to allocate to an activity with a reward.  The `if_contains_rule` above ensures
+    allocation to the parent activity, but not that the activity actually gets picked.  This rule makes the parent activities get picked if all
+    needed resources are allocated to them.  FOr activities with a reward, the objective function will push them to be picked, so this rule is not needed.
 
-    for example, there may be no reward for allocating a missile launcher to a geographic region...but that allocation is necessary to shoot
-    missiles at VIPs in that geographic region.
-
-    Therefore the activities without rewards will be not PICKED
     """
     if model.no_reward_allocation[a_id]:
         return (
@@ -800,9 +798,9 @@ class KnapsackModel(ModelBase):
         log.info("Creating variables and parameters...")
 
         # parameters that are needed to optimize
-        act_reward = {}  # TODO - should be dict of a_id and reward value
-        act_costs = {}  # TODO - should be a dict of (a_id, b_id) and list of cost values
-        res_budgets = {}  # TODO - should be a dict of (r_id, b_id) and list of budget values
+        act_reward = {}  # should be dict of a_id and reward value
+        act_costs = {}  # should be a dict of (a_id, b_id) and list of cost values
+        res_budgets = {}  # should be a dict of (r_id, b_id) and list of budget values
 
         # rewards and costs
         for act_class_instance in self._data["activityInstances"]:
