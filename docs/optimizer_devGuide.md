@@ -37,7 +37,7 @@ If you wish to create your own optimizer, the following process defines how to e
 1. Create a new folder in the /optimizer directory, and within that folder place the following classes.
 2. Create a new class that is a subclass of **optimizer.slim_optimizer_base.InputBase** and develop the following methods:
    1. *ingest_validate*:  develop this method so that the problem definition input format (see [api guide](/docs/api_devGuide.md) for problem input format) is converted into whatever format you need to construct your model.  Place the converted input information into the self._data field.
-3. Create your pyomo model including objective and constraint functions.  These can be added to the module that will contain your subclass of ModelBase (see next step)
+3. Create your pyomo model, including objective and constraint functions.  These can be added to the module that will contain your subclass of ModelBase (see next step)
 4. Create a new class that is a subclass of **optimizer.slim_optimizer_base.ModelBase** and develop the following methods:
    1. *can_solve*: there may be problems that your system cannot solve.  Use this function to indicate which problems your optimizer cannot solve.
    2. *build*: develop this method to take in data from your InputBase subclass and construct your pyomo model based on objectives and constraints you defined.

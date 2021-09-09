@@ -52,7 +52,11 @@ This type of relationship will impact the Optimal Allocation Plan if it constrai
 ### **Constrain allocations**
 A constraint is a relationship between allocations themselves. There are three provided types of constraints: IF-THEN, IF-NOT, and IF-ONLY.
 Constraints mean a target allocation can happen conditionally on the source allocation:
-* IF-THEN: if the source allocation is chosen, then the  
+* Contained IF-THEN: if the source allocation is chosen, then the target allocation becomes possible.
+* IF-NOT: if a resource type is allocated to one type of activity, it cannot be allocated to another type.
+* IF-ONLY: in order for a resource type to be allocated to one type of activity, it must also be allocated to another type.
+
+For more description of these, see the [guide to resource allocation](./resource_allocation_101.md).
 
 ![](./gifs/constrain-allocation.gif)
 
