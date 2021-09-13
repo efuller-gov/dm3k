@@ -161,8 +161,8 @@ class FullHouseInputViz(FullHouseInput):
                         "is_fatal_error": True,
                     }
                 ],
-            ) 
-            
+            )
+
         file_data = input_dict["files"]
         if len(file_data) != 1:
             return (
@@ -170,7 +170,9 @@ class FullHouseInputViz(FullHouseInput):
                 [
                     {
                         "err_code": 1,
-                        "err_txt": "system requires 'files' attribute to contain data from 1 file...you have submitted {} files...the necessary files do not exist!".format(len(file_data)),
+                        "err_txt": "system requires 'files' attribute to contain data from 1 file...you have submitted {} files...the necessary files do not exist!".format(
+                            len(file_data)
+                        ),
                         "offender": "**YOU**",
                         "fix": "Cant fix this!",
                         "is_fatal_error": True,
@@ -222,7 +224,7 @@ class FullHouseInputViz(FullHouseInput):
         #   when you find a contains, list all the instance names of that class
         #  FUTURE:
         #    - if no containing activity exists, and there is only 1 activity class, make a default containing activity
-        
+
         if "activityClasses" not in dm3k_viz_data:
             return (
                 True,
@@ -236,7 +238,7 @@ class FullHouseInputViz(FullHouseInput):
                     }
                 ],
             )
-        
+
         activity_classes = dm3k_viz_data["activityClasses"]
         parent_activity = None
 
@@ -261,14 +263,16 @@ class FullHouseInputViz(FullHouseInput):
                 self._data["parent_activities"] = self._get_all_instances(dm3k_viz_data, parent_activity, "activity")
                 log.debug("parent_activities")
                 log.debug(self._data["parent_activities"])
-        
+
         except KeyError as e:
             return (
                 True,
                 [
                     {
                         "err_code": 2,
-                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['activityClasses']...the format of the input is not correct!".format(e),
+                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['activityClasses']...the format of the input is not correct!".format(
+                            e
+                        ),
                         "offender": "**YOU**",
                         "fix": "Cant fix this!",
                         "is_fatal_error": True,
@@ -293,7 +297,7 @@ class FullHouseInputViz(FullHouseInput):
         # the parent resource is a resource that can be allocated to the parent activity
         #   so go through all the resourceClasses and find the one that can be allocated to the parent activity class
         #   when you find the parent resource, list all the instance names of that class
-        
+
         if "resourceClasses" not in dm3k_viz_data:
             return (
                 True,
@@ -307,11 +311,11 @@ class FullHouseInputViz(FullHouseInput):
                     }
                 ],
             )
-        
+
         resource_classes = dm3k_viz_data["resourceClasses"]
         parent_resource = None
 
-        try: 
+        try:
 
             for rc in resource_classes:
                 if parent_activity in rc["canBeAllocatedToClasses"]:
@@ -339,7 +343,9 @@ class FullHouseInputViz(FullHouseInput):
                 [
                     {
                         "err_code": 2,
-                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['resourceClasses']...the format of the input is not correct!".format(e),
+                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['resourceClasses']...the format of the input is not correct!".format(
+                            e
+                        ),
                         "offender": "**YOU**",
                         "fix": "Cant fix this!",
                         "is_fatal_error": True,
@@ -405,7 +411,9 @@ class FullHouseInputViz(FullHouseInput):
                 [
                     {
                         "err_code": 2,
-                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['resourceInstances']...the format of the input is not correct!".format(e),
+                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['resourceInstances']...the format of the input is not correct!".format(
+                            e
+                        ),
                         "offender": "**YOU**",
                         "fix": "Cant fix this!",
                         "is_fatal_error": True,
@@ -481,7 +489,9 @@ class FullHouseInputViz(FullHouseInput):
                 [
                     {
                         "err_code": 2,
-                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['allocationInstances']...the format of the input is not correct!".format(e),
+                        "err_txt": "'{}' key name was not in input_dict['files'][0]['fileContents']['allocationInstances']...the format of the input is not correct!".format(
+                            e
+                        ),
                         "offender": "**YOU**",
                         "fix": "Cant fix this!",
                         "is_fatal_error": True,
@@ -717,7 +727,7 @@ class FullHouseInputViz(FullHouseInput):
         """
         Add activity scores to the _data input dictionary
 
-        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are
                 used outside of the UI
 
         :param dict activity_scores: Dictionary of DU scores.  Keys are child_activities

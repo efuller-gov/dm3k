@@ -32,7 +32,7 @@ Once you create at least one resource-activity pair, you will be able to allocat
 ### **Create activity instances**
 Create instances of your activities in the same way as resources.
 
-You may define instance-level allocation relationships by clicking the i-button on the allocation arrow itself and access the drop down menus for each instance.
+You may define instance-level allocation relationships by clicking the i-button on the allocation arrow itself and access the dropdown menus for each instance.
 
 The default instance-level allocation is ALL to ALL. This means *any* resource instance may be allocated to *any* activity instance.
 

@@ -17,7 +17,7 @@ from typing import Any, AnyStr, Dict, List, Union
 import pandas as pd
 
 from optimizer.slim_optimizer_base import InputBase
-from optimizer.util.util import fh_append, fh_extend, full_house_input_dict_keys, full_house_input_keys, full_house_input_list_keys
+from optimizer.util.util import FULL_HOUSE_INPUT_DICT_KEYS, FULL_HOUSE_INPUT_KEYS, FULL_HOUSE_INPUT_LIST_KEYS, fh_append, fh_extend
 
 log = logging.getLogger(__name__)
 
@@ -59,6 +59,8 @@ class FullHouseInput(InputBase):
             "child_possible_allocations": {},
             "parent_possible_allocations": {},
             "activity_children": {},
+            "parent_budget_name": "default_parent_budget_name",
+            "child_budget_name": "default_child_budget_name",
         }  # type: Dict[AnyStr, Union[List, Dict[Any, Union[float, Dict, List]]]]
 
         expected_csv_basenames = [
@@ -658,7 +660,7 @@ class FullHouseInput(InputBase):
         """
         Add activity scores to the _data input dictionary
 
-        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are
                 used outside of the UI
 
         :param dict activity_scores: Dictionary of DU scores.  Keys are child_activities
@@ -683,7 +685,7 @@ class FullHouseInput(InputBase):
         Check to see if activity scores from data_access_layer and optimizer constraints align
         Then Fix them if you can
 
-        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are
                 used outside of the UI
 
         :param dict activity_scores: a dictionary of activity names as keys and activity scores as values
@@ -694,7 +696,7 @@ class FullHouseInput(InputBase):
         errors_with_scores = ""
         child_score_keys = self.to_data()["child_score"].keys()
         if activity_scores is not None:
-            if sorted(activity_scores.keys()) == sorted(full_house_input_keys()):
+            if sorted(activity_scores.keys()) == sorted(FULL_HOUSE_INPUT_KEYS):
                 raise ValueError("This method does not accept input data")
             for k, v in activity_scores.copy().items():
                 if not isinstance(v, (int, float)):
@@ -757,7 +759,7 @@ class FullHouseInput(InputBase):
         """
         Apply the cmd to the input data, effectively modifying the input
 
-        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are 
+        NOTE - this method is not necessary for operation with UI but is kept here for when optimizers are
                 used outside of the UI
 
         :param dict cmd_dict: command
@@ -792,10 +794,13 @@ class FullHouseInput(InputBase):
                 "child_possible_allocations": {},
                 "parent_possible_allocations": {},
                 "activity_children": {},
+                "parent_budget_name": "default_parent_budget_name",
+                "child_budget_name": "default_child_budget_name",
             }  # type: Dict[AnyStr, Union[List, Dict[Any, Union[float, Dict, List]]]]
 
         # set system to rebuild
-        self._needs_rebuild = True
+        # No longer be used
+        # self._needs_rebuild = True
         add_removed_data = removed_data.copy()
         # If this command was called via undo, use timestamp to check to see what was removed previously (if anything)
         if timestamp in self._removed_data_queue:
@@ -1200,9 +1205,9 @@ class FullHouseInput(InputBase):
                 return_dict["resource_families"][container]["child_resources"]
             )
 
-        for key in full_house_input_dict_keys():
+        for key in FULL_HOUSE_INPUT_DICT_KEYS:
             if key != "resource_families":
                 self._data[key].update(return_dict[key])
 
-        for key in full_house_input_list_keys():
+        for key in FULL_HOUSE_INPUT_LIST_KEYS:
             self._data[key].extend(return_dict[key])
