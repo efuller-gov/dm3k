@@ -9,7 +9,7 @@ OPEN-DM3K provides the user with:
 - a web-based UI to define their resource allocation problem.
 - a python optimizer that leverages linear optimization techniques to solve the user defined problem.
 
-![block diargam](./docs/pictures/DM3K_Block_Diagram.png)
+![block diagram](./docs/pictures/DM3K_Block_Diagram.png)
 
 ## Installation
 
@@ -29,7 +29,7 @@ $ sudo docker-compose -f docker-compose.yml up --build -d
 
 > **NOTE** this make take a while....please be patient
 
-To comfirm the installation, run...
+To confirm the installation, run...
 
 ```bash
 $ sudo docker ps

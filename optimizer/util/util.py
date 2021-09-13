@@ -14,6 +14,44 @@ log = logging.getLogger(__name__)
 convertToMB = float(2 ** 20)
 process = psutil.Process()
 
+FULL_HOUSE_FULL_TRACE_KEYS = [
+    "allocated",
+    "activity",
+    "budget_used",
+    "picked",
+    "resource",
+    "selected",
+    "value",
+]
+
+FULL_HOUSE_FULL_TRACE_KEYS_ORIG = [
+    "container_name",
+    "child_budget_used",
+    "child_resource",
+    "child_activity",
+    "parent_budget_used",
+    "parent_resource",
+    "parent_activity",
+    "selected",
+    "value",
+]
+
+FULL_HOUSE_INPUT_DICT_KEYS = [
+    "req_child_amt",
+    "req_parent_amt",
+    "avail_child_amt",
+    "avail_parent_amt",
+    "activity_children",
+    "child_possible_allocations",
+    "parent_possible_allocations",
+    "child_score",
+    "resource_families",
+]
+
+FULL_HOUSE_INPUT_LIST_KEYS = ["child_resources", "parent_resources", "child_activities", "parent_activities", "force_list", "forbid_list"]
+
+FULL_HOUSE_INPUT_KEYS = FULL_HOUSE_INPUT_DICT_KEYS + FULL_HOUSE_INPUT_LIST_KEYS + ["parent_budget_name"] + ["child_budget_name"]
+
 
 def remove_old_temp_files(dir_name, days=0, hours=0, minutes=0, seconds=0):
     """
@@ -44,54 +82,6 @@ def time_mem_stamp():
     :return mem_stamp: the current memory amount as
     """
     return datetime.now(), process.memory_info()[0] / convertToMB
-
-
-def full_house_full_trace_keys():
-    """
-    Return all of the keys in the full_trace dictionary
-    """
-    return [
-        "container_name",
-        "child_budget_used",
-        "child_resource",
-        "child_activity",
-        "parent_budget_used",
-        "parent_resource",
-        "parent_activity",
-        "selected",
-        "value",
-    ]
-
-
-def full_house_input_dict_keys():
-    """
-    Return the keys in the _data full house input dictionary that the corresponding values are dictionaries
-    """
-    return [
-        "req_child_amt",
-        "req_parent_amt",
-        "avail_child_amt",
-        "avail_parent_amt",
-        "activity_children",
-        "child_possible_allocations",
-        "parent_possible_allocations",
-        "child_score",
-        "resource_families",
-    ]
-
-
-def full_house_input_list_keys():
-    """
-    Return the keys in the _data full house input dictionary that the corresponding values are lists
-    """
-    return ["child_resources", "parent_resources", "child_activities", "parent_activities", "force_list", "forbid_list"]
-
-
-def full_house_input_keys():
-    """
-    Return all of the keys in the _data full house input dictionary
-    """
-    return full_house_input_list_keys() + full_house_input_dict_keys()
 
 
 def fh_append(append_dict, key, value, type_resources=None):

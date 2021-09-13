@@ -196,7 +196,7 @@ export class Dm3kGraph {
         // Remove from instance table
         this.resourceInstances = this.resourceInstances.filter(x=>x.label!=resName)
 
-        // Remove from allocation instnaces
+        // Remove from allocation instances
         this.allocatedToInstances = this.allocatedToInstances.filter(x=>x.resName!=resName)
 
         // Remove all traces of the resource's budget

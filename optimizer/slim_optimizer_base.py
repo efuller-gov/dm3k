@@ -15,9 +15,9 @@ from datetime import datetime
 import pandas as pd
 import psutil  # See https://github.com/PyUtilib/pyutilib/issues/31  - getting ValueError: signal only works in main thread
 import pyutilib.subprocess.GlobalData
+from pyomo.common.tempfiles import TempfileManager
 from pyomo.opt import SolverFactory, SolverStatus, TerminationCondition
 from pyutilib.common._exceptions import ApplicationError
-from pyutilib.services import TempfileManager
 
 from optimizer.util.history_pattern import HistoryManager
 from optimizer.util.util import remove_old_temp_files
