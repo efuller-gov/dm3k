@@ -697,7 +697,9 @@ class FullHouseInput(InputBase):
         child_score_keys = self.to_data()["child_score"].keys()
         if activity_scores is not None:
             if sorted(activity_scores.keys()) == sorted(FULL_HOUSE_INPUT_KEYS):
-                raise ValueError("This method does not accept input data")
+                raise ValueError(
+                    "This method expects to be passed in a dictionary of scores with keys being activity names.  This dictionary appears to be the full constraint input"
+                )
             for k, v in activity_scores.copy().items():
                 if not isinstance(v, (int, float)):
                     errors_with_scores += "\nActivity {} has an invalid score entry of {}\n".format(k, v)
