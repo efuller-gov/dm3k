@@ -1,5 +1,5 @@
 """
-API Endpoints for open-dm3k API
+API Endpoints for DM3K API
 """
 
 import os

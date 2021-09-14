@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
-    container_name: dm3k_open_api
+    container_name: dm3k_api
     restart: always
     volumes:
       - ./api/:/app/api
@@ -17,14 +17,14 @@ services:
     
   ui:
     build: ./ui
-    container_name: dm3k_open_ui
+    container_name: dm3k_ui
     restart: always
     expose:
       - 80
 
   nginx:
     build: ./nginx
-    container_name: dm3k_open_nginx
+    container_name: dm3k_nginx
     restart: always
     ports:
       - "80:80"
