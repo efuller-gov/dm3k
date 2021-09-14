@@ -1,5 +1,5 @@
 """
-Main file for open-dm3k API
+Main file for the DM3K API
 """
 
 

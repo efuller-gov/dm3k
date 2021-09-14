@@ -1,6 +1,6 @@
 # Optimizer Development and Extension Guide #
 
-The optimizer is one of the core elements of Open-DM3K.  It takes in the problem definition, performs integer programming optimization of the problem, and returns the results of the optimization.
+The optimizer is one of the core elements of DM3K.  It takes in the problem definition, performs integer programming optimization of the problem, and returns the results of the optimization.
 
 This document describes the component parts of the optimizer and how to add new optimizers to the existing system.
 
@@ -24,7 +24,7 @@ The core classes are shown in the diagram below.
 
 **ModelBase** is the base class for the optimizer model and serves as a template for the meat of new optimizers.  These will typically extend the base class and build a new pyomo model using input data.  Within this class exists code to identify how to turn the input data into appropriate pyomo constraints.  Extensions of this class will have to implement the: *can_solve*, *build*, and *fill_output* methods.
 
-**OutputBase** is the base class for holding output from an optimizer solution.  It provides a layer between the standardized output and the optimizer solution.  For Open-DM3K and many extensions, this class does not need to be extended.  However, it can be subclassed to support further modifications to the output format and/or UI.  
+**OutputBase** is the base class for holding output from an optimizer solution.  It provides a layer between the standardized output and the optimizer solution.  For DM3K and many extensions, this class does not need to be extended.  However, it can be subclassed to support further modifications to the output format and/or UI.  
 
 ## How to Extend the Optimizer ##
 

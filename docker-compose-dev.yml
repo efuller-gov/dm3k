@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api.dev
-    container_name: dm3k_open_api
+    container_name: dm3k_api
     restart: always
     volumes:
       - ./api/:/app/api
@@ -19,7 +19,7 @@ services:
     build: 
       context: ./nginx
       dockerfile: Dockerfile.dev
-    container_name: dm3k_open_nginx
+    container_name: dm3k_nginx
     restart: always
     ports:
       - "80:80"
@@ -33,7 +33,7 @@ services:
     build:
       context: ./ui
       dockerfile: Dockerfile.dev
-    container_name: dm3k_open_ui
+    container_name: dm3k_ui
     restart: always
     volumes:
     # trying to avoid copying out node_modules into local system (this causes errors if local node-modules becomes out of date with build node_modules) 

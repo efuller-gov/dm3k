@@ -1,6 +1,6 @@
 # API Development Guide #
 
-The API contains two endpoints used to access the back-end and optimizer for Open-DM3K.  These endpoints are described below.
+The API contains two endpoints used to access the back-end and optimizer for DM3K.  These endpoints are described below.
 
 > NOTE: the URL for the API is based on where you established the project docker containers.  The production system is available on **port 80** of whatever IP or URL the server you started the docker containers on.
 
@@ -52,7 +52,7 @@ The Main endpoint to provide visual data to the optimizer.  The response is the 
 
         version_url = URL + '/api/vizdata'   # URL is where you established the docker containers
 
-        app_directory = "<path to open-dm3k top folder>"  # insert your path to top folder
+        app_directory = "<path to dm3k top folder>"  # insert your path to top folder
         
         # load up an example file
         path_to_file = os.path.join(app_directory, "examples", "simpleKnapsack.json")

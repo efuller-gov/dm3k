@@ -1,4 +1,4 @@
-# Open-DM3K User Guide #
+# DM3K User Guide #
 
 This user guide describes how to use the User Interface (UI) to create and solve resource allocation problems.
 

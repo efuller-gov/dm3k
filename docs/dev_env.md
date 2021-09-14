@@ -1,6 +1,6 @@
-# OPEN-DM3K DEVELOPMENT ENVIRONMENT
+# DM3K DEVELOPMENT ENVIRONMENT
 
-This README file explains how to set up and work with the docker system in the development mode for OPEN-DM3K
+This README file explains how to set up and work with the docker system in the development mode for DM3K
 
 Table of Contents:
 
@@ -9,14 +9,14 @@ Table of Contents:
 
 ## Installation
 
-### Prerequisites
+### Pre-requisites
 
 Installation assumes you have...
 
 - docker (v19.03+)  see https://docs.docker.com/get-docker/
 - docker-compose (v1.27+)  see https://docs.docker.com/compose/install/
 
-*Note*: if your user is added to the docker group, you can omit `sudo` from the following commands. 
+*Note*: if your user is added to the docker group, you can omit `sudo` from the commands below. 
 
 ### Installation Procedure
 
@@ -32,22 +32,22 @@ To confirm the installation, run...
 $ sudo docker ps
 ```
 
-Output of this command should show 3 docker containers: dm3k_open_api, dm3k_open_ui, dm3k_open_nginx as shown below...
+Output of this command should show 3 docker containers: dm3k_api, dm3k_ui, dm3k_nginx as shown below...
 
 STATUS                  |  PORTS                |   NAMES       
 ------------------------|-----------------------|---------------
-Up 2 minutes (healthy)  | 0.0.0.0:80->80/tcp    | dm3k_open_nginx
-Up 2 minutes            | 5000/tcp              | dm3k_open_api
-Up 2 minutes            | 8080/tcp              | dm3k_open_ui
+Up 2 minutes (healthy)  | 0.0.0.0:80->80/tcp    | dm3k_nginx
+Up 2 minutes            | 5000/tcp              | dm3k_api
+Up 2 minutes            | 8080/tcp              | dm3k_ui
 
 
 To confirm the health of the optimizer, you can run unit tests:
 
 ```bash
-$ sudo docker exec -ti dm3k_open_api python -m unittest discover -v -s /app/tests
+$ sudo docker exec -ti dm3k_api python -m unittest discover -v -s /app/tests
 ```
 
-To stop OPEN-DM3K, run...
+To stop DM3K, run...
 
 ```bash
 $ sudo docker-compose -f docker-compose-dev.yml down
@@ -78,7 +78,7 @@ If hot reload does not occur, try the following...
 2. If #1 doesn't work, try restarting the ui container by running...
 
     ```bash
-    $ sudo docker restart dm3k_open_ui
+    $ sudo docker restart dm3k_ui
     ```
 
 if you need to add new node_modules, you will need to make the change in 'package.json' and then rebuild the container, by running...
@@ -91,13 +91,13 @@ $ sudo docker-compose -f docker-compose-dev.yml up
 > **IMPORTANT**:  If you do add new node_modules, make sure you grab the new yarn.lock file from inside the docker container so that it can be saved to the repo.  Grab the new yarn.lock file by running...
 >   ```bash
 >   $ cd ui    # get into the ui directory of the repo  
->   $ sudo docker cp dm3k_open_ui:/app/yarn.lock .
+>   $ sudo docker cp dm3k_ui:/app/yarn.lock .
 >   ```
 
 If you need to get inside the ui container, run...
 
 ```bash
-$ sudo docker exec -ti dm3k_open_ui /bin/sh
+$ sudo docker exec -ti dm3k_ui /bin/sh
 ```
 
 To exit the container, run...
@@ -124,7 +124,7 @@ Within development mode, the system will hot reload any changes within the follo
 If hot reload does not occur, try restarting the api container by running...
 
 ```bash
-$ sudo docker restart dm3k_open_api
+$ sudo docker restart dm3k_api
 ```
 
 if you need to add new python packages, you will need to change either the api requirements.txt or the optimizer requirements.txt (depending on what you want) and then rebuild the container, by running...
@@ -137,7 +137,7 @@ $ sudo docker-compose -f docker-compose-dev.yml up
 If you need to get inside the api container, run...
 
 ```bash
-$ sudo docker exec -ti dm3k_open_api bash
+$ sudo docker exec -ti dm3k_api bash
 ```
 
 Once inside the container you can run any test, by running...
