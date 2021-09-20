@@ -4,10 +4,6 @@ The optimizer is one of the core elements of DM3K.  It takes in the problem defi
 
 This document describes the component parts of the optimizer and how to add new optimizers to the existing system.
 
-Table of Contents:
-
-[[_TOC_]]
-
 ## Optimizer Design ##
 
 The optimizer is based on a flexible software design with the goal to make it easy to create new optimizers.

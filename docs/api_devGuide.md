@@ -6,7 +6,11 @@ The API contains two endpoints used to access the back-end and optimizer for DM3
 
 Table of Contents:
 
-[[_TOC_]]
+* [GET /api/version](#get-apiversion)
+* [POST /api/vizdata](#post-apivizdata)
+  * [Expected Data Params](#expected-data-params)
+  * [Expected Success Response](#expected-success-response)
+  * [Validation Error Response](#validation-error-response)
 
 ## GET /api/version ##
 
