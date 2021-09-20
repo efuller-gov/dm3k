@@ -5,8 +5,14 @@
 The problem is to determine which/how many resources to allocate to which activity.  If more resources are available than needed, the solution indicates which resources are used and which are not.  Similarly, if there are more activities than can be done with available resources, the solution should indicate which activities are not performed, taking into account the associated costs and rewards.
 
 Table of Contents:
-
-[[_TOC_]]
+* [Defining a Problem](#defining-a-problem)
+    * [Understanding the Difference Between Types and Instances](#understanding-the-difference-between-types-and-instances)
+* [Problem Component Definition and Detail](#problem-component-definition-and-detail)
+    * [Resources](#resources)
+    * [Activities](#activities)
+    * [Can Be Allocated To Indications](#can-be-allocated-to-indications)
+    * [Contains Indications](#contains-indications)
+    * [Allocation Constraints](#allocation-constraints)
 
 ## Defining a Problem ##
 

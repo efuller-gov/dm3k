@@ -3,8 +3,10 @@
 This README file explains how to set up and work with the docker system in the development mode for DM3K
 
 Table of Contents:
-
-[[_TOC_]]
+* [Installation](#installation)
+* [Usage](#usage)
+* [UI Container Development](#ui-container-development)
+* [API Container Development](#api-container-development)
 
 
 ## Installation
