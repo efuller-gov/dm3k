@@ -1,16 +1,39 @@
 # API Development Guide #
 
-The API contains two endpoints used to access the back-end and optimizer for DM3K.  These endpoints are described below.
+The API contains three endpoints used to access the back-end and optimizer for DM3K.  These endpoints are described below.
 
-> NOTE: the URL for the API is based on where you established the project docker containers.  The production system is available on **port 80** of whatever IP or URL the server you started the docker containers on.
+> NOTE: the URL for the API is based on where you established the project docker containers.  The production system is available on **port 80** of whatever IP or URL the server you started the docker containers on.  In development mode, **port 5000** is used.
 
 Table of Contents:
-
+* [GET /api/optimizers](#get-apioptimizers)
 * [GET /api/version](#get-apiversion)
 * [POST /api/vizdata](#post-apivizdata)
   * [Expected Data Params](#expected-data-params)
   * [Expected Success Response](#expected-success-response)
   * [Validation Error Response](#validation-error-response)
+
+## GET /api/optimizers ##
+
+Returns list of optimizers to choose from
+
+* **URL**: /api/optimizers
+* **METHODS**: `GET`
+* **URL Params**: None
+* **Data Params**: None
+* **Success Response**:
+  * **Code**: 200
+  * **Content**: [
+                     "FullHouseViz",
+                     "KnapsackViz"
+                 ]
+* **Error Response**: None
+* **Sample Call**:
+
+    ``` python
+        import requests
+        version_url = URL + '/api/optimizers'   # URL is where you established the docker containers
+        response = requests.get(version_url)
+    ```
 
 ## GET /api/version ##
 

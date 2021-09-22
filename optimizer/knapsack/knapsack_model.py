@@ -200,7 +200,7 @@ class KnapsackModel(ModelBase):
         :param KnapsackInputViz input_instance: a instance of the InputBase class
         :return: Boolean, True = yes, this model can solve it.  False = something about input cannot be solved by model
         """
-        # the KnapsackComponentModel can solve any input in the form of the KnapsackInputViz class
+        # the KnapsackModel can solve any input in the form of the KnapsackInputViz class
         return isinstance(input_instance, KnapsackInputViz)
 
     def build(self, data):

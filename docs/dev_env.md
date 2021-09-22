@@ -4,9 +4,12 @@ This README file explains how to set up and work with the docker system in the d
 
 Table of Contents:
 * [Installation](#installation)
+  * [Pre-requisites](#pre-requisites)
+  * [Installation Procedure](#installation-procedure)
 * [Usage](#usage)
 * [UI Container Development](#ui-container-development)
 * [API Container Development](#api-container-development)
+* [Pre-Commit](#pre-commit)
 
 
 ## Installation
@@ -36,11 +39,11 @@ $ sudo docker ps
 
 Output of this command should show 3 docker containers: dm3k_api, dm3k_ui, dm3k_nginx as shown below...
 
-STATUS                  |  PORTS                |   NAMES       
-------------------------|-----------------------|---------------
-Up 2 minutes (healthy)  | 0.0.0.0:80->80/tcp    | dm3k_nginx
-Up 2 minutes            | 5000/tcp              | dm3k_api
-Up 2 minutes            | 8080/tcp              | dm3k_ui
+STATUS                  |  PORTS                              |   NAMES
+------------------------|-------------------------------------|---------------
+Up 2 minutes (healthy)  | 0.0.0.0:80->80/tcp, :::80->80/tcp   | dm3k_nginx
+Up 2 minutes            | 5000/tcp                            | dm3k_api
+Up 2 minutes            | 8080/tcp                            | dm3k_ui
 
 
 To confirm the health of the optimizer, you can run unit tests:
@@ -87,7 +90,7 @@ if you need to add new node_modules, you will need to make the change in 'packag
 
 ```bash
 $ sudo docker-compose -f docker-compose-dev.yml down
-$ sudo docker-compose -f docker-compose-dev.yml up
+$ sudo docker-compose -f docker-compose-dev.yml up --build -d
 ```
 
 > **IMPORTANT**:  If you do add new node_modules, make sure you grab the new yarn.lock file from inside the docker container so that it can be saved to the repo.  Grab the new yarn.lock file by running...
@@ -129,11 +132,11 @@ If hot reload does not occur, try restarting the api container by running...
 $ sudo docker restart dm3k_api
 ```
 
-if you need to add new python packages, you will need to change either the api requirements.txt or the optimizer requirements.txt (depending on what you want) and then rebuild the container, by running...
+If you need to add new python packages or want to get later versions, you will need to change either the api requirements.txt or the optimizer requirements.txt (depending on what you want) and then rebuild the container, by running...
 
 ```bash
 $ sudo docker-compose -f docker-compose-dev.yml down
-$ sudo docker-compose -f docker-compose-dev.yml up
+$ sudo docker-compose -f docker-compose-dev.yml up --build -d
 ```
 
 If you need to get inside the api container, run...
@@ -163,3 +166,15 @@ To stop the container, run...
 ```bash
 $ sudo docker-compose -f docker-compose-dev.yml down
 ```
+
+## Pre-Commit
+
+It is recommended to install pre-commit
+
+```bash
+$ pip install pre-commit
+
+$ pre-commit install
+```
+
+It is basically currently configured to only check the python code

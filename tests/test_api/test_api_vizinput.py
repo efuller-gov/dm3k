@@ -19,7 +19,7 @@ app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", 
 URL = "http://localhost:5000"
 
 
-class TestBasicConnectionAPI(TestCase):
+class TestVizInput(TestCase):
     def setUp(self):
         log.info("Testing: " + self.__class__.__name__ + " " + self._testMethodName + "----------")
 
@@ -44,7 +44,7 @@ class TestBasicConnectionAPI(TestCase):
     #  TESTS AGAINST INPUT FILES
     # ---------------------------------------------
 
-    def test_vizinput_simpleKnapsack(self):
+    def test_viz_input_simple_knapsack(self):
         vizinput_url = URL + "/api/vizdata"
 
         input_dict = self._load("simpleKnapsack.json")

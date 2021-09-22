@@ -1,15 +1,15 @@
 """
-Tests the full house model from internal interface
+File containing methods used by tests
 """
-
 import json
 import logging
 import os
 import sys
-import unittest
 from unittest import TestCase
 
 import pandas
+
+log = logging.getLogger(__name__)
 
 # ensure that optimizer directory is in path
 app_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..")
@@ -18,32 +18,16 @@ if app_directory not in sys.path:
 
 from optimizer.slim_optimizer_main import create_opt  # noqa: E402
 
-log = logging.getLogger(__name__)
 
-
-class TestFullHouseAWD(TestCase):
-    def setUp(self):
-        log.info("Testing: " + self.__class__.__name__ + " " + self._testMethodName + "----------")
-        self._opt = None
-
-    def tearDown(self):
-        pass
-
-    # ---------------------------------------------
-    #  UTILITY FUNCTIONS
-    # ---------------------------------------------
-
-    def _step1_load(self, data_filename):
+class TestOptimizer(TestCase):
+    def _step1_load(self, data_filename, opt_name):
         path_to_file = os.path.join(app_directory, "examples", data_filename)
         with open(path_to_file, "r") as f:
             input_dict = json.load(f)
 
-        # config = {"optimizer": "FullHouseViz"}
-
         log.debug("WORKING ON DATASET=" + input_dict["datasetName"])
 
-        opt, validation_errors = create_opt(input_dict, "FullHouseViz")
-        self._opt = opt
+        self._opt, validation_errors = create_opt(input_dict, opt_name)
 
         return input_dict, validation_errors
 
@@ -54,9 +38,9 @@ class TestFullHouseAWD(TestCase):
         self._opt.solve()
         return self._opt.output
 
-    def _all_steps(self, data_filename):
+    def _all_steps(self, data_filename, opt_name):
         # ### STEP 1  - load data into system
-        input_dict, validation_errors = self._step1_load(data_filename)
+        input_dict, validation_errors = self._step1_load(data_filename, opt_name)
 
         if len(validation_errors) > 0:
             log.warning("VALIDATION ERRORS...")
@@ -141,8 +125,8 @@ class TestFullHouseAWD(TestCase):
 
         # get all input budgets
         input_budgets = {}
-        for resI in input_json["resourceInstances"]:
-            for res_inst in resI["instanceTable"]:
+        for res_instances in input_json["resourceInstances"]:
+            for res_inst in res_instances["instanceTable"]:
                 res_name = res_inst["instanceName"]
                 input_budgets[res_name] = res_inst["budget"]
 
@@ -162,21 +146,3 @@ class TestFullHouseAWD(TestCase):
         self._check_objective(output, predicted_obj_value)
         self._check_selected_and_filled(output, input_data)
         self._check_budget_used(output, input_data)
-
-    # ---------------------------------------------
-    #  TESTS AGAINST INPUT FILES
-    # ---------------------------------------------
-
-    def test_end2end_AWD_with_ship(self):
-        input_dict, output = self._all_steps("AlienWorldDomination_wShip.json")
-        self._check_all(output, input_dict, 6)
-
-
-if __name__ == "__main__":
-    # FOR DEBUGGING USE...
-    log = logging.getLogger()
-    log.level = logging.DEBUG
-    stream_handler = logging.StreamHandler(sys.stdout)
-    log.addHandler(stream_handler)
-
-    unittest.main()
