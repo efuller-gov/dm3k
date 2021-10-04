@@ -1,4 +1,5 @@
-FROM python:3.8-slim
+# Base image
+FROM python:3.9-slim
 
 # Install packages for glpk
 RUN apt-get update && apt-get -y install glpk-utils libglpk-dev glpk-doc && apt-get clean
