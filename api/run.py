@@ -23,8 +23,10 @@ if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
 log_file = os.path.join(LOG_DIR, "basic.log")
 
-# clear the file on start up
-f = open(log_file, "w").close()
+clear_logs = os.environ.get("CLEAR_LOGS", True)
+
+if clear_logs:
+    f = open(log_file, "w").close()
 
 logging.basicConfig(
     filename=log_file,

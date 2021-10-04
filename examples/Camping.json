@@ -1,8 +1,8 @@
 {
-    "datasetName": "George-Paul-Laura-Camping",
+    "datasetName": "Camping",
     "files": [
     	{
-    		"fileName": "George-Paul-Laura-Camping.json",
+            "fileName": "Camping.json",
     		"fileContents": {
                 "resourceClasses": [
                     {
@@ -54,19 +54,19 @@
                         "className": "Backpack",
                         "instanceTable": [
                             {
-                                "instanceName": "George's Backpack",
+                                "instanceName": "G's Backpack",
                                 "budget": {
                                     "weight": 20
                                 }
                             },
                             {
-                                "instanceName": "Laura's Backpack",
+                                "instanceName": "L's Backpack",
                                 "budget": {
                                     "weight": 20
                                 }
                             },
                             {
-                                "instanceName": "Paul's Backpack",
+                                "instanceName": "P's Backpack",
                                 "budget": {
                                     "weight": 10
                                 }
@@ -100,14 +100,14 @@
                                 "reward": 1
                             },
                             {
-                                "instanceName": "Georges Sleeping bag",
+                                "instanceName": "G's Sleeping bag",
                                 "cost": {
                                     "weight": 3
                                 },
                                 "reward": 1
                             },
                             {
-                                "instanceName": "Georges Rain Gear",
+                                "instanceName": "G's Rain Gear",
                                 "cost": {
                                     "weight": 2
                                 },
@@ -128,28 +128,28 @@
                                 "reward": 1
                             },
                             {
-                                "instanceName": "Pauls Sleeping bag",
+                                "instanceName": "P's Sleeping bag",
                                 "cost": {
                                     "weight": 2
                                 },
                                 "reward": 1
                             },
                             {
-                                "instanceName": "Pauls Rain Gear",
+                                "instanceName": "P's Rain Gear",
                                 "cost": {
                                     "weight": 2
                                 },
                                 "reward": 1
                             },
                             {
-                                "instanceName": "Lauras Sleeping bag",
+                                "instanceName": "L's Sleeping bag",
                                 "cost": {
                                     "weight": 2
                                 },
                                 "reward": 1
                             },
                             {
-                                "instanceName": "Lauras Rain Gear",
+                                "instanceName": "L's Rain Gear",
                                 "cost": {
                                     "weight": 1
                                 },
@@ -221,15 +221,15 @@
                             },
                             {
                                 "parentInstanceName": "Sleeping",
-                                "childInstanceName": "Georges Sleeping bag"
+                                "childInstanceName": "G's Sleeping bag"
                             },
                             {
                                 "parentInstanceName": "Sleeping",
-                                "childInstanceName": "Pauls Sleeping bag"
+                                "childInstanceName": "P's Sleeping bag"
                             },
                             {
                                 "parentInstanceName": "Sleeping",
-                                "childInstanceName": "Lauras Sleeping bag"
+                                "childInstanceName": "L's Sleeping bag"
                             },
                             {
                                 "parentInstanceName": "Rain Protection",
@@ -237,15 +237,15 @@
                             },
                             {
                                 "parentInstanceName": "Rain Protection",
-                                "childInstanceName": "Georges Rain Gear"
+                                "childInstanceName": "G's Rain Gear"
                             },
                             {
                                 "parentInstanceName": "Rain Protection",
-                                "childInstanceName": "Pauls Rain Gear"
+                                "childInstanceName": "P's Rain Gear"
                             },
                             {
                                 "parentInstanceName": "Rain Protection",
-                                "childInstanceName": "Lauras Rain Gear"
+                                "childInstanceName": "L's Rain Gear"
                             }
                         ]
                     }

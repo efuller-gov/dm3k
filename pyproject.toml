@@ -4,8 +4,7 @@ include = '\.pyi?$'
 exclude = '''
 /(
     \.git
-  | dist
   | docs
-  | htmlcov
+  | venv
 )/
 '''

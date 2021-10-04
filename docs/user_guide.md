@@ -4,6 +4,15 @@ This user guide describes how to use the User Interface (UI) to create and solve
 
 Upon navigating to the UI, the top pane provides a *canvas* and the bottom pane provides a *worksheet* to add to the canvas.
 
+Table of Contents:
+* [Create resource class](#create-resource-class)
+* [Create resource instances](#create-resource-instances)
+* [Allocate resources to activities](#allocate-resources-to-activities)
+* [Create activity instances](#create-activity-instances)
+* [Make a contains relationship](#make-a-contains-relationship)
+* [Constrain allocations](#constrain-allocations)
+* [Submit diagram to solver](#submit-diagram-to-solver)
+
 ### **Create resource class**
 The first step in defining an allocation problem is to create your *resources*.
 

@@ -2,6 +2,14 @@
 
 The Decision Maximizer 3000, also known as decision-maximizer or DM3K for short, is a generalized decision-engine that solves complex resource allocation problems.
 
+Table of Contents:
+* [Installation](#installation)
+  * [Pre-Requisites](#pre-requisites)
+  * [Installation Procedure](#installation-procedure)
+* [Usage](#usage)
+* [Contributing](#contributing)
+* [License](#license)
+
 > **NOTE** - For more explanation of resource allocation problems and their component parts, see [*/docs/resource_allocation_101.md*](/docs/resource_allocation_101.md)
 
 DM3K provides the user with:
@@ -13,7 +21,7 @@ DM3K provides the user with:
 
 ## Installation
 
-### Prerequisites
+### Pre-requisites
 
 Installation assumes you have...
 
@@ -37,17 +45,23 @@ $ sudo docker ps
 
 Output of this command should show 3 docker containers: dm3k_api, dm3k_ui, dm3k_nginx as shown below...
 
-STATUS                  |  PORTS                |   NAMES       
-------------------------|-----------------------|---------------
-Up 2 minutes (healthy)  | 0.0.0.0:80->80/tcp    | dm3k_nginx
-Up 2 minutes            | 9000/tcp              | dm3k_api
-Up 2 minutes            | 80/tcp                | dm3k_ui
+STATUS                  |  PORTS                               |   NAMES
+------------------------|--------------------------------------|---------------
+Up 2 minutes (healthy)  | 0.0.0.0:80->80/tcp, :::80->80/tcp    | dm3k_nginx
+Up 2 minutes            | 9000/tcp                             | dm3k_api
+Up 2 minutes            | 80/tcp                               | dm3k_ui
 
 
 To confirm the health of the optimizer, run the following command:
 
 ```bash
 $ sudo docker exec -ti dm3k_api python -m unittest discover -v -s /app/tests/test_optimizer
+```
+
+If there are errors, here are some logs to check
+```bash
+$ docker logs <container_name>
+$ docker exec -ti dm3k_api cat /app/logs/basic.log
 ```
 
 To stop DM3K, run...
