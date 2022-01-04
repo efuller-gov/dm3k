@@ -1,6 +1,6 @@
 
 # build stage
-FROM node:current-alpine as build-stage
+FROM node:alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
 COPY yarn.lock ./

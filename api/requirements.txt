@@ -1,4 +1,4 @@
-Flask==2.0.1            #  BSD-3 clause license
+Flask==2.0.2            #  BSD-3 clause license
 Flask-Cors==3.0.10      # MIT license
-uWSGI==2.0.19           #  GPLv2 (but using linking exception!) - https://github.com/unbit/uwsgi/blob/master/LICENSE
-requests==2.26.0        # Apache 2.0
+uWSGI==2.0.20           #  GPLv2 (but using linking exception!) - https://github.com/unbit/uwsgi/blob/master/LICENSE
+requests==2.27.0        # Apache 2.0
